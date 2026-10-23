@@ -4,3 +4,4 @@ remotion/node_modules/
 tools/bin/
 out/*.log
 episodes/*/grid/
+out/ep01_v2.mp4
