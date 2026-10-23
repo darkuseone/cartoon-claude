@@ -1,2 +1,6 @@
 episodes/*/build/
 __pycache__/
+remotion/node_modules/
+tools/bin/
+out/*.log
+episodes/*/grid/
