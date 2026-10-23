@@ -1,0 +1,335 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:#000}svg{display:block}</style>
+<script src="../../pipeline/lib.js"></script>
+</head><body>
+<svg id="stage" xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+<script>
+// Эпизод 1: «Котам нужно молоко?»
+let SUBS, T;
+const TOM_X = 870, TABLE_Y = 1262, SAUCER_X = 660, NIK_X = 430, NIK_Y = 1235;
+
+function init() {
+  const L = TL.lines;
+  const w = (li, wi) => L[li].words[wi].s;
+  T = {
+    l: L,
+    smotri: w(3, 8),
+    lactase: w(3, 13),
+    gone: w(3, 15),
+    milk: w(3, 16),
+    nodigest: w(3, 19),
+    blya: w(5, 3),
+    litter: w(5, 4),
+  };
+  T.shots = [
+    { id: 'wide', end: L[1].start - 0.05 },
+    { id: 'tomClose', end: L[2].start - 0.1 },
+    { id: 'nikClose', end: L[3].start - 0.05 },
+    { id: 'tv', end: T.smotri - 0.1 },
+    { id: 'chalk', end: L[3].end + 0.15 },
+    { id: 'lick', end: L[5].start - 0.05 },
+    { id: 'mustache', end: T.litter - 0.1 },
+    { id: 'litter', end: L[5].end + 0.5 },
+    { id: 'card', end: TL.duration + 1 },
+  ];
+  let s = 0;
+  for (const sh of T.shots) { sh.start = s; s = sh.end; }
+  SUBS = buildSubGroups(L);
+}
+
+// ---------------------------------------------------------------- КУХНЯ (мир)
+function kitchenBack(t) {
+  let s = `<defs>
+    <linearGradient id="night" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#151b38"/><stop offset="1" stop-color="#3b3f73"/></linearGradient>
+    <linearGradient id="cone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd98a" stop-opacity=".42"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></linearGradient>
+    <radialGradient id="glow"><stop offset="0" stop-color="#ffe2a0" stop-opacity=".55"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></radialGradient>
+    <pattern id="stripes" width="90" height="90" patternUnits="userSpaceOnUse"><rect width="90" height="90" fill="#2d4f61"/><rect width="44" height="90" fill="#305669"/><circle cx="67" cy="45" r="5" fill="#3a6378"/></pattern>
+    <pattern id="check" width="60" height="60" patternUnits="userSpaceOnUse"><rect width="60" height="60" fill="#f4ede1"/><rect width="30" height="30" fill="#c8413f"/><rect x="30" y="30" width="30" height="30" fill="#c8413f"/><rect x="30" width="30" height="30" fill="#e7a29b"/><rect y="30" width="30" height="30" fill="#e7a29b"/></pattern>
+  </defs>`;
+  s += `<rect x="-600" y="-600" width="2300" height="2300" fill="url(#stripes)"/>`;
+  // пол
+  s += `<rect x="-600" y="1560" width="2300" height="900" fill="#8a5a3c"/>`;
+  for (let i = 0; i < 8; i++) s += `<path d="M-600,${1600 + i * 70} L1700,${1600 + i * 70}" stroke="#6e4630" stroke-width="5"/>`;
+  s += `<rect x="-600" y="1540" width="2300" height="26" fill="#e9dcc3"/>`;
+  // шкафчики
+  s += `<rect x="-40" y="200" width="430" height="360" rx="14" fill="#c98b5a" stroke="${OL}" stroke-width="6"/>
+    <rect x="-10" y="230" width="175" height="300" rx="10" fill="#d89c69" stroke="${OL}" stroke-width="5"/><rect x="190" y="230" width="175" height="300" rx="10" fill="#d89c69" stroke="${OL}" stroke-width="5"/>
+    <circle cx="150" cy="390" r="10" fill="${OL}"/><circle cx="205" cy="390" r="10" fill="${OL}"/>`;
+  // картина с рыбой
+  s += `<rect x="90" y="700" width="220" height="170" rx="6" fill="#b8863b" stroke="${OL}" stroke-width="6"/><rect x="110" y="720" width="180" height="130" fill="#f1e6c8"/>
+    <path d="M150,785 Q200,740 250,785 Q200,830 150,785 Z M250,785 L280,760 L280,810 Z" fill="#f08a3e" stroke="${OL}" stroke-width="4"/><circle cx="175" cy="780" r="5" fill="${OL}"/>`;
+  // окно со шторами
+  s += `<rect x="680" y="380" width="340" height="430" rx="8" fill="#efe3cb" stroke="${OL}" stroke-width="6"/>
+    <rect x="702" y="402" width="296" height="386" fill="url(#night)"/>
+    <circle cx="930" cy="470" r="34" fill="#fff4cf"/><circle cx="944" cy="462" r="30" fill="url(#night)"/>
+    <path d="M702,788 L702,640 L760,640 L760,600 L820,600 L820,670 L880,670 L880,580 L940,580 L940,650 L998,650 L998,788 Z" fill="#1f2340"/>`;
+  for (const [x, y] of [[720, 660], [740, 700], [835, 690], [895, 610], [915, 640], [955, 680], [895, 720]]) s += `<rect x="${x}" y="${y}" width="12" height="16" fill="#ffd36e"/>`;
+  s += `<rect x="702" y="590" width="296" height="10" fill="#efe3cb"/><rect x="845" y="402" width="10" height="386" fill="#efe3cb"/>`;
+  s += `<path d="M660,360 Q700,600 650,840 L700,840 Q740,600 720,360 Z M1040,360 Q1000,600 1050,840 L1000,840 Q960,600 980,360 Z" fill="#b3343a" stroke="${OL}" stroke-width="5"/>`;
+  s += `<rect x="640" y="340" width="420" height="24" rx="12" fill="#5b3a29"/>`;
+  // лампа и свет
+  const sw = Math.sin(t * 1.3) * 1.5;
+  s += `<g transform="rotate(${f1(sw)} ${SAUCER_X} -600)">
+    <path d="M${SAUCER_X},-600 L${SAUCER_X},520" stroke="${OL}" stroke-width="6"/>
+    <ellipse cx="${SAUCER_X}" cy="650" rx="260" ry="160" fill="url(#glow)"/>
+    <polygon points="${SAUCER_X - 75},640 ${SAUCER_X + 75},640 ${SAUCER_X + 330},1275 ${SAUCER_X - 330},1275" fill="url(#cone)" style="mix-blend-mode:screen"/>
+    <path d="M${SAUCER_X - 85},640 Q${SAUCER_X},500 ${SAUCER_X + 85},640 Z" fill="#e9c46a" stroke="${OL}" stroke-width="6" stroke-linejoin="round"/>
+    <ellipse cx="${SAUCER_X}" cy="642" rx="40" ry="12" fill="#fff6d6"/></g>`;
+  return s;
+}
+
+function kitchenTable(milk) {
+  let s = '';
+  s += `<ellipse cx="600" cy="1700" rx="520" ry="40" fill="#000" opacity=".25"/>`;
+  s += `<rect x="190" y="1300" width="44" height="420" fill="#7a4b2f" stroke="${OL}" stroke-width="6"/><rect x="1010" y="1300" width="44" height="420" fill="#7a4b2f" stroke="${OL}" stroke-width="6"/>`;
+  s += `<rect x="120" y="1250" width="1100" height="70" fill="#9b6440" stroke="${OL}" stroke-width="6"/>`;
+  // скатерть с фестонами
+  let drape = `M110,1255 L1230,1255 L1230,1380`;
+  for (let x = 1230; x > 110; x -= 70) drape += ` Q${x - 35},1420 ${x - 70},1380`;
+  s += `<path d="${drape} Z" fill="url(#check)" stroke="${OL}" stroke-width="6" stroke-linejoin="round"/>`;
+  s += `<rect x="110" y="1244" width="1120" height="22" fill="#f4ede1" stroke="${OL}" stroke-width="5"/>`;
+  // блюдце
+  s += `<ellipse cx="${SAUCER_X}" cy="${TABLE_Y + 2}" rx="88" ry="20" fill="#000" opacity=".18"/>`;
+  s += `<ellipse cx="${SAUCER_X}" cy="${TABLE_Y - 8}" rx="84" ry="22" fill="#fdfcf8" stroke="${OL}" stroke-width="5"/>`;
+  s += `<ellipse cx="${SAUCER_X}" cy="${TABLE_Y - 11}" rx="56" ry="12" fill="#e8e4da"/>`;
+  if (milk > 0.01) s += `<ellipse cx="${SAUCER_X}" cy="${TABLE_Y - 11}" rx="${f1(56 * Math.sqrt(milk))}" ry="${f1(12 * Math.sqrt(milk))}" fill="#fffef4" stroke="#d9d3c3" stroke-width="2"/>`;
+  return s;
+}
+
+function cam(cx, cy, z, inner) {
+  return `<g transform="translate(540,960) scale(${f1(z * 1000) / 1000}) translate(${f1(-cx)},${f1(-cy)})">${inner}</g>`;
+}
+
+// ---------------------------------------------------------------- ШОТЫ
+function shotWorld(t, sh) {
+  const k = prog(t, sh.start, sh.end);
+  const L = T.l;
+  const tomT = talk('tom', t), nikT = talk('nikita', t);
+  let milk = 1, tomO = { x: TOM_X, y: TABLE_Y, talk: tomT, blink: blink(t, 0.3), tail: Math.sin(t * 1.7), breath: Math.sin(t * 2.4), tilt: tomT * 4 * Math.sin(t * 9) };
+  let nikO = { x: NIK_X, y: NIK_Y, talk: nikT, blink: blink(t, 1.1), bob: Math.sin(t * 3) * 3 - nikT * 6, lookX: 0.7, headTilt: nikT * 3 * Math.sin(t * 7) };
+  let c;
+
+  if (sh.id === 'wide') {
+    c = [580, 1120, 1.12 * (1 + 0.03 * k)];
+    const reach = eio(prog(t, 0.3, 0.7)) * (1 - eio(prog(t, 2.85, 3.15)));
+    nikO.handR = [lerp(112, 172, reach), lerp(170, -132, reach)];
+    nikO.carton = lerp(0, 104, eio(prog(t, 0.75, 1.05))) * (1 - eio(prog(t, 2.5, 2.8)));
+    nikO.brow = 'up'; nikO.lookY = 0.4;
+    milk = prog(t, 1.15, 2.6);
+    tomO.lookX = t < 1.6 ? 0 : -0.8; tomO.lookY = t < 1.6 ? 0 : 0.9;
+    tomO.lid = 0.5;
+  } else if (sh.id === 'tomClose') {
+    c = [870, 1060, 2.0 * (1 + 0.04 * k)];
+    const up = t > sh.start + 0.75;
+    tomO.lookX = up ? -1 : -0.5; tomO.lookY = up ? -0.1 : 1;
+    tomO.browR = eout(prog(t, L[1].words[2].s - 0.1, L[1].words[2].s + 0.15));
+    tomO.ear = Math.max(0, Math.sin(prog(t, sh.start + 0.2, sh.start + 0.6) * Math.PI));
+    tomO.lid = 0.48;
+  } else if (sh.id === 'nikClose') {
+    c = [430, 1110, 2.0 * (1 + 0.04 * k)];
+    const shrug = eback(prog(t, sh.start + 0.6, sh.start + 0.95));
+    nikO.handL = [lerp(-112, -178, shrug), lerp(170, -10, shrug)];
+    nikO.handR = [lerp(112, 178, shrug), lerp(170, -10, shrug)];
+    nikO.brow = 'up'; nikO.lookX = 0.2; nikO.lookY = -0.2;
+    nikO.sweat = prog(t, sh.start + 1.2, sh.start + 1.5);
+    nikO.headTilt += -6 * shrug;
+  } else if (sh.id === 'tv') {
+    c = [850, 860, 1.5 * (1 + 0.03 * k)];
+    const roll = Math.sin(prog(t, sh.start + 0.05, sh.start + 0.9) * Math.PI);
+    tomO.lookX = -0.6 * roll; tomO.lookY = -1 * roll; tomO.lid = 0.45;
+    tomO.browL = 0.6 * roll; tomO.browR = 0.6 * roll;
+  } else if (sh.id === 'lick') {
+    c = [640, 1110, 1.42 * (1 + 0.03 * k)];
+    tomO.down = 1; tomO.lick = Math.max(0, Math.sin(t * 16)); tomO.lid = 0.85; tomO.talk = 0;
+    tomO.tail = Math.sin(t * 4) * 1.2;
+    milk = lerp(0.85, 0.05, k);
+    const pt = eback(prog(t, sh.start + 0.1, sh.start + 0.4));
+    nikO.handR = [lerp(112, 205, pt), lerp(170, -70, pt)];
+    nikO.point = pt > 0.6; nikO.brow = 'angry'; nikO.lookX = 1; nikO.lookY = 0.6;
+  } else if (sh.id === 'mustache') {
+    c = [850, 1050, 2.0 * (1 + 0.04 * k)];
+    milk = 0;
+    tomO.down = 1 - eout(prog(t, sh.start, sh.start + 0.35));
+    tomO.mustache = 1; tomO.lid = t > T.blya - 0.1 ? 0.62 : 0.5; tomO.lookX = -0.7;
+    tomO.lick = Math.max(0, Math.sin(prog(t, T.blya + 0.35, T.blya + 0.85) * Math.PI));
+    tomO.tilt += -5 * eout(prog(t, T.blya - 0.2, T.blya + 0.2));
+  }
+  tomO.talk = tomO.down > 0.5 ? 0 : tomO.talk;
+
+  let world = kitchenBack(t);
+  world += nikita(nikO);
+  world += kitchenTable(milk);
+  // струя молока
+  if (sh.id === 'wide' && nikO.carton > 80) {
+    const { hand } = ik([NIK_X + 86, NIK_Y + 36], [NIK_X + nikO.handR[0], NIK_Y + nikO.handR[1]], 100, 95, -1);
+    const sp = cartonSpout(hand, nikO.carton);
+    const wob = Math.sin(t * 30) * 3;
+    world += `<path d="M${f1(sp[0])},${f1(sp[1])} Q${f1(sp[0] + 10 + wob)},${f1((sp[1] + TABLE_Y) / 2)} ${SAUCER_X + 2},${TABLE_Y - 12}" stroke="#fffef4" stroke-width="14" fill="none" stroke-linecap="round"/>`;
+    world += `<circle cx="${SAUCER_X + 12 + wob}" cy="${TABLE_Y - 20}" r="6" fill="#fffef4"/><circle cx="${SAUCER_X - 14 - wob}" cy="${TABLE_Y - 24}" r="5" fill="#fffef4"/>`;
+  }
+  world += tom(tomO);
+  let out = cam(c[0], c[1], c[2], world);
+  if (sh.id === 'tv') out += tvPanel(t, sh);
+  return out;
+}
+
+// ---------------------------------------------------------------- ТВ-ГЭГ: «кот и мышь поймать не может»
+function tvPanel(t, sh) {
+  const pop = eback(prog(t, sh.start, sh.start + 0.25));
+  const t0 = sh.start + 0.15;
+  const id = uid('tv');
+  let s = `<g transform="translate(540,500) scale(${f1(pop * 100) / 100}) translate(-540,-500)">`;
+  s += `<rect x="110" y="200" width="860" height="600" rx="54" fill="#6b4630" stroke="${OL}" stroke-width="8"/>`;
+  s += `<clipPath id="${id}"><rect x="150" y="240" width="780" height="500" rx="34"/></clipPath>`;
+  s += `<g clip-path="url(#${id})"><rect x="150" y="240" width="780" height="500" fill="#e2ddd0"/>`;
+  s += `<rect x="150" y="640" width="780" height="100" fill="#bdb6a6"/><path d="M150,640 L930,640" stroke="#222" stroke-width="6"/>`;
+  s += `<path d="M830,640 L830,600 Q860,556 890,600 L890,640 Z" fill="#141414"/>`;
+  const mk = prog(t, t0, t0 + 1.05);
+  if (mk < 1) {
+    const mx = lerp(220, 860, mk), leg = Math.sin(t * 40) * 6;
+    s += `<g transform="translate(${f1(mx)},618)"><path d="M-24,4 Q-60,0 -70,-16" stroke="#333" stroke-width="4" fill="none"/>
+      <ellipse cx="0" cy="0" rx="28" ry="16" fill="#8a8a8a" stroke="#111" stroke-width="4"/><circle cx="22" cy="-12" r="10" fill="#8a8a8a" stroke="#111" stroke-width="3"/>
+      <circle cx="16" cy="-24" r="9" fill="#bdbdbd" stroke="#111" stroke-width="3"/><circle cx="30" cy="-14" r="2.5" fill="#111"/>
+      <path d="M-10,14 l${leg},10 M10,14 l${-leg},10" stroke="#111" stroke-width="4"/></g>`;
+  }
+  const ck = prog(t, t0 + 0.2, t0 + 1.25);
+  const hit = t > t0 + 1.25;
+  const cx = hit ? 800 : lerp(60, 800, ck);
+  const sq = hit ? 0.5 + 0.1 * Math.sin((t - t0) * 20) * Math.exp(-(t - t0 - 1.25) * 4) : 1;
+  const leg = hit ? 0 : Math.sin(t * 36) * 14;
+  s += `<g transform="translate(${f1(cx)},590) scale(${f1(sq * 100) / 100},${f1((2 - sq) * 100) / 100})">
+    <path d="M-50,10 Q-100,0 -110,-40" stroke="#111" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <ellipse cx="-10" cy="10" rx="55" ry="34" fill="#111"/>
+    <path d="M-40,38 l${leg},16 M20,38 l${-leg},16" stroke="#111" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="38" cy="-28" r="38" fill="#111"/><path d="M10,-56 L14,-90 L36,-62 Z M44,-62 L66,-88 L66,-52 Z" fill="#111"/>
+    <ellipse cx="34" cy="-34" rx="11" ry="15" fill="#fff"/><ellipse cx="56" cy="-34" rx="11" ry="15" fill="#fff"/>
+    <circle cx="${hit ? 34 : 38}" cy="-30" r="5" fill="#111"/><circle cx="${hit ? 56 : 60}" cy="-30" r="5" fill="#111"/>
+    <ellipse cx="46" cy="-8" rx="26" ry="12" fill="#e9e3d6"/></g>`;
+  if (hit) {
+    for (let i = 0; i < 3; i++) {
+      const a = (t - t0) * 5 + i * 2.1;
+      s += `<text x="${f1(830 + Math.cos(a) * 60)}" y="${f1(520 + Math.sin(a) * 18)}" font-size="40" text-anchor="middle" fill="#fff" stroke="#111" stroke-width="3">★</text>`;
+    }
+    s += `<text x="700" y="470" font-family="Inter Display" font-weight="900" font-size="64" fill="#111" opacity="${f1(1 - prog(t, t0 + 1.6, t0 + 2.2))}" transform="rotate(-8 700 470)">БАМ!</text>`;
+  }
+  for (let y = 244; y < 740; y += 8) s += `<rect x="150" y="${y}" width="780" height="3" fill="#000" opacity=".05"/>`;
+  s += `</g><rect x="150" y="240" width="780" height="500" rx="34" fill="none" stroke="${OL}" stroke-width="6"/>`;
+  s += `<circle cx="935" cy="770" r="11" fill="#d9b48a" stroke="${OL}" stroke-width="4"/><circle cx="895" cy="770" r="11" fill="#d9b48a" stroke="${OL}" stroke-width="4"/>`;
+  return s + `</g>`;
+}
+
+// ---------------------------------------------------------------- МЕЛОВОЕ ОБЪЯСНЕНИЕ
+function shotChalk(t, sh) {
+  const slide = 1 - eout(prog(t, sh.start, sh.start + 0.22));
+  const shake = t > T.nodigest ? Math.sin(t * 60) * 6 * (1 - prog(t, T.nodigest + 0.6, sh.end)) : 0;
+  let s = `<defs>${CHALK_DEFS}</defs><g transform="translate(${f1(slide * 1080)},0)">` + chalkboard() + `<g transform="translate(0,130)">`;
+  // заголовок
+  const hk = eback(prog(t, T.lactase - 0.05, T.lactase + 0.25));
+  if (hk > 0.001) {
+    s += `<g transform="translate(540,330) scale(${f1(hk * 100) / 100})">` + chalkText(0, 0, 112, 'ЛАКТАЗА', '#ffd86b') + `</g>`;
+    s += `<g opacity="${f1(prog(t, T.lactase + 0.2, T.lactase + 0.5))}">` + chalkText(540, 405, 40, 'фермент, который расщепляет', '#f4f1e8') + chalkText(540, 455, 40, 'молочный сахар (лактозу)', '#f4f1e8') + `</g>`;
+  } else {
+    s += chalkText(540, 360, 84, 'СМОТРИ', '#f4f1e8', `opacity="${f1(prog(t, sh.start + 0.15, sh.start + 0.35))}"`);
+  }
+  // котёнок и взрослый
+  const kk = eback(prog(t, sh.start + 0.25, sh.start + 0.55));
+  const ak = eback(prog(t, T.l[3].words[11].s - 0.1, T.l[3].words[11].s + 0.2));
+  if (kk > 0) s += `<g transform="translate(270,760) scale(${f1(kk * 100) / 100})">${chalkCat(0, 0, 105, 'kitten')}</g>` + chalkText(270, 960, 46, 'КОТЁНОК', '#f4f1e8', `opacity="${f1(kk)}"`);
+  const sick = t > T.nodigest - 0.1;
+  if (ak > 0) s += `<g transform="translate(${f1(790 + shake)},740) scale(${f1(ak * 100) / 100})">${chalkCat(0, 0, 150, sick ? 'sick' : 'smug')}</g>` + chalkText(790, 960, 46, 'ВЗРОСЛЫЙ КОТ', '#f4f1e8', `opacity="${f1(ak)}"`);
+  // шкалы лактазы
+  const bk = prog(t, T.lactase, T.lactase + 0.4);
+  if (bk > 0) {
+    const drain = eio(prog(t, T.gone, T.gone + 0.9));
+    const adult = bk * lerp(1, 0.07, drain);
+    for (const [x, v, col] of [[270, bk, '#8fe388'], [790, adult, drain > 0.3 ? '#ff6b5e' : '#8fe388']]) {
+      s += chalkText(x, 1030, 34, 'лактаза', '#cfd8cf');
+      s += `<rect x="${x - 150}" y="1055" width="300" height="56" rx="10" fill="none" stroke="#f4f1e8" stroke-width="6" filter="url(#chalk)"/>`;
+      s += `<rect x="${x - 142}" y="1063" width="${f1(284 * v)}" height="40" rx="6" fill="${col}" opacity=".85" filter="url(#chalk)"/>`;
+    }
+    if (drain > 0.5) s += chalkText(790, 1180, 40, 'почти ноль', '#ff8f84', `opacity="${f1(prog(drain, 0.5, 1))}"`);
+  }
+  // молоко -> бурлит
+  const mk = eback(prog(t, T.milk - 0.05, T.milk + 0.25));
+  if (mk > 0) {
+    s += `<g transform="translate(540,640) scale(${f1(mk * 100) / 100})" filter="url(#chalk)">
+      <path d="M-40,-70 L40,-70 L32,70 L-32,70 Z" fill="none" stroke="#f4f1e8" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M-36,-20 L36,-20 L32,66 L-32,66 Z" fill="#f4f1e8" opacity=".9"/></g>`;
+    const ar = prog(t, T.milk + 0.2, T.milk + 0.6);
+    s += `<path d="M590,640 L${f1(lerp(590, 640, ar))},${f1(lerp(640, 690, ar))}" stroke="#f4f1e8" stroke-width="7" stroke-linecap="round" filter="url(#chalk)"/>`;
+    if (ar >= 1) s += `<path d="M640,690 l-26,-4 M640,690 l-6,-25" stroke="#f4f1e8" stroke-width="7" stroke-linecap="round" filter="url(#chalk)"/>`;
+  }
+  if (sick) {
+    const bk2 = eback(prog(t, T.nodigest - 0.1, T.nodigest + 0.2));
+    s += `<g transform="translate(${f1(850 + shake)},560) rotate(-10) scale(${f1(bk2 * 100) / 100})">` + chalkText(0, 0, 80, 'БУРЛ!', '#b6f27a') + `</g>`;
+    for (let i = 0; i < 3; i++) {
+      const y = 880 - ((t * 120 + i * 60) % 180);
+      s += `<path d="M${700 + i * 90},${f1(y)} q10,-15 0,-30 q-10,-15 0,-30" stroke="#b6f27a" stroke-width="6" fill="none" opacity=".8" filter="url(#chalk)"/>`;
+    }
+  }
+  return s + `</g></g>`;
+}
+
+// ---------------------------------------------------------------- ЛОТОК
+function shotLitter(t, sh) {
+  const k = prog(t, sh.start, sh.end);
+  const z = 1.35 * (1 + 0.04 * k);
+  let s = `<defs><pattern id="tiles" width="110" height="110" patternUnits="userSpaceOnUse"><rect width="110" height="110" fill="#bfe0e6"/><path d="M0,0 L110,0 M0,0 L0,110" stroke="#9fc6cf" stroke-width="5"/></pattern></defs>`;
+  let w = `<rect x="-200" y="-200" width="1500" height="1700" fill="url(#tiles)"/><rect x="-200" y="1330" width="1500" height="900" fill="#d8d2c4"/>`;
+  w += nikita({
+    x: 540, y: 1150, s: 1.25, talk: 0, blink: blink(t, 0.4), brow: 'worried', mouth: 'frown', lookY: 0.8,
+    legs: false, pinchNose: true, handL: [-8, -78], handR: [150, 60], scoop: 20 + Math.sin(t * 6) * 10, tear: prog(t, sh.start + 0.4, sh.start + 1.4), bob: Math.sin(t * 3) * 3,
+  });
+  w += `<path d="M230,1300 L850,1300 L800,1480 L280,1480 Z" fill="#5b8fb0" stroke="${OL}" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M250,1300 Q540,1270 830,1300 L830,1318 L250,1318 Z" fill="#e3cf9f" stroke="${OL}" stroke-width="5"/>
+    <ellipse cx="420" cy="1296" rx="26" ry="12" fill="#b89a63"/><ellipse cx="660" cy="1293" rx="20" ry="10" fill="#b89a63"/>`;
+  for (let i = 0; i < 3; i++) {
+    const ph = (t * 0.9 + i * 0.33) % 1;
+    w += `<path d="M${[300, 790, 860][i]},${f1(1280 - ph * 220)} q18,-25 0,-50 q-18,-25 0,-50" stroke="#7fbf4d" stroke-width="9" fill="none" stroke-linecap="round" opacity="${f1(Math.sin(ph * Math.PI) * 0.9)}"/>`;
+  }
+  for (let i = 0; i < 2; i++) {
+    const a = t * (5 + i) + i * 3;
+    const fx = 540 + Math.cos(a) * (220 - i * 60), fy = 1000 + Math.sin(a * 1.3) * 90;
+    w += `<g transform="translate(${f1(fx)},${f1(fy)})"><ellipse cx="-6" cy="-8" rx="8" ry="5" fill="#fff" opacity=".85"/><ellipse cx="6" cy="-8" rx="8" ry="5" fill="#fff" opacity=".85"/><circle r="7" fill="${OL}"/></g>`;
+  }
+  s += `<g transform="translate(540,960) scale(${f1(z * 1000) / 1000}) translate(-540,-1150)">${w}</g>`;
+  return s;
+}
+
+// ---------------------------------------------------------------- ФИНАЛЬНАЯ КАРТОЧКА
+function shotCard(t, sh) {
+  const a = eback(prog(t, sh.start, sh.start + 0.3));
+  const b = eback(prog(t, sh.start + 0.12, sh.start + 0.42));
+  const c = prog(t, sh.start + 0.35, sh.start + 0.6);
+  let s = `<defs>${CHALK_DEFS}</defs>` + chalkboard();
+  s += `<g transform="translate(540,660) scale(${f1(a * 100) / 100})">` + chalkText(0, 0, 230, 'ТОМ', '#ffd86b') + `</g>`;
+  s += `<g transform="translate(540,800) scale(${f1(b * 100) / 100})">` + chalkText(0, 0, 112, 'ОБЪЯСНЯЕТ') + `</g>`;
+  s += `<g opacity="${f1(c)}">` + chalkText(540, 930, 52, 'подпишись, кожаный', '#cfd8cf') + `</g>`;
+  s += tom({ x: 540, y: lerp(2400, 1960, eout(prog(t, sh.start, sh.start + 0.4))), s: 1.9, lid: 0.5, blink: blink(t, 0.2), tail: Math.sin(t * 2), lookX: 0.2 });
+  return s;
+}
+
+function render(t) {
+  if (!T) init();
+  _uid = 0;
+  const sh = T.shots.find(s => t >= s.start && t < s.end) || T.shots[T.shots.length - 1];
+  let s;
+  if (sh.id === 'chalk') s = shotChalk(t, sh);
+  else if (sh.id === 'litter') s = shotLitter(t, sh);
+  else if (sh.id === 'card') s = shotCard(t, sh);
+  else s = shotWorld(t, sh);
+  // во время въезда доски под ней ещё виден предыдущий план
+  if (sh.id === 'chalk' && t < sh.start + 0.22) s = shotWorld(t, T.shots[3]) + s;
+  s += overlays(Math.round(t * TL.fps));
+  s += subtitles(t, SUBS);
+  const stage = document.getElementById('stage');
+  stage.innerHTML = s;
+  const sub = document.querySelector('#sub text');
+  if (sub) {
+    const w = sub.getComputedTextLength();
+    if (w > 980) sub.setAttribute('transform', `scale(${980 / w})`);
+  }
+}
+</script>
+</body></html>
