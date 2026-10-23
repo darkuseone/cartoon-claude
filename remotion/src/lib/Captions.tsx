@@ -39,7 +39,7 @@ export const Captions: React.FC<{ t: number; groups: Group[]; y?: number }> = ({
   const k = easeBack(prog(t, g.s, g.s + 0.14));
   return (
     <div style={{
-      position: 'absolute', left: 60, right: 60, top: y, display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0 22px',
+      position: 'absolute', left: 60, right: 60, top: y, display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0 40px',
       transform: `scale(${0.8 + 0.2 * k})`, transformOrigin: '50% 50%',
       fontFamily: '"Inter Display", "Inter", sans-serif', fontWeight: 900, fontSize: 84, lineHeight: 1.08, textTransform: 'uppercase',
       textAlign: 'center',

@@ -156,7 +156,7 @@ export const Ep01: React.FC = () => {
       {s === S[8] && <Chip t={t} at={W('t07', 14)} x={300} y={980} text="ЖИР ↑" bg="#ffd25e" rot={-6} />}
       {s === S[8] && <Chip t={t} at={W('t07', 17)} x={790} y={1060} text="САХАР ↓" bg="#7fe3ff" rot={5} />}
       <TipCards t={t} a1={W('t09', 3)} a2={W('t09', 7)} out={S[13].end - 0.1} />
-      <PeopleStat t={t} at={W('t10', 4)} out={S[15].end - 0.05} />
+      <PeopleStat t={t} at={W('t10', 4)} out={S[15].end - 0.35} />
       <Cta t={t} at={W('t11', 3)} />
 
       <Atmosphere dust={s.img !== 'oldtoon' && s.img !== 'belly'} />

@@ -4,6 +4,7 @@ import { noise2D } from '@remotion/noise';
 import { clamp, mouthAt, blinkAt, Timeline } from './time';
 
 export type FaceRig = {
+  jawOnly?: boolean;
   eyes: [number, number, number, number][];
   lid: string[];
   mouth?: [number, number, number];
@@ -75,9 +76,9 @@ const Face: React.FC<{ who: string; rig: FaceRig; src: string; t: number; tl: Ti
   let mouth = null;
   if (rig.mouth) {
     const [mx, my, w] = rig.mouth;
-    const drop = m.open * w * (isCat ? 0.22 : 0.3);
-    const rx = (w / 2) * (0.5 + 0.45 * (1 - m.round)) * (0.65 + 0.35 * m.open);
-    const ry = Math.max(0.5, drop * 0.6 + 2);
+    const drop = m.open * w * (isCat ? 0.32 : 0.38);
+    const rx = (w / 2) * (0.5 + 0.3 * (1 - m.round)) * (0.55 + 0.45 * m.open);
+    const ry = Math.max(0.5, drop * 0.55 + 1.5);
     mouth = (
       <>
         <defs>
@@ -93,17 +94,17 @@ const Face: React.FC<{ who: string; rig: FaceRig; src: string; t: number; tl: Ti
             </g>
           </mask>
           <radialGradient id={`cv${id}`} cx="50%" cy="30%" r="70%">
-            <stop offset="0" stopColor="#5a1d24" />
-            <stop offset="1" stopColor="#1e0a0d" />
+            <stop offset="0" stopColor="#3d1217" />
+            <stop offset="1" stopColor="#120507" />
           </radialGradient>
         </defs>
-        {drop > 0.6 && (
+        {drop > 0.6 && !rig.jawOnly && (
           <g>
             <ellipse cx={mx} cy={my + drop * 0.45} rx={rx} ry={ry} fill={`url(#cv${id})`} />
             {!isCat && m.open > 0.35 && (
               <rect x={mx - rx * 0.7} y={my - 1} width={rx * 1.4} height={Math.min(ry * 0.5, 7)} rx={3} fill="#f4efe6" opacity={0.9} />
             )}
-            <ellipse cx={mx} cy={my + drop * 0.8} rx={rx * 0.55} ry={Math.max(1, ry * 0.4)} fill="#d9707f" opacity={0.9} />
+            <ellipse cx={mx} cy={my + drop * 0.82} rx={rx * 0.5} ry={Math.max(1, ry * 0.32)} fill="#c95f6e" opacity={0.8} />
           </g>
         )}
         <g transform={`translate(0 ${drop})`}>
