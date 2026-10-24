@@ -2,12 +2,14 @@
 # Сборка серии «Аппликации» одной командой.
 #   tools/make.sh <эп> snap 0,3.5,12   — контрольные кадры → build/<эп>/snaps/sheet.jpg (секунды)
 #   tools/make.sh <эп> sound           — метки + звук (build/<эп>/audio.wav)
+#   tools/make.sh <эп> vk <имя>        — после all: версия для VK Клипов с запиканным матом → ../out/<имя>_vk.mp4
 #   tools/make.sh <эп> all <имя>       — проверка JS, звук, рендер 24 к/с, сведение → ../out/<имя>_chat.mp4 (< 28 МиБ) + контакт-лист
 set -euo pipefail
 cd "$(dirname "$0")/.."
 EP=$1; MODE=${2:-all}; B=build/$EP; PY=${PY:-/tmp/claude-0/-home-user-cartoon-claude/afa73990-c08e-5c54-9ceb-32385d03002a/scratchpad/venv/bin/python}
 python3 tools/mkpage.py "$EP" >/dev/null
 if [ "$MODE" = snap ]; then node tools/shot.cjs "$B/film" "$B/snaps" ${3//,/ } | tail -1; exit 0; fi
+if [ "$MODE" = vk ]; then BLEEP=1 $PY -I tools/sound_spec.py "$EP"; OUT=../out/${3:-$EP}_vk.mp4; ffmpeg -y -v error -i ../out/${3:-$EP}_chat.mp4 -i "$B/audio_vk.wav" -map 0:v -map 1:a -c:v copy -c:a aac -b:a 160k -shortest -movflags +faststart "$OUT"; ls -la "$OUT"; exit 0; fi
 node tools/cues.cjs "$B/film" > "$B/cues.json"
 $PY -I tools/sound_spec.py "$EP"
 [ "$MODE" = sound ] && exit 0

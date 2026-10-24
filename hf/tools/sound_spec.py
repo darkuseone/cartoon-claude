@@ -12,8 +12,9 @@ sound.json:
   "stings": ["today", "shortly"],                 # гитарные стинги на склейках со вставками
   "sfx": [ ["slam", "nobody", 0.7], ["pop", "geo", 0.35], ["click", "lit", 0.9], ["foil", "remove", 0.8], ["ticks", 0, "lit"], ["hum", 0, "lit"] ],
   "levels": {"music": 0.22, "fx": 0.7} }
+  "bleep": [["mat-0.03", "mat+1.55"]] }           # BLEEP=1 → мат запикан (версия для VK) → audio_vk.wav
 Метка — имя из CUE, число или «имя±сек». Шумы: slam pop click whoosh paper tear scratch buzzer bubbles chomp snip clink bell blip foil gurgle gulp door meow sniff purr chirp ticks hum riser."""
-import json, re, subprocess, sys
+import json, os, re, subprocess, sys
 from pathlib import Path
 import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -86,16 +87,21 @@ def main(ep):
         if name == 'riser': FX.add(riser(at(g) - t0, 0.35), t0); continue
         if name in FILES: x = FILES[name]; FX.add(x, t0, g) if x is not None else None; continue
         FX.add(LIB[name](g), t0)
-    n = int(DUR * SR); v = np.zeros(n); v[:min(n, len(V))] = V[:n]; mus = MUS.b[:n]; fx = FX.b[:n]
+    n = int(DUR * SR); v = np.zeros(n); v[:min(n, len(V))] = V[:n]; vk = os.environ.get('BLEEP') == '1'
+    if vk:
+        for a0, b0 in S.get('bleep', []):
+            i0, i1 = int(at(a0) * SR), int(at(b0) * SR); tt = np.arange(i1 - i0) / SR
+            v[i0:i1] = 0.35 * np.sin(2 * np.pi * 1000 * tt) * np.minimum(1, np.minimum(tt, tt[::-1]) / 0.01)
+    mus = MUS.b[:n]; fx = FX.b[:n]
     w = int(0.05 * SR); e = np.sqrt(np.convolve(v ** 2, np.ones(w) / w, 'same')); e = np.convolve(e, np.ones(int(0.25 * SR)) / int(0.25 * SR), 'same')
     duck = 1 - 0.5 * np.clip(e / (e.max() * 0.35 + 1e-9), 0, 1); L0 = S.get('levels', {})
     mus = mus / (np.abs(mus).max() + 1e-9) * L0.get('music', 0.22) * duck; fx = fx / (np.abs(fx).max() + 1e-9) * L0.get('fx', 0.7)
     st = stereo_reverb(mus, 1.2, 0.22, 1) + stereo_reverb(fx, 0.7, 0.12, 2) + np.stack([v, v], 1)
     meter = pyln.Meter(SR); L = meter.integrated_loudness(st)
-    for nm, x in (('музыка', stereo_reverb(mus, 1.2, 0.22, 1)), ('шумы', stereo_reverb(fx, 0.7, 0.12, 2))): print(f'  {nm}: {meter.integrated_loudness(x) - L:+.1f} LU (цель −10…−13)')
+    for nm, x, tg in (('музыка', stereo_reverb(mus, 1.2, 0.22, 1), '−14…−19'), ('шумы', stereo_reverb(fx, 0.7, 0.12, 2), '−11…−13')): print(f'  {nm}: {meter.integrated_loudness(x) - L:+.1f} LU (цель {tg})')
     st *= 10 ** ((-15 - L) / 20); lim = 10 ** (-1.2 / 20); a = np.abs(st)
     st *= np.where(a > lim * 0.85, (lim * 0.85 + lim * 0.15 * np.tanh((a - lim * 0.85) / (lim * 0.15))) / np.maximum(a, 1e-9), 1.0)
-    out = HF / 'build' / ep / 'audio.wav'
+    out = HF / 'build' / ep / ('audio_vk.wav' if vk else 'audio.wav')
     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'f32le', '-ar', str(SR), '-ac', '2', '-i', '-', '-c:a', 'pcm_s16le', str(out)], input=st.astype(np.float32).tobytes(), check=True)
     print(out, f'LUFS {meter.integrated_loudness(st):.1f}, пик {20 * np.log10(np.abs(st).max()):.2f} dBFS')
 

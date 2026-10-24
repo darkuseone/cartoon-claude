@@ -29,9 +29,19 @@ description: Актуальный стиль канала «Том и Никит
 - Персонажи (`chars.js`): `tom({mood: 'strain'|'pain'|'shock'|'bliss'|'smug', lid, pup, ears, paw…})`, `nikita({mood: 'sleepy'|'shock'|'dumb'|'angry'|'dread', arms:{l,r:[x,y,'phone'|'glass'|'point'|'belly'|'open']}, milkMoustache, belly…})`.
 - Никита: худой, бледный, тёмно-каштановые лохматые волосы, горчичное худи. Том: серо-бурый табби, нормальные уши с загнутыми кончиками, зелёные глаза, без гривы.
 
-## Конвейер
-1. `episodes/<эп>/script.json`: `text` (субтитры) + `tts` (теги эмоций, ударения U+0301) + `after` (паузы под панчлайны).
-2. `python pipeline/tts.py episodes/<эп>` (ElevenLabs, Том — Dmitry `hU3rD0Yk7DoiYULTX1pD`, Никита — Egor `g1G73EpCIdK4HUyDiLYF`, `eleven_v4`). Проверить расшифровкой, что теги не прочитаны вслух.
-3. `pipeline/voice_v2.py` → `voice.wav` + `timeline.json` (слова + виземы).
-4. `hf/episodes/<эп>v4/scenes.js` (метки CUE от слов), `episode.json` с `"engine": "engine2"`.
-5. Кадры: `node tools/shot.cjs build/<эп>/film build/<эп>/snaps 0 3.5 …`; метки → `tools/cues.cjs`; звук → `tools/sound2.py`; рендер → `npx hyperframes render`.
+## Конвейер (одна серия ≈ 6 команд)
+Сначала скиллы: `tom-nikita-temy` (тема и факты) → `tom-nikita-scenarij` (сценарий и мат) → `tom-nikita-montazh` (кадр, звук, площадки).
+Python с numpy/scipy/pyloudnorm/faster-whisper: `$PY` = venv в scratchpad (путь в `hf/tools/make.sh`). Если его нет: `python3 -m venv … && pip install numpy scipy pyloudnorm faster-whisper`.
+1. `episodes/<эп>_<слово>/script.json` → `python pipeline/tts.py episodes/<папка>` (ElevenLabs `eleven_v4`). Проверить расшифровкой, что теги не прочитаны вслух.
+2. `$PY pipeline/voice_v2.py episodes/<папка>` → `out/voice.wav` + `out/timeline.json` (слова + виземы Rhubarb).
+3. `python3 pipeline/words.py episodes/<папка>` — индексы и время слов для меток `CUE`.
+4. `cp -r hf/episodes/_template hf/episodes/<эп>`: в `episode.json` указать timeline. В `set.js` — новая декорация и вставки. В `scenes.js` — только `CUE`, `SHAKES`, `EP`, позиции, `scene()`, `SHOTS`, `SH`. Всё общее — в `engine2/common.js`: `Wd`/`LN`, `ex`, `ck`, `talk`, `shakeAt`, `slideIn`, `bg`, `label`, `slam`, субтитры, обложка, виньетка. Образец — `hf/episodes/ep03`.
+5. `cd hf && tools/make.sh <эп> snap 0.5,3.5,…` → `build/<эп>/snaps/sheet.jpg`: один контакт-лист на все планы. Смотреть его, а не отдельные кадры.
+6. `sound.json` (метки — имена из CUE ± сек) → `tools/make.sh <эп> sound`: печатает LU музыки и шумов.
+7. `tools/make.sh <эп> all <имя>` → `out/<имя>_chat.mp4` (< 28 МиБ) + `out/<имя>_sheet.jpg`. Затем `tools/make.sh <эп> vk <имя>` → `out/<имя>_vk.mp4` (мат запикан).
+8. Коммит в ветку `pilot/ep01-milk` и отправка `_chat.mp4` пользователю.
+
+## Экономия токенов
+- Большие файлы (`chars.js`, `props.js`, чужие `set.js`) не читать целиком: `grep -n "^function"` и нужные строки.
+- Факты и статистику не искать заново — они в `tom-nikita-temy/backlog.md` и `tom-nikita-montazh/research.md`.
+- Ориентир на серию: 1 контакт-лист перед рендером + 1 после. Правки — точечные.
