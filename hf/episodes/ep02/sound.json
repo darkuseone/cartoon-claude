@@ -1,0 +1,9 @@
+{"voice": "../episodes/ep02_phones/out/voice.wav", "key": "E",
+ "music": [{"type": "night", "from": 0, "to": "lit"}, {"type": "pluck", "from": "shortly", "to": "how-0.1"}, {"type": "groove", "from": "lit", "to": "lied-0.3"},
+           {"type": "groove", "from": "phew+0.2", "to": "hatBack"}, {"type": "trombone", "at": "hatBack+0.2"}, {"type": "groove", "from": "keep+0.1", "to": "lightOff", "g": 0.07}, {"type": "endsting", "at": "lightOff+0.05"}],
+ "stings": ["today", "googled-0.6", "shortly", "rec-1.1", "geo-0.45", "brain-0.1", "was", "siri-0.5", "apple-0.1"],
+ "sfx": [["hum", 0, "lit"], ["ticks", 0, "lit"], ["slam", "ad", 0.6], ["click", "three", 0.5], ["buzzer", "none", 0.35], ["slam", "none", 0.5], ["click", "lit-0.02", 0.9],
+         ["pop", "geo", 0.35], ["pop", "search", 0.35], ["pop", "likes", 0.35], ["pop", "wifi", 0.35], ["pop", "lyoha", 0.35], ["slam", "bought", 0.4], ["pop", "one-0.05", 0.4],
+         ["paper", "miss", 0.3], ["slam", "nobody", 0.7], ["scratch", "lied-0.35", 0.3], ["slam", "lied", 0.8], ["foil", "remove-0.1", 0.8], ["foil", "hatBack+0.2", 0.7],
+         ["bell", "siri", 0.15], ["bell", "alice", 0.15], ["slam", "mln", 0.5], ["meow", "keep-0.4", 0.25], ["pop", "sub", 0.3], ["click", "lightOff-0.02", 0.6]],
+ "levels": {"music": 0.22, "fx": 0.7}}
