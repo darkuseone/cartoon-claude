@@ -1,6 +1,4 @@
 /* Эп. 2 «Телефоны нас слушают?» — сцены. Метки от слов озвучки (их же берёт звук). */
-const WS = {}; LINES.forEach(l => { WS[l.key] = l.words.filter(w => w.w !== '—').map(w => w.s); });
-const Wd = (k, i) => WS[k][i]; const LN = {}; LINES.forEach(l => { LN[l.key] = l; });
 
 const CUE = {
   foil: Wd('t01', 2), corm: Wd('n02', 3), today: Wd('n02', 5), bla: Wd('n02', 7), ad: Wd('n02', 8),
@@ -42,8 +40,6 @@ const SHOTS = [[0, 'cold'], [LN.t01.start - 0.03, 'tomA'], [LN.n02.start - 0.05,
   [CUE.shortly - 0.03, 'apps'], [LN.t04.start - 0.05, 'rec'], [LN.n04.start - 0.05, 'nikC'], [CUE.lit - 0.35, 'lamp'], [CUE.geo - 0.45, 'threads'], [LN.t06.start - 0.05, 'brain'],
   [LN.n05.start - 0.05, 'gotcha'], [LN.t07.start - 0.05, 'news'], [LN.t08.start - 0.1, 'tomB'], [LN.n06.start - 0.05, 'relief'], [LN.t09.start - 0.05, 'siri'], [CUE.apple - 0.1, 'money'],
   [CUE.hatBack, 'hatBack'], [CUE.keep - 0.05, 'final']];
-const shotAt = t => { let i = 0; while (i < SHOTS.length - 1 && t >= SHOTS[i + 1][0]) i++; return i; };
-const SC = SHOTS.map((s, i) => [s[1], s[0], i + 1 < SHOTS.length ? SHOTS[i + 1][0] : DUR]);
 function frame(t) { const i = shotAt(t); SH[SHOTS[i][1]](t, t - SHOTS[i][0]); }
 
 const SH = {
@@ -97,12 +93,6 @@ const SH = {
 // ------------------------------------------------------------------ HUD
 const CENS = { 'бля,': 'Б*Я,' };
 const HOT = /^(фольгу|корм|корма|микрофон|экран|листаешь|геолокация|поиск|лайки|вайфае|лёхой|совпадение|промахов|регуляторы|сири|алиса|apple|миллионов|кожаный|приложений|тысяч|семнадцати)/i;
-const GROUPS = (() => { const out = [];
-  for (const ln of LINES) { const ws = ln.words.filter(w => w.w !== '—'), gs = []; let cur = [];
-    const flush = () => { if (cur.length) gs.push({ sp: ln.speaker, key: ln.key, words: cur }); cur = []; };
-    for (const w of ws) { const len = cur.reduce((n, x) => n + x.w.length + 1, 0) + w.w.length; if (cur.length >= 3 || len > 15) flush(); cur.push(w); if (/[.!?…:]$/.test(w.w)) flush(); }
-    flush(); gs.forEach((g, i) => { g.s = g.words[0].s - 0.04; g.e = i + 1 < gs.length ? gs[i + 1].words[0].s - 0.04 : ln.end + 0.2; }); out.push(...gs); }
-  return out; })();
 function hudFrame(t) {
   if (t < LN.t01.start - 0.03) { push(540, 230, 1, -0.03); ransom('ТЕЛЕФОН', 0, 0, 120, 990); pop(); push(540, 380, 1, 0.02); ransom('ТЕБЯ СЛУШАЕТ?', 0, 0, 104, 991); pop(); }
   const g = GROUPS.find(x => t >= x.s && t < x.e); if (!g) return;

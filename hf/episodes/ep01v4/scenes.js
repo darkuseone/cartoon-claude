@@ -1,6 +1,4 @@
 /* Эп. 1 v4 «Котам можно молоко?» — бумажная вырезка. Метки — от слов новой озвучки (их же берёт синтез звука). */
-const WS = {}; LINES.forEach(l => { WS[l.key] = l.words.filter(w => w.w !== '—').map(w => w.s); });
-const Wd = (k, i) => WS[k][i]; const LN = {}; LINES.forEach(l => { LN[l.key] = l; });
 
 const CUE = {
   tom0: Wd('n01', 0), pay: Wd('t01', 0), yourMilk: Wd('t01', 1), what: Wd('n02', 0), allMilk: Wd('n02', 2),
@@ -54,8 +52,6 @@ const SHOTS = [
   [LN.n05.start - 0.05, 'angry'], [LN.t08.start - 0.05, 'tomCU4'], [LN.t09.start - 0.05, 'advice'], [LN.n06.start - 0.05, 'drink'], [LN.t10.start - 0.05, 'twothirds'],
   [LN.t10.end, 'dread'], [LN.t11.start - 0.05, 'final']
 ];
-const shotAt = t => { let i = 0; while (i < SHOTS.length - 1 && t >= SHOTS[i + 1][0]) i++; return i; };
-const SC = SHOTS.map((s, i) => [s[1], s[0], i + 1 < SHOTS.length ? SHOTS[i + 1][0] : DUR]);
 
 function frame(t) { const i = shotAt(t); SH[SHOTS[i][1]](t, t - SHOTS[i][0]); }
 
@@ -197,12 +193,6 @@ const SH = {
 // ------------------------------------------------------------------ HUD: обложка, субтитры
 const CENS = { 'Ебать,': 'Е*АТЬ,', 'херня': 'Х*РНЯ', '…Пиздец.': 'П*ЗДЕЦ.' };
 const HOT = /^(лактаза|лактазы|лактозы|фермент|сахар|сахара|жира|сливки|воды|лоток|кожаный|бактерии|культ|молочко|диетолог|газы|бурление)/i;
-const GROUPS = (() => { const out = [];
-  for (const ln of LINES) { const ws = ln.words.filter(w => w.w !== '—'), gs = []; let cur = [];
-    const flush = () => { if (cur.length) gs.push({ sp: ln.speaker, key: ln.key, words: cur }); cur = []; };
-    for (const w of ws) { const len = cur.reduce((n, x) => n + x.w.length + 1, 0) + w.w.length; if (cur.length >= 3 || len > 15) flush(); cur.push(w); if (/[.!?…:]$/.test(w.w)) flush(); }
-    flush(); gs.forEach((g, i) => { g.s = g.words[0].s - 0.04; g.e = i + 1 < gs.length ? gs[i + 1].words[0].s - 0.04 : ln.end + 0.2; }); out.push(...gs); }
-  return out; })();
 function hudFrame(t) {
   if (t < LN.t01.start - 0.06) {                                     // обложка = первый кадр
     push(540, 230, 1, -0.03); ransom('КОТАМ МОЖНО', 0, 0, 104, 990); pop(); push(540, 370, 1, 0.02); ransom('МОЛОКО?', 0, 0, 128, 991); pop();

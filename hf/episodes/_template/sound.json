@@ -1,0 +1,3 @@
+{"voice": "../episodes/<папка>/out/voice.wav", "key": "E",
+ "music": [{"type": "night", "from": 0, "to": "lit"}, {"type": "pluck", "from": "shortly", "to": "lit-0.1"}, {"type": "groove", "from": "lit", "to": "lightOff"}, {"type": "endsting", "at": "lightOff+0.05"}],
+ "stings": [], "sfx": [["hum", 0, "lit"], ["ticks", 0, "lit"], ["click", "lit-0.02", 0.9], ["click", "lightOff-0.02", 0.6]], "levels": {"music": 0.22, "fx": 0.7}}
