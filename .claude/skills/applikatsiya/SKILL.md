@@ -38,7 +38,7 @@ Python с numpy/scipy/pyloudnorm/faster-whisper: `$PY` = venv в scratchpad (п�
 4. `cp -r hf/episodes/_template hf/episodes/<эп>`: в `episode.json` указать timeline. В `set.js` — новая декорация и вставки. В `scenes.js` — только `CUE`, `SHAKES`, `EP`, позиции, `scene()`, `SHOTS`, `SH`. Всё общее — в `engine2/common.js`: `Wd`/`LN`, `ex`, `ck`, `talk`, `shakeAt`, `slideIn`, `bg`, `label`, `slam`, субтитры, обложка, виньетка. Образец — `hf/episodes/ep03`.
 5. `cd hf && tools/make.sh <эп> snap 0.5,3.5,…` → `build/<эп>/snaps/sheet.jpg`: один контакт-лист на все планы. Смотреть его, а не отдельные кадры.
 6. `sound.json` (метки — имена из CUE ± сек) → `tools/make.sh <эп> sound`: печатает LU музыки и шумов.
-7. `tools/make.sh <эп> all <имя>` → `out/<имя>_chat.mp4` (< 28 МиБ) + `out/<имя>_sheet.jpg`. Затем `tools/make.sh <эп> vk <имя>` → `out/<имя>_vk.mp4` (мат запикан).
+7. `tools/make.sh <эп> all <имя>` → `out/<имя>_chat.mp4` (< 28 МиБ) + `out/<имя>_sheet.jpg`. Площадки: YouTube Shorts, TikTok, Instagram Reels (русские не берём). Запиканная версия при необходимости: `tools/make.sh <эп> clean <имя>` → `out/<имя>_clean.mp4`.
 8. Коммит в ветку `pilot/ep01-milk` и отправка `_chat.mp4` пользователю.
 
 ## Экономия токенов

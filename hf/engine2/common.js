@@ -19,7 +19,7 @@ function shotAt(t) { let i = 0; while (i < SHOTS.length - 1 && t >= SHOTS[i + 1]
 function frame(t) { const i = shotAt(t); SH[SHOTS[i][1]](t, t - SHOTS[i][0]); }
 Object.defineProperty(window, 'SC', { get: () => SHOTS.map((s, i) => [s[1], s[0], i + 1 < SHOTS.length ? SHOTS[i + 1][0] : DUR]) });
 
-// ------------------------------------------------------------------ субтитры: по 1–3 слова, Inter 900 76 px, y 1545 (выше нижних 15 %)
+// ------------------------------------------------------------------ субтитры: по 1–3 слова, Inter 900 76 px, x 520 y 1440 ≤ 860 px — вне интерфейса TikTok/Reels/Shorts
 const GROUPS = (() => { const out = [];
   for (const ln of LINES) { const ws = ln.words.filter(w => w.w !== '—'), gs = []; let cur = [];
     const flush = () => { if (cur.length) gs.push({ sp: ln.speaker, key: ln.key, words: cur }); cur = []; };
@@ -31,10 +31,10 @@ function hudFrame(t) {
   if (t < first && EP.title) EP.title.forEach((ln, i) => { push(540, 230 + i * 150, 1, i % 2 ? 0.02 : -0.03); ransom(ln, 0, 0, i ? 104 : 120, 990 + i); pop(); });
   const g = GROUPS.find(x => t >= x.s && t < x.e); if (!g) return;
   for (const [key, start, t0] of (EP.hideMat || [])) if (g.key === key && t > t0 - 0.05 && g.words.some(w => w.w.startsWith(start))) return;   // мат в этот момент — вырезками на экране
-  const size = 76, y = 1545, cens = EP.cens || {}; ctx.save(); ctx.font = `900 ${size}px Inter`;
+  const size = 76, y = 1440, cens = EP.cens || {}; ctx.save(); ctx.font = `900 ${size}px Inter`;
   const words = g.words.map(w => (cens[w.w] || w.w).replace(/[«»]/g, '').toUpperCase()), sp = ctx.measureText(' ').width * 1.1, wd = words.map(w => ctx.measureText(w).width), tw = wd.reduce((a, b) => a + b, 0) + sp * (words.length - 1);
-  ctx.restore(); const sc = Math.min(1, 980 / tw); let x = -tw / 2;
-  push(540, y, sc * (0.92 + 0.08 * popK(t, g.s, 0.15)));
+  ctx.restore(); const sc = Math.min(1, 860 / tw); let x = -tw / 2;
+  push(520, y, sc * (0.92 + 0.08 * popK(t, g.s, 0.15)));
   words.forEach((w, i) => { const on = t >= g.words[i].s - 0.03, bare = g.words[i].w.replace(/[,!?.…:«»]/g, ''), mat = !!cens[g.words[i].w];
     const col = mat ? '#ff4a3a' : (EP.hot && EP.hot.test(bare)) ? '#ffd23a' : g.sp === 'tom' ? '#ffffff' : '#bfe6ff';
     txt(w, x + wd[i] / 2, 0, size, { font: 'Inter', weight: 900, col: on ? col : 'rgba(255,255,255,0.5)', stroke: 15, sc: '#120d0b' }); x += wd[i] + sp; });

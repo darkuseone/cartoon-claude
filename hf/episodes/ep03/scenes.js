@@ -52,7 +52,7 @@ const SH = {
   window(t) { const k = eo(pr(t, CUE.air, CUE.air + 0.5)); cam(420, 560, 1.55);
     kitchen(t, { open: k }); push(415, 610, 0.3, 0.08); phoneCut(0, 0, 1, Math.PI / 2, {}); pop();
     lightmap('#d9cdbd', () => { radial(415, 460, 900, 'rgba(255,250,232,1)', 1); }); pop();
-    if (t > CUE.air + 0.2) label(540, 1300, '2. НА СКВОЗНЯК', 0, '#f4e6a8', 0.03, 56); },
+    if (t > CUE.air + 0.2) label(540, 1240, '2. НА СКВОЗНЯК', 0, '#f4e6a8', 0.03, 56); },
   charge(t, u) { cam(540, 960, 1); slideIn(u, () => chargeInsert(t, CUE)); pop(); },
   nono(t, u) { cam(540, 960, 1); slideIn(u, () => noNo(t, CUE)); pop(); },
   buck(t) { const b = pr(t, CUE.buck - 0.1, CUE.buck + 0.2); cam(640, 980, 1.3, 0, shakeAt(t));

@@ -98,7 +98,7 @@ function corrosion(t, c) {                                           // плат
   for (let i = 0; i < 16; i++) { const k = clamp(g * 16 - i * 0.6); if (k <= 0) continue; const x = -330 + r() * 660, y = -260 + r() * 520;
     blobP([[x - 40 * k, y], [x - 10, y - 34 * k], [x + 36 * k, y - 10], [x + 26 * k, y + 30 * k], [x - 20, y + 36 * k]], i % 2 ? '#7fae3a' : '#b56a2a', { seed: 3170 + i, lw: 1.6, a: 0.9 }); }
   pop();
-  if (t > c.rice) { push(540, 1330, popK(t, c.rice, 0.3), -0.1); ellP(0, 0, 110, 52, '#f6f1e2', { seed: 3190, lw: 3 }); [-1, 1].forEach(sd => { ellP(sd * 30, -6, 13, 16, '#fff', { seed: 3191 + sd, lw: 2 }); dot(sd * 30, -2, 6, '#111'); });
+  if (t > c.rice) { push(540, 1250, popK(t, c.rice, 0.3), -0.1); ellP(0, 0, 110, 52, '#f6f1e2', { seed: 3190, lw: 3 }); [-1, 1].forEach(sd => { ellP(sd * 30, -6, 13, 16, '#fff', { seed: 3191 + sd, lw: 2 }); dot(sd * 30, -2, 6, '#111'); });
     stroke([[-24, 26], [0, 18], [24, 26]], '#1c1512', 4); txt('…', 120, -70, 70, { font: 'Inter Black', col: '#f6f1e2' }); pop(); }
 }
 function rankTable(t, c) {                                           // «турнир сушилок»: рис последний из семи

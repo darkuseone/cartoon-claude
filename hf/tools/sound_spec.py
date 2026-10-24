@@ -12,7 +12,7 @@ sound.json:
   "stings": ["today", "shortly"],                 # гитарные стинги на склейках со вставками
   "sfx": [ ["slam", "nobody", 0.7], ["pop", "geo", 0.35], ["click", "lit", 0.9], ["foil", "remove", 0.8], ["ticks", 0, "lit"], ["hum", 0, "lit"] ],
   "levels": {"music": 0.22, "fx": 0.7} }
-  "bleep": [["mat-0.03", "mat+1.55"]] }           # BLEEP=1 → мат запикан (версия для VK) → audio_vk.wav
+  "bleep": [["mat-0.03", "mat+1.55"]] }           # BLEEP=1 → мат запикан (запиканная версия) → audio_clean.wav
 Метка — имя из CUE, число или «имя±сек». Шумы: slam pop click whoosh paper tear scratch buzzer bubbles chomp snip clink bell blip foil gurgle gulp door meow sniff purr chirp ticks hum riser."""
 import json, os, re, subprocess, sys
 from pathlib import Path
@@ -101,7 +101,7 @@ def main(ep):
     for nm, x, tg in (('музыка', stereo_reverb(mus, 1.2, 0.22, 1), '−14…−19'), ('шумы', stereo_reverb(fx, 0.7, 0.12, 2), '−11…−13')): print(f'  {nm}: {meter.integrated_loudness(x) - L:+.1f} LU (цель {tg})')
     st *= 10 ** ((-15 - L) / 20); lim = 10 ** (-1.2 / 20); a = np.abs(st)
     st *= np.where(a > lim * 0.85, (lim * 0.85 + lim * 0.15 * np.tanh((a - lim * 0.85) / (lim * 0.15))) / np.maximum(a, 1e-9), 1.0)
-    out = HF / 'build' / ep / ('audio_vk.wav' if vk else 'audio.wav')
+    out = HF / 'build' / ep / ('audio_clean.wav' if vk else 'audio.wav')
     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'f32le', '-ar', str(SR), '-ac', '2', '-i', '-', '-c:a', 'pcm_s16le', str(out)], input=st.astype(np.float32).tobytes(), check=True)
     print(out, f'LUFS {meter.integrated_loudness(st):.1f}, пик {20 * np.log10(np.abs(st).max()):.2f} dBFS')
 
