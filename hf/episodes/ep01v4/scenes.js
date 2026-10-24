@@ -34,16 +34,16 @@ const PHONE = [NIKP.x - 70, NIKP.y + 215];
 function tomH(t, o = {}) { const tk = talk('tom', t); tom({ ...TOMP, t, m: tk.m, bob: tk.bob, ...o }); }
 function nikH(t, o = {}) { const tk = talk('nikita', t); nikita({ ...NIKP, t, m: tk.m, bob: tk.bob, ...o }); }
 function hallScene(t, tomO, nikO, extra) {
-  hallway(t, { switchOn: lit(t), doorLight: t > CUE.slam && t < CUE.lightOff + 0.6 ? 1 : 0, min: 7 + Math.floor(t / 60), sec: (t * 1) % 60 });
+  hallway(t, { lamp: lit(t), switchOn: lit(t), doorLight: t > CUE.slam && t < CUE.lightOff + 0.6 ? 1 : 0, min: 7 + Math.floor(t / 60), sec: (t * 1) % 60 });
   if (tomO) layer(() => tomH(t, tomO), { sx: lit(t) ? 6 : -10, sy: 8, sb: 12 });
   litterFront();
-  if (nikO) layer(() => nikH(t, nikO), { sx: 8, sy: 8, sb: 14 });
+  if (nikO) { ellP((nikO.x ?? NIKP.x), NIKP.y + 512, 120, 16, 'rgba(20,12,6,0.35)', { line: false, tex: false }); layer(() => nikH(t, nikO), { sx: 8, sy: 8, sb: 14 }); }
   if (extra) extra();
   if (!lit(t)) lightmap('#4b5794', () => {                         // ночь: фонарик телефона на Тома, отсвет экрана на лицо Никиты
     if (nikO && !nikO.noBeam) { cone(PHONE[0], PHONE[1], TOMP.x, TOMP.y + 60, 300, 'rgba(255,255,255,1)', 1); radial(TOMP.x, TOMP.y + 60, 330, 'rgba(230,240,255,1)', 0.8); radial(PHONE[0] + 20, PHONE[1] - 120, 260, 'rgba(150,190,255,0.9)', 0.9); }
     radial(TOMP.x, TOMP.y, 120, 'rgba(160,255,120,0.35)', 1);
   });
-  else lightmap('#fff1dc', () => { radial(540, 200, 1300, 'rgba(255,255,255,1)', 0.25); });
+  else lightmap('#d9c8b4', () => { radial(625, 470, 1100, 'rgba(255,240,215,1)', 0.75); radial(540, 1100, 1300, 'rgba(255,255,255,1)', 0.35); });
   if (!lit(t) && tomO && (tomO.lid ?? 0.45) < 0.95 && tomO.mood !== 'bliss') [-1, 1].forEach(sd => glowAdd(TOMP.x + sd * 55 * TOMP.s, TOMP.y - 16, 70, 'rgba(180,255,90,0.55)', 0.8));
 }
 
@@ -164,16 +164,16 @@ const SH = {
     if (t > CUE.catmilk - 0.1) { cartonP(320, 740, 0.85 * popK(t, CUE.catmilk - 0.1, 0.3), 0.04); check(320, 520, 1, pr(t, CUE.nolact, CUE.nolact + 0.15)); }
   },
   drink(t) {
-    const sip = pr(t, CUE.drink, CUE.btw - 0.15), s3 = sm(sip * 4);
+    const dr = pr(t, CUE.drink - 0.25, CUE.drink + 0.6), sip = pr(t, CUE.drink + 0.35, CUE.btw - 0.2);
     cam(320, 960, 1.9); hallScene(t, { lid: 0.5, smirk: 0.8, lk: [-0.8, 0] },
-      { ...ex(t, [[0, { brow: -0.2, smile: 0.2, lk: [0.6, 0] }], [CUE.drink, { lid: 0.9, tilt: -0.12 }]]), noBeam: true, phoneLit: false, milkMoustache: sip > 0.6,
-        arms: { l: [-110, 290, 'phone'], r: [lerp(112, 30, s3), lerp(280, 40, s3), 'glass'] }, glass: 0.4 * (1 - sip) }); pop();
+      { ...ex(t, [[0, { brow: -0.2, smile: 0.2, lk: [0.6, 0] }]]), noBeam: true, phoneLit: false, milkMoustache: sip > 0.7, drink: dr,
+        arms: { l: [-110, 290, 'phone'], r: [112, 280, 'glass'] }, glass: 0.45 * (1 - sip * 0.92) }); pop();
   },
   twothirds(t) {
     const fr = t > CUE.also;
     cam(540, 1060, 1.22); hallScene(t, ex(t, [[0, { lid: 0.45, smirk: 1, lk: [-0.8, 0] }], [CUE.thirds, { lk: [-0.3, -0.6] }], [CUE.also, { lk: [-0.8, 0], smirk: 1 }]]),
-      { ...ex(t, [[0, { lid: 0.9, tilt: -0.12 }], [CUE.btw + 0.5, { lid: 0.2, tilt: 0, lk: [0.8, 0] }], [CUE.also, { mood: 'shock', lk: [0, 0.4] }]]), milkMoustache: true, noBeam: true, phoneLit: false,
-        arms: { l: [-110, 290, 'phone'], r: fr ? [112, 280, 'glass'] : [30, 40, 'glass'] }, glass: 0.05 }); pop();
+      { ...ex(t, [[0, { lid: 0.2, lk: [0.8, 0] }], [CUE.btw + 0.5, { lid: 0.2, lk: [0.8, 0] }], [CUE.also, { mood: 'shock', lk: [0, 0.4] }]]), milkMoustache: true, noBeam: true, phoneLit: false,
+        drink: fr ? 0 : 1, arms: { l: [-110, 290, 'phone'], r: [112, 280, 'glass'] }, glass: 0.04 }); pop();
     if (t > CUE.two - 0.2) card(540, 400, 860, 440, -0.02, 905, '#f6f1e4');
     if (t > CUE.two - 0.2) [-1, 0, 1].forEach((k, i) => { personIcon(540 + k * 200, 360, 0.9 * popK(t, CUE.two - 0.2 + i * 0.1, 0.25), i < 2 && t > CUE.thirds + i * 0.18 ? '#e9a0a0' : '#f4efe2', 900 + i * 3); if (i < 2) stampX(540 + k * 200, 350, 0.9, pr(t, CUE.thirds + i * 0.18, CUE.thirds + i * 0.18 + 0.12)); });
     if (t > CUE.adults) { push(540, 545, 1); piece([[-250, -36], [250, -36], [250, 36], [-250, 36]], '#f4e6a8', { seed: 910, step: 10, lw: 1.6 }); txt('2 из 3 взрослых людей', 0, 2, 42, { font: 'Inter Black', col: '#1c1512' }); pop(); }

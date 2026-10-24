@@ -82,9 +82,9 @@ const TEX = (() => {                                              // волок�
 let TEXP = null;
 /* деталь из цветной бумаги: заливка + фактура + ножничный край + тонкий тёмный контур */
 function piece(pts, col, o = {}) {
-  const P = o.raw ? pts : cut(pts, o.seed ?? hsh(Math.round(pts[0][0]), Math.round(pts[0][1]), pts.length), o.step ?? 16, o.edge ?? 1.0), path = pathOf(P);
+  const P = o.raw ? pts : cut(pts, o.seed ?? hsh(Math.round(pts[0][0]), Math.round(pts[0][1]), pts.length), o.step ?? 16, o.edge ?? 0.65), path = pathOf(P);
   ctx.save(); ctx.globalAlpha = o.a ?? 1; ctx.fillStyle = col; ctx.fill(path);
-  if (o.tex !== false) { if (!TEXP) TEXP = ctx.createPattern(TEX, 'repeat'); ctx.clip(path); ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = (o.a ?? 1) * (o.texA ?? 0.55); ctx.fillStyle = TEXP; ctx.fill(path); }
+  if (o.tex !== false) { if (!TEXP) TEXP = ctx.createPattern(TEX, 'repeat'); ctx.clip(path); ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = (o.a ?? 1) * (o.texA ?? 0.42); ctx.fillStyle = TEXP; ctx.fill(path); }
   ctx.restore();
   if (o.shade) { ctx.save(); ctx.clip(path); o.shade(); ctx.restore(); }
   if (o.line !== false) { ctx.save(); ctx.globalAlpha = (o.a ?? 1) * (o.la ?? 0.9); ctx.strokeStyle = o.lc || '#1c1512'; ctx.lineWidth = (o.lw ?? 2.6) / S; ctx.lineJoin = 'round'; ctx.stroke(path); ctx.restore(); }

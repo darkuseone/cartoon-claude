@@ -47,21 +47,27 @@ function tomBody(o) {
   const t = o.t ?? 0, sw = Math.sin(step(t) * 1.6) * 10 + (o.tailK ?? 0) * 30;
   // хвост позади-сбоку, полосатый
   const tl = tube([[150, 330], [235, 300], [262, 200], [240 + sw * 0.4, 120], [205 + sw, 92]], 52, 38);
-  piece(tl.pts, TC.fur, { raw: true, seed: 41, shade: () => { for (let i = 1; i < 5; i++) { const a = tl.axis[Math.floor(tl.axis.length * i / 5)]; stroke([[a[0] - 30, a[1] - 6], [a[0] + 30, a[1] + 6]], TC.stripe, 10); } } });
+  piece(tl.pts, TC.fur, { raw: true, seed: 41, shade: () => { for (let i = 1; i < 5; i++) { const a = tl.axis[Math.floor(tl.axis.length * i / 5)]; stroke([[a[0] - 30, a[1] - 6], [a[0] + 30, a[1] + 6]], TC.stripe, 10); } const e = tl.axis[tl.axis.length - 1]; ellP(e[0], e[1], 26, 22, TC.light, { seed: 48, line: false }); } });
   // туловище-груша
   const body = [[0, 40], [125, 72], [192, 170], [200, 285], [150, 365], [0, 385], [-150, 365], [-200, 285], [-192, 170], [-125, 72]];
   blobP(body, TC.fur, { seed: 42, shade: () => {
+    piece([[60, 40], [200, 160], [210, 300], [150, 380], [40, 390]], mix(TC.fur, TC.stripe, 0.22), { seed: 49, line: false, a: 0.55 });
     ellP(0, 255, 110, 125, TC.light, { seed: 43, line: false });
+    piece([[-60, 140], [-34, 118], [-18, 150], [0, 112], [16, 150], [36, 118], [60, 140], [40, 170], [-40, 170]], TC.light, { seed: 50, line: false });
     [[-185, 190, -130, 200], [-195, 250, -135, 258], [-185, 310, -130, 312], [185, 190, 130, 200], [195, 250, 135, 258], [185, 310, 130, 312]].forEach(v => stroke([[v[0], v[1]], [v[2], v[3]]], TC.stripe, 11));
   } });
   // лапы: левая прямо, правая сверху крест-накрест
   ellP(-48, 372, 50, 27, TC.light, { seed: 44 }); [-1, 0, 1].forEach(k => stroke([[-48 + k * 16, 362], [-48 + k * 16, 384]], TC.line, 2.4));
   if ((o.paw ?? 0) < 0.02) { ellP(30, 362, 52, 26, TC.light, { seed: 45, rot: -0.35 }); [-1, 0, 1].forEach(k => stroke([[30 + k * 16 + 3, 350 + k * 5], [30 + k * 16 - 2, 372 + k * 5]], TC.line, 2.4)); }
 }
-function tomPaw(o) {                                                // поднятая правая лапа (жест «щас объясню»/указка)
+function tomPaw(o) {                                                // поднятая правая лапа подушечками к зрителю («щас объясню»)
   const k = sm(o.paw), hx = lerp(30, o.pawX ?? 175, k), hy = lerp(362, o.pawY ?? 150, k);
-  const lg = tube([[110, 190], [lerp(90, 170, k), lerp(300, 230, k)], [hx, hy]], 62, 52); piece(lg.pts, TC.fur, { raw: true, seed: 46 });
-  ellP(hx, hy - 6, 34, 30, TC.light, { seed: 47 }); [-1, 0, 1].forEach(q => stroke([[hx + q * 11, hy - 30], [hx + q * 11, hy - 14]], TC.line, 2.2));
+  const lg = tube([[120, 200], [lerp(100, 160, k), lerp(300, 260, k)], [hx, hy + 30]], 66, 56); piece(lg.pts, TC.fur, { raw: true, seed: 46, lw: 2.6 });
+  for (let q = 1; q < 3; q++) { const a = lg.axis[Math.floor(lg.axis.length * q / 3)]; stroke([[a[0] - 24, a[1]], [a[0] + 24, a[1] + 4]], TC.stripe, 8); }
+  push(hx, hy, 1, -0.15); ellP(0, 0, 44, 46, TC.light, { seed: 47, lw: 2.6 });
+  blobP([[-20, 8], [20, 8], [24, 30], [0, 38], [-24, 30]], TC.pink, { seed: 51, lw: 2 });
+  [[-28, -14], [-10, -28], [10, -28], [28, -14]].forEach(([x, y], q) => ellP(x, y, 9, 11, TC.pink, { seed: 52 + q, lw: 1.8 }));
+  pop();
 }
 function tomHead(o) {
   const t = o.t ?? 0, mood = o.mood || '', ears = o.ears ?? (mood === 'pain' || mood === 'strain' ? 0.6 : 0), fur = o.fur ?? (mood === 'shock' ? 1 : 0);
@@ -71,6 +77,7 @@ function tomHead(o) {
     piece([[-sd * 52, 40], [sd * 6, -95], [sd * 56, 30]].map(([x, y]) => [x * sd * sd, y]), TC.fur, { seed: 21 + sd });
     piece([[-sd * 30, 26], [sd * 4, -62], [sd * 34, 20]], TC.pink, { seed: 23 + sd, lw: 1.8 });
     piece([[sd * 6, -95], [sd * 30, -58], [-sd * 14, -62]], TC.furD, { seed: 25 + sd, lw: 2.2 });            // загнутый кончик
+    for (let q = 0; q < 3; q++) stroke([[-sd * 14 + q * sd * 12, 22], [-sd * 6 + q * sd * 10, -12 - q * 6]], '#fbf1ee', 2.4);
     pop(); pop();
   });
   // голова-овал с бакенбардами
@@ -82,6 +89,7 @@ function tomHead(o) {
     [[-34, -70, -30, -122], [-11, -78, -8, -132], [11, -78, 8, -132], [34, -70, 30, -122]].forEach((v, i) => stroke([[v[0], v[1] + (i < 2 ? br * 10 : br * 10) * (i % 3 === 0 ? 1 : 0.5)], [v[2], v[3]]], TC.stripe, 11));
     [-1, 1].forEach(sd => { stroke([[sd * 178, 10], [sd * 130, 22]], TC.stripe, 10); stroke([[sd * 182, 52], [sd * 135, 58]], TC.stripe, 10); });
   } });
+  [-1, 1].forEach(sd => { piece([[sd * 186, 30], [sd * 222, 46], [sd * 190, 56], [sd * 214, 74], [sd * 176, 74]], TC.fur, { seed: 27 + sd, step: 8 }); });
   // глаза: огромные зелёные овалы, вертикальный зрачок, тяжёлое веко
   const lk = o.lk || [0, 0], bl = Math.max(blinkAt(t, 5), o.blink ?? 0);
   let lid = mood === 'bliss' || bl ? 1 : (o.lid ?? 0.45); if (mood === 'shock') lid = 0; if (mood === 'strain') lid = Math.max(lid, 0.62);
@@ -125,22 +133,30 @@ function nikita(o) {
   push(o.x, o.y, s, o.rot || 0, o.flip ? -1 : 1);
   push(0, 0, 1, o.lean || 0);
   const jb = jig(51); push(jb[0], jb[1], 1, jb[2]); nikLegs(o); nikBody(o); pop();
-  const jh = jig(52); push(jh[0], jh[1] + (o.bob ?? 0), 1, jh[2] + (o.tilt || 0)); nikHead(o); pop();
+  const dt = -0.14 * sm(((o.drink ?? 0) - 0.28) / 0.45); const jh = jig(52); push(jh[0], jh[1] + (o.bob ?? 0), 1, jh[2] + (o.tilt || 0) + dt); nikHead({ ...o, lid: (o.drink ?? 0) > 0.3 ? 1 : o.lid }); pop();
   nikArms(o);
   pop(); pop();
 }
 function nikLegs(o) {
   const run = o.legs === 'run', ph = Math.sin(step(o.t ?? 0) * 18);
   [-1, 1].forEach(sd => { const sw = run ? ph * sd * 40 : 0;
-    piece([[sd * 10, 318], [sd * 62, 318], [sd * 58 + sw, 486], [sd * 16 + sw, 486]], NC.jeans, { seed: 60 + sd, step: 20 });
-    blobP([[sd * 10 + sw, 478], [sd * 72 + sw, 476], [sd * 86 + sw, 502], [sd * 8 + sw, 508]], NC.shoe, { seed: 62 + sd }); });
+    piece([[sd * 10, 318], [sd * 62, 318], [sd * 58 + sw, 486], [sd * 16 + sw, 486]], NC.jeans, { seed: 60 + sd, step: 20, shade: () => {
+      stroke([[sd * 36, 330], [sd * 37 + sw * 0.6, 470]], mix(NC.jeans, '#ffffff', 0.25), 2.4, { a: 0.7 }); } });
+    piece([[sd * 14 + sw, 466], [sd * 60 + sw, 466], [sd * 60 + sw, 486], [sd * 14 + sw, 486]], mix(NC.jeans, '#000000', 0.18), { seed: 64 + sd, step: 10, lw: 2 });
+    blobP([[sd * 10 + sw, 478], [sd * 72 + sw, 476], [sd * 86 + sw, 502], [sd * 8 + sw, 508]], NC.shoe, { seed: 62 + sd });
+    stroke([[sd * 10 + sw, 500], [sd * 84 + sw, 498]], '#c9c4b8', 4);
+    for (let q = 0; q < 3; q++) stroke([[sd * (26 + q * 12) + sw, 482], [sd * (32 + q * 12) + sw, 488]], '#9a958a', 2.4); });
 }
 function nikBody(o) {
   // худи: трапеция на размер больше, капюшон за шеей, шнурки, карман
+  rectP(-22, 84, 44, 30, NC.skinD, { seed: 69, lw: 2 });
   piece(spline([[-70, 92], [0, 80], [70, 92], [62, 120], [-62, 120]], true, 6), NC.hoodD, { seed: 70 });
   const body = [[-80, 104], [-52, 92], [52, 92], [80, 104], [100, 200], [104, 330], [-104, 330], [-100, 200]];
   piece(body, NC.hood, { seed: 71, step: 18, shade: () => {
+    piece([[40, 92], [104, 200], [104, 330], [60, 330]], NC.hoodD, { seed: 75, line: false, a: 0.45 });
     piece([[-60, 248], [60, 248], [74, 322], [-74, 322]], mix(NC.hood, NC.hoodD, 0.35), { seed: 72, lw: 2.2 });
+    stroke([[-104, 318], [104, 318]], NC.hoodD, 5);
+    ellP(-48, 170, 22, 22, '#f6efe0', { seed: 76, lw: 1.8 }); [[-56, 164], [-48, 160], [-40, 164]].forEach(([x, y]) => dot(x, y, 3.2, NC.hoodD)); dot(-48, 176, 6, NC.hoodD);
     stroke([[0, 96], [0, 324]], NC.hoodD, 3, { a: 0.6 });
   } });
   const sw = Math.sin(step(o.t ?? 0) * 1.4) * 3;
@@ -148,38 +164,56 @@ function nikBody(o) {
   if ((o.belly ?? 0) > 0) { const g = ctx.createRadialGradient(0, 260, 5, 0, 260, 120); g.addColorStop(0, hexA('#9cff6a', 0.55 * o.belly)); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.fillRect(-130, 140, 260, 240);
     const ph = step(o.t ?? 0) * 3; for (let i = 0; i < 3; i++) { const a = ph + i * 2.1; stroke([[Math.cos(a) * 40 - 14, 250 + Math.sin(a) * 30], [Math.cos(a) * 40, 240 + Math.sin(a) * 30], [Math.cos(a) * 40 + 14, 250 + Math.sin(a) * 30]], '#2d6b16', 4, { a: o.belly }); } }
 }
+/* стакан: c — центр, rg — наклон; молоко держит горизонт, убывает по f */
+function glassAt(cx, cy, rg, f, o = {}) {
+  const gw = 34, gh = 100, G = [[-gw, -gh / 2], [gw, -gh / 2], [gw - 7, gh / 2], [-gw + 7, gh / 2]];
+  push(cx, cy, 1, rg);
+  const path = piece(G, 'rgba(225,238,248,0.6)', { raw: true, tex: false, lw: 2.8 });
+  if (f > 0.02) { ctx.save(); ctx.clip(path); ctx.rotate(-rg);
+    const low = Math.max(...G.map(([x, y]) => x * Math.sin(-rg) * -1 + y * Math.cos(rg))), lvl = low - f * gh * Math.max(0.35, Math.abs(Math.cos(rg)));
+    ctx.fillStyle = '#fbfcf6'; ctx.fillRect(-160, lvl, 320, 260); ctx.strokeStyle = '#c9d6e0'; ctx.lineWidth = 2 / S; ctx.beginPath(); ctx.moveTo(-160, lvl); ctx.lineTo(160, lvl); ctx.stroke(); ctx.restore(); }
+  if (o.licked) for (let i = 0; i < 4; i++) stroke([[-20, -30 + i * 18], [0, -22 + i * 18], [20, -30 + i * 18]], '#b7c7d3', 2.4);
+  stroke([[-gw + 9, -gh / 2 + 10], [-gw + 14, gh / 2 - 12]], '#ffffff', 5, { a: 0.65 });
+  pop();
+}
 function nikArms(o) {
-  const A = o.arms || {};
+  const A = o.arms || {}, dr = o.drink ?? 0;
   [['l', -1], ['r', 1]].forEach(([k, sd]) => {
-    const a = A[k] || [sd * 112, 300, 'open']; const [hx, hy, pose] = a, sh = [sd * 80, 112];
-    const el = [lerp(sh[0], hx, 0.5) + sd * 26, lerp(sh[1], hy, 0.5) + 18];
+    let a = A[k] || [sd * 112, 300, 'open']; let [hx, hy, pose] = a; const sh = [sd * 80, 112];
+    let gl = null;
+    if (pose === 'glass') {
+      if (k === 'r' && dr > 0) {                                     // питьё: стакан к губам, наклон, голова запрокинута
+        const lift = sm(dr / 0.35), tk = sm((dr - 0.28) / 0.45), ht = -0.14 * tk, rg = -1.75 * tk;
+        const mx = 0 - Math.sin(ht) * 62, my = 62 * Math.cos(ht);
+        const rim = [mx + 6 + 12 * (1 - tk), my + 8], cTarget = [rim[0] - Math.sin(rg) * 50, rim[1] + Math.cos(rg) * 50];
+        const cRest = [hx + sd * 6, hy - 46];
+        const c = [lerp(cRest[0], cTarget[0], lift), lerp(cRest[1], cTarget[1], lift)], rgl = rg * lift;
+        gl = [c[0], c[1], rgl]; const grip = [c[0] + Math.cos(rgl) * 40 - Math.sin(rgl) * 18, c[1] + Math.sin(rgl) * 40 + Math.cos(rgl) * 18];
+        hx = grip[0]; hy = grip[1] + 22;
+      } else gl = [hx + sd * 6, hy - 46, 0];
+    }
+    const el = [lerp(sh[0], hx, 0.5) + sd * 30, lerp(sh[1], hy, 0.5) + 22];
     const tb = tube([sh, el, [hx, hy]], 50, 42); piece(tb.pts, NC.hood, { raw: true, seed: 80 + sd, lw: 2.6 });
+    if (gl) glassAt(gl[0], gl[1], gl[2], o.glass ?? 0.7, { licked: o.licked });
     const c0 = tb.axis[tb.axis.length - 3], ang = Math.atan2(hy - c0[1], hx - c0[0]);
-    push(hx, hy, 1, ang - Math.PI / 2); hand(pose, sd, o); pop();
+    push(hx, hy, 1, ang - Math.PI / 2);
+    piece([[-26, -16], [26, -16], [26, 2], [-26, 2]], NC.hoodD, { seed: 86 + sd, step: 10, lw: 2.2 });         // манжета
+    hand(pose, sd, o); pop();
   });
 }
 function hand(pose, sd, o) {
-  const t = o.t ?? 0;
-  if (pose === 'phone') {                                            // телефон фонариком вперёд
-    rectP(-24, 4, 48, 82, '#20242c', { seed: 90, lw: 2.4 }); rectP(-18, 10, 36, 66, o.phoneLit === false ? '#2c3440' : '#bfe3ff', { seed: 91, lw: 1.4, tex: false });
-  }
-  if (pose === 'glass') {                                            // стакан молока
-    const f = o.glass ?? 0.7, gw = 34, gh = 96, gp = [[-gw, 0], [gw, 0], [gw - 6, gh], [-gw + 6, gh]];
-    piece(gp, 'rgba(220,235,245,0.55)', { raw: true, tex: false, lw: 2.6 });
-    if (f > 0.02) { const y0 = gh - gh * f; piece([[-gw + 6 * (y0 / gh) + 2, y0], [gw - 6 * (y0 / gh) - 2, y0], [gw - 7, gh - 2], [-gw + 7, gh - 2]], '#fbfcf8', { raw: true, line: false, tex: false }); }
-    if (o.licked) for (let i = 0; i < 4; i++) stroke([[-20, 20 + i * 18], [0, 28 + i * 18], [20, 20 + i * 18]], '#b7c7d3', 2.4);
-    stroke([[-gw + 8, 10], [-gw + 12, gh - 10]], '#ffffff', 5, { a: 0.6 });
-  }
-  // кисть-варежка с большим пальцем
+  if (pose === 'phone') { rectP(-24, 4, 48, 82, '#20242c', { seed: 90, lw: 2.4 }); rectP(-18, 10, 36, 66, o.phoneLit === false ? '#2c3440' : '#bfe3ff', { seed: 91, lw: 1.4, tex: false }); }
   const fist = pose === 'fist' || pose === 'glass' || pose === 'phone' || pose === 'belly';
-  blobP(fist ? [[-26, -10], [26, -10], [30, 22], [0, 34], [-30, 22]] : [[-24, -10], [24, -10], [28, 34], [0, 46], [-28, 34]], NC.skin, { seed: 92 + sd, lw: 2.6 });
-  blobP([[sd * 18, -2], [sd * 40, 8], [sd * 36, 24], [sd * 20, 18]], NC.skin, { seed: 94 + sd, lw: 2.4 });
-  if (pose === 'point') piece([[-8, 30], [8, 30], [7, 84], [-7, 84]], NC.skin, { seed: 96, lw: 2.4 });
+  blobP(fist ? [[-26, -6], [26, -6], [30, 22], [0, 34], [-30, 22]] : [[-24, -6], [24, -6], [28, 34], [0, 46], [-28, 34]], NC.skin, { seed: 92 + sd, lw: 2.6 });
+  if (fist) for (let q = 0; q < 3; q++) stroke([[-14 + q * 14, 20], [-14 + q * 14, 30]], NC.skinD, 2.6);
+  else for (let q = 0; q < 3; q++) stroke([[-14 + q * 14, 22], [-14 + q * 14, 42]], NC.skinD, 2.6);
+  blobP([[sd * 18, 2], [sd * 40, 12], [sd * 36, 28], [sd * 20, 22]], NC.skin, { seed: 94 + sd, lw: 2.4 });
+  if (pose === 'point') { piece([[-8, 30], [8, 30], [7, 84], [-7, 84]], NC.skin, { seed: 96, lw: 2.4 }); stroke([[-4, 76], [4, 76]], NC.skinD, 2); }
 }
 function nikHead(o) {
   const t = o.t ?? 0, mood = o.mood || '', lk = o.lk || [0, 0];
   // уши
-  [-1, 1].forEach(sd => ellP(sd * 96, 6, 16, 24, NC.skin, { seed: 100 + sd }));
+  [-1, 1].forEach(sd => { ellP(sd * 96, 6, 16, 24, NC.skin, { seed: 100 + sd }); stroke([[sd * 96, -6], [sd * 102, 6], [sd * 96, 16]], NC.skinD, 3); });
   // голова: широкий овал с подбородком (взрослые пропорции)
   const head = [[0, -102], [72, -94], [98, -42], [98, 22], [82, 76], [44, 110], [0, 120], [-44, 110], [-82, 76], [-98, 22], [-98, -42], [-72, -94]];
   blobP(head, NC.skin, { seed: 101, shade: () => {
@@ -214,6 +248,7 @@ function nikHead(o) {
   if (o.milkMoustache) piece(spline([[-36, 52], [0, 44], [36, 52], [30, 62], [0, 56], [-30, 62]], true, 5), '#fbfcf8', { raw: true, lw: 2 });
   // шевелюра: лохматая бумажная «шапка» с чёлкой
   const hair = [[-120, -10], [-126, -64], [-104, -110], [-62, -138], [-14, -150], [34, -146], [82, -128], [116, -92], [128, -44], [120, -6], [104, -34], [88, -52], [70, -40], [54, -64], [30, -48], [10, -70], [-12, -50], [-34, -72], [-54, -48], [-74, -66], [-92, -40], [-104, -52]].map(([x, y]) => [x * 0.87, y]);
-  piece(hair, NC.hair, { seed: 120, step: 12, edge: 1.8, shade: () => { [[-80, -110, -40, -80], [-20, -130, 10, -96], [40, -128, 60, -90], [90, -100, 100, -70]].forEach(v => stroke([[v[0], v[1]], [v[2], v[3]]], NC.hairL, 5)); } });
+  [[[90, -96], [122, -100], [104, -74]], [[-88, -92], [-118, -94], [-100, -68]], [[-20, -146], [-6, -160], [10, -146]]].forEach((tp, q) => piece(tp, NC.hair, { seed: 124 + q, step: 8 }));
+  piece(hair, NC.hair, { seed: 120, step: 12, edge: 1.2, shade: () => { piece([[-70, -120], [-10, -140], [40, -134], [10, -112], [-40, -104]], NC.hairL, { seed: 122, line: false, a: 0.8 }); [[-80, -110, -40, -80], [-20, -130, 10, -96], [40, -128, 60, -90], [90, -100, 100, -70]].forEach(v => stroke([[v[0], v[1]], [v[2], v[3]]], NC.hairL, 5)); } });
   if (o.sweat) { const ph = (step(t) * 0.8) % 1; piece(spline([[118, -40 + ph * 50], [128, -20 + ph * 50], [118, -8 + ph * 50], [108, -20 + ph * 50]], true, 5), '#9fd8ff', { raw: true, lw: 2 }); }
 }

@@ -37,21 +37,29 @@ function clicheFrame(x, y, s, t) {                                 // «коти
 function hallway(t, o = {}) {
   rectP(-300, -300, 1680, 1700, '#6b8775', { seed: 520, line: false, step: 60 });                              // стена
   for (let x = -300; x < 1380; x += 90) rectP(x, -300, 34, 1700, '#62806d', { seed: 521 + x, line: false, step: 80, texA: 0.3 });
+  { const r = rng(535); for (let y = -260; y < 1360; y += 70) for (let x = -280; x < 1380; x += 90) { const xx = x + ((y / 70) % 2 ? 45 : 0); piece([[xx, y - 9], [xx + 7, y], [xx, y + 9], [xx - 7, y]], '#7c9a86', { raw: true, line: false, tex: false, a: 0.55 }); } }
   rectP(-300, 1378, 1680, 34, '#ece2c8', { seed: 522, step: 40 });                                           // плинтус
   rectP(-300, 1410, 1680, 800, '#8c5a36', { seed: 523, step: 60, shade: () => { for (let y = 1440; y < 2200; y += 70) stroke([[-300, y], [1380, y + 6]], '#6e4426', 3, { smooth: false }); } });
   // дверь туалета
   rectP(40, 430, 380, 960, '#e9e2d2', { seed: 524, lw: 3, shade: () => { rectP(80, 480, 300, 380, '#ddd4c0', { seed: 525, lw: 2 }); rectP(80, 920, 300, 400, '#ddd4c0', { seed: 526, lw: 2 }); } });
-  rectP(30, 420, 400, 22, '#cfc5ae', { seed: 527, lw: 2 });
+  rectP(18, 404, 424, 30, '#d8cdb6', { seed: 527, lw: 2.4 }); rectP(18, 420, 26, 980, '#d8cdb6', { seed: 536, lw: 2.4 }); rectP(416, 420, 26, 980, '#d8cdb6', { seed: 537, lw: 2.4 });
+  rectP(560, 1030, 26, 36, '#f4efe2', { seed: 538, lw: 1.8 }); dot(568, 1042, 3, '#1c1512'); dot(578, 1042, 3, '#1c1512');
   ellP(370, 930, 18, 18, '#c9a24a', { seed: 528 }); rectP(180, 560, 100, 70, '#2f6db3', { seed: 529, lw: 2 }); txt('WC', 230, 597, 44, { col: '#fff', font: 'Inter Black' });
   if (o.doorLight) { ctx.save(); ctx.globalAlpha = o.doorLight; ctx.fillStyle = '#ffe9a8'; ctx.fillRect(48, 1386, 364, 8); ctx.restore(); }
   // выключатель, часы, клише в рамке
   rectP(468, 860, 54, 84, '#f4efe2', { seed: 530, lw: 2 }); rectP(484, 880, 22, 44, '#e2dccd', { seed: 531, lw: 1.6 });
   stroke([[495, o.switchOn ? 886 : 918], [495, o.switchOn ? 892 : 912]], '#1c1512', 6);
   clockP(860, 250, 82, 3, o.min ?? 7, o.sec);
+  // бра над выключателем
+  rectP(600, 480, 50, 18, '#c9a24a', { seed: 539, lw: 2 }); piece([[580, 420], [670, 420], [690, 498], [560, 498]], o.lamp ? '#ffe7a8' : '#d9cba8', { seed: 540, lw: 2.4 });
+  // коврик и кеды у двери
+  piece([[60, 1430], [520, 1430], [540, 1520], [40, 1520]], '#b44a3a', { seed: 541, lw: 2.4, shade: () => { for (let x = 70; x < 540; x += 46) stroke([[x, 1436], [x + 6, 1514]], '#e9d6b8', 8, { a: 0.8 }); } });
+  [[150, 0], [240, 1]].forEach(([x, i]) => { blobP([[x - 40, 1420], [x + 30, 1414], [x + 46, 1440], [x - 44, 1446]], '#2f3a4a', { seed: 542 + i }); stroke([[x - 44, 1442], [x + 44, 1438]], '#f1efe9', 5); });
   clicheFrame(760, 600, 1, t);
   // лоток: задняя стенка (передняя — litterFront после кота)
   piece([[560, 1250], [960, 1250], [940, 1300], [580, 1300]], '#4f9b8a', { seed: 532, lw: 2.6 });
   ellP(760, 1300, 182, 22, '#cdbb98', { seed: 533, lw: 2 });
+  ellP(760, 1426, 230, 22, 'rgba(20,12,6,0.35)', { line: false, tex: false });
 }
 function litterFront(o = {}) {
   piece([[560, 1300], [960, 1300], [930, 1420], [590, 1420]], '#5bb39f', { seed: 534, lw: 3, shade: () => { stroke([[600, 1330], [920, 1330]], '#3f8e7c', 6); } });
