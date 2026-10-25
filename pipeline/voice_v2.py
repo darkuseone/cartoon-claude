@@ -1,7 +1,7 @@
 """Озвучка эпизода для Remotion: темп по персонажу, сжатие длинных пауз внутри реплик,
 склейка, тайминги слов (faster-whisper) и виземы Rhubarb для липсинка.
 
-usage: python voice_v2.py <episode_dir> <remotion_public_subdir>
+usage: python voice_v2.py <episode_dir> [out_dir = <episode_dir>/out]
 Ждёт <ep>/script.json и <ep>/vo/<key>.mp3. Пишет <public>/voice.wav и <public>/timeline.json.
 """
 import json, subprocess, sys, tempfile
@@ -103,4 +103,4 @@ def main(ep, pub):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else sys.argv[1].rstrip("/") + "/out")

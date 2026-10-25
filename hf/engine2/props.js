@@ -199,3 +199,19 @@ function diploma(x, y, s, rot, tear) {                              // «дие�
     ctx.restore(); pop(); });
   pop();
 }
+
+// ------------------------------------------------------------------ общие вставки (из эп. 2–3)
+function phoneCut(x, y, s, rot, o = {}) {                          // телефон-вырезка покрупнее; o.dead, o.rice, o.drip, o.screen(fn)
+  push(x, y, s, rot); piece([[-110, -210], [110, -210], [110, 210], [-110, 210]], '#1d2026', { seed: 3100, step: 20, lw: 3 });
+  rectP(-96, -190, 192, 380, o.dead ? '#151a22' : '#bfe3ff', { seed: 3101, lw: 1.6, tex: false });
+  if (o.dead) { stroke([[-40, -30], [-10, 0]], '#3a4250', 6); stroke([[-10, -30], [-40, 0]], '#3a4250', 6); stroke([[10, -30], [40, 0]], '#3a4250', 6); stroke([[40, -30], [10, 0]], '#3a4250', 6); stroke([[-30, 60], [0, 46], [30, 60]], '#3a4250', 6); }
+  if (o.screen) { ctx.save(); ctx.beginPath(); ctx.rect(-96, -190, 192, 380); ctx.clip(); o.screen(); ctx.restore(); }
+  if (o.rice) grains(0, 0, o.rice, 220, 3102);
+  rectP(-26, 196, 52, 10, '#000', { seed: 3103, line: false, tex: false });
+  pop();
+}
+function moneyStack(x, y, s, t, t0) {
+  push(x, y, s); for (let i = 0; i < 6; i++) { const k = pr(t, t0 + i * 0.06, t0 + i * 0.06 + 0.15); if (k <= 0) continue; push(0, -i * 34 * k, 1, (i % 2 - 0.5) * 0.06);
+    piece([[-200, -40], [200, -40], [200, 40], [-200, 40]], '#7fbf6a', { seed: 1620 + i, lw: 2.4 }); ellP(0, 0, 34, 28, '#5f9a4e', { seed: 1630 + i, lw: 1.6 }); txt('$', 0, 2, 40, { font: 'Inter Black', col: '#e9f6dc' }); pop(); }
+  pop();
+}
