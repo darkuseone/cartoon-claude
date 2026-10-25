@@ -18,7 +18,7 @@ function scene(t, tomO, nikO, o = {}) {                              // балк
   balcony(t);
   if (tomO) layer(() => { const tk = talk('tom', t); tom({ ...TOMP, t, m: tk.m, bob: tk.bob, ...tomO }); }, { sx: 7, sy: 8, sb: 12 });
   if (nikO) layer(() => { const tk = talk('nikita', t), n = { ...NIKD, ...nikO }; nikita({ ...NIKP, t, m: tk.m, bob: tk.bob, ...n });
-    const [hx, hy] = handW(n.arms.r); if (n.hold === 'cig') cig(hx + 4, hy + 30, 0.95, -0.35, t); if (n.hold === 'vape') vape(hx + 6, hy + 10, 0.95, 0.2); }, { sx: 7, sy: 8, sb: 12 });
+    const [hx, hy] = handW(n.arms.r); if (n.hold === 'cig') pack(hx + 2, hy + 22, 0.95, -0.12); if (n.hold === 'vape') vapeBox(hx + 2, hy + 18, 0.95, 0.15); }, { sx: 7, sy: 8, sb: 12 });
   cough(NIKP.x + 40, NIKP.y + 40, t, CUE.cough);
   if (o.extra) o.extra();
   lightmap('#b9a6b2', () => { radial(760, 760, 1300, 'rgba(255,228,190,1)', 1); radial(400, 1200, 700, 'rgba(255,235,210,1)', 0.5); });

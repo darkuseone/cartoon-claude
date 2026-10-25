@@ -14,11 +14,20 @@ function balcony(t) {
   rectP(-300, 1180, 1680, 400, '#b0533c', { seed: 5070, step: 30, shade: () => { for (let y = 1210, j = 0; y < 1560; y += 50, j++) { stroke([[-300, y], [1380, y]], '#8f4130', 4, { smooth: false });
       for (let x = -300 + (j % 2) * 60; x < 1380; x += 120) stroke([[x, y - 50], [x, y]], '#8f4130', 4, { smooth: false }); } } });
   rectP(-300, 1150, 1680, 44, '#c9c4b8', { seed: 5071, lw: 2.6 });
-  // банка-пепельница и цветок в горшке
+  // банка с черенком и цветок в горшке
   push(600, 1150, 1); piece([[-34, 0], [34, 0], [38, -84], [-38, -84]], 'rgba(210,235,240,0.6)', { seed: 5072, lw: 2.4, tex: false }); piece([[-34, 0], [34, 0], [36, -30], [-36, -30]], '#8a7a6a', { seed: 5073, line: false });
-  [-16, 4, 20].forEach((x, i) => { stroke([[x, -26], [x + 6, -64]], '#f3efe4', 9); stroke([[x + 5, -60], [x + 6, -66]], '#d8a64a', 9); }); pop();
+  stroke([[0, -30], [-6, -110]], '#3f7a3a', 5); ellP(-20, -112, 18, 10, '#5fa35a', { seed: 5076, rot: 0.6 }); ellP(8, -96, 16, 9, '#5fa35a', { seed: 5077, rot: -0.5 }); pop();
   push(1010, 1150, 1); piece([[-50, 0], [50, 0], [62, -80], [-62, -80]], '#c46a2c', { seed: 5074, lw: 2.4 }); [[-30, -150], [0, -190], [34, -160]].forEach(([x, y], i) => { stroke([[0, -80], [x, y]], '#3f7a3a', 6); ellP(x, y, 26, 14, '#5fa35a', { seed: 5075 + i, rot: 0.5 }); }); pop();
   rectP(-300, 1560, 1680, 700, '#8a8478', { seed: 5080, step: 60, shade: () => { for (let x = -300; x < 1380; x += 120) stroke([[x, 1560], [x - 60, 2240]], '#77726a', 3, { smooth: false }); } });
+}
+function pack(x, y, s, rot) {                                       // закрытая пачка в руке (без сигарет на виду)
+  push(x, y, s, rot); piece([[-26, -44], [26, -44], [26, 44], [-26, 44]], '#f6f3ea', { seed: 5140, lw: 2.2, step: 8 });
+  rectP(-26, -44, 52, 26, '#c8241c', { seed: 5141, lw: 1.6, step: 8 }); rectP(-22, 8, 44, 30, '#1c1512', { seed: 5142, line: false, step: 8 });
+  stroke([[-16, 18], [16, 18]], '#f6f3ea', 3); stroke([[-16, 28], [8, 28]], '#f6f3ea', 3); pop();
+}
+function vapeBox(x, y, s, rot) {                                    // коробка от вейпа (не само устройство)
+  push(x, y, s, rot); piece([[-30, -48], [30, -48], [30, 48], [-30, 48]], '#7a5cb8', { seed: 5150, lw: 2.2, step: 8 });
+  rectP(-24, -20, 48, 34, '#fbfaf6', { seed: 5151, line: false, step: 8 }); txt('VAPE', 0, -3, 15, { font: 'Inter Black', col: '#7a5cb8' }); rectP(-24, 22, 48, 18, '#1c1512', { seed: 5152, line: false, step: 8 }); pop();
 }
 function cig(x, y, s, rot, t, lit = true) {                         // сигарета + дымок
   push(x, y, s, rot); rectP(0, -6, 70, 12, '#f6f3ea', { seed: 5100, lw: 1.6, tex: false }); rectP(-20, -6, 22, 12, '#d8a64a', { seed: 5101, lw: 1.6, tex: false });
@@ -74,7 +83,7 @@ function court(t, c) {                                               // «США
     push(540, 1300, 1, -0.02); ransom('ЗАКОН ПРОТИВ МАФИИ', 0, 0, 70, 5266, { reveal: pr(t, c.mafia - 0.3, c.mafia + 0.3) }); pop(); }
 }
 function juul(t, c) {                                                // хозяин «Мальборо» → Juul: $12,8 млрд за 35 %
-  cork(); push(300, 760, 3.4, -0.2); vape(0, 0, 1, 0); pop(); moneyStack(740, 900, 1.1, t, c.bln - 0.6);
+  cork(); vapeBox(300, 760, 4, -0.15); moneyStack(740, 900, 1.1, t, c.bln - 0.6);
   push(540, 330, 1, -0.04); ransom('$12 800 000 000', 0, 0, 100, 5270, { reveal: pr(t, c.bln - 0.5, c.bln + 0.3) }); pop();
   push(540, 1190, popK(t, c.owner, 0.3), 0.03); card(0, 0, 860, 160, 0, 5271, '#fbfaf6'); txt('Altria (владелец Marlboro в США)', 0, -26, 38, { font: 'Inter Black', col: '#1c1512' }); txt('→ 35 % Juul, декабрь 2018', 0, 30, 38, { font: 'Inter', weight: 800, col: '#c8241c' }); pop();
 }
