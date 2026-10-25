@@ -1,0 +1,9 @@
+{"voice": "../episodes/ep05_tobacco/out/voice.wav", "key": "C",
+ "music": [{"type": "groove", "from": 0, "to": "y54-0.6"}, {"type": "tension", "from": "y54-0.55", "to": "decades-0.1"},
+           {"type": "pluck", "from": "decades", "to": "vape+1.2"}, {"type": "stop", "at": "vape+1.4"}, {"type": "endsting", "at": "sub-0.1"}, {"type": "groove", "from": "sub+0.4", "to": "loop+0.4", "g": 0.07}],
+ "stings": ["paid-0.3", "y54-0.6", "memo-1.1", "seven-1.0", "y06-0.9", "owner-0.05"],
+ "sfx": [["thud", "cough", 0.4], ["slam", "consp", 0.35], ["paper", "y54-0.4", 0.4], ["slam", "n448", 0.5], ["scratch", "link-0.1", 0.25], ["paper", "memo-1.0", 0.4], ["slam", "doubt", 0.5],
+         ["pop", "seven", 0.3], ["pop", "oath", 0.35], ["pop", "nic", 0.4], ["slam", "nic+0.9", 0.6], ["thud", "decades-0.05", 0.6], ["slam", "mafia-0.3", 0.4],
+         ["pop", "vape", 0.4], ["slam", "mat", 0.8], ["slam", "bln", 0.5], ["pop", "sub", 0.3], ["thud", "loop", 0.3]],
+ "bleep": [["mat-0.03", "mat+0.45"]],
+ "levels": {"music": 0.28, "fx": 0.3}}
