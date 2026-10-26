@@ -45,7 +45,7 @@ function saladInsert(t, c) {                                         // 26 % —
   microbes(t, pr(t, c.p26 - 0.3, c.p26 + 0.2), [[540, 580, 10, 380]], 7410);
   if (t > c.p26) { push(540, 300, 1, -0.03); ransom('26 % — В САЛАТЕ', 0, 0, 92, 7420, { reveal: pr(t, c.p26, c.p26 + 0.3), pop: true }); pop(); }
   if (t > c.splash) { const k = eo(pr(t, c.splash, c.splash + 0.7)); for (let i = 0; i < 9; i++) { const a = -2.6 + i * 0.65, d = 380 * k; stroke([[540, 1100], [540 + Math.cos(a) * d * 0.5, 1100 + Math.sin(a) * d * 0.9 - 120 * k], [540 + Math.cos(a) * d, 1100 + Math.sin(a) * d * 0.5]], '#9fd3f0', 6); }
-    push(540, 1240, 1, 0.02); card(0, 0, 640, 100, 0, 7430, '#f4e6a8'); txt('брызги летят дальше, чем кажется', 0, 4, 36, { font: 'Inter Black', col: '#1c1512' }); pop(); }
+    label(540, 1260, 'брызги летят дальше, чем кажется', 0, '#f4e6a8', 0.02, 38); }
 }
 function seventhInsert(t, c) {                                       // каждая седьмая раковина — с бактериями даже после мытья
   cork(); txt('ПОСЛЕ МЫТЬЯ РАКОВИНЫ', 540, 300, 54, { font: 'Inter Black', col: '#1c1512' });
