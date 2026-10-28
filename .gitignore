@@ -6,3 +6,5 @@ out/*.log
 episodes/*/grid/
 out/ep01_v2.mp4
 out/ep01_milk_v2.mp4
+.venv/
+hf/build/

@@ -1,17 +1,16 @@
 # Том и Никита — мультики кодом
 
-**Актуально (v3): `hf/` — стиль «ночной графит».** Всё рисуется кодом (canvas + JS), рендер — HyperFrames 24 к/с, звук синтезируется кодом поверх готовой озвучки ElevenLabs. Генеративные картинки/видео не используются. Правила стиля и порядок работы — `.claude/skills/nochnoy-grafit/SKILL.md`.
+**Актуально: v4 «Аппликация» (`hf/engine2`).** Вся инструкция для работы — в **[CLAUDE.md](CLAUDE.md)**, детали — в скиллах `.claude/skills/` (`applikatsiya`, `tom-nikita-temy`, `tom-nikita-scenarij`, `tom-nikita-montazh`).
 
 ```
-cd hf && npm install                       # HyperFrames + puppeteer-core
-tools/render.sh ep01 snap 0,3.5,12         # контрольные кадры → build/ep01/snaps/sheet.jpg
-tools/render.sh ep01                       # полный ролик → build/ep01/final.mp4 и chat.mp4
+bash tools/setup.sh                          # окружение: .venv, Rhubarb, npm, проверки
+cd hf && tools/make.sh ep08 snap 0.5,3,12    # контрольные кадры → build/ep08/snaps/sheet.jpg
+tools/make.sh ep08 all ep08_bulb             # полный ролик → ../out/ep08_bulb_chat.mp4
 ```
 
-- `hf/engine/engine.js` — карандаш/мел, штриховка, бумага, палитры по ролям, свет; `chars.js` — риги Тома и Никиты; `props.js` — кухня, наука, деревня, реквизит.
-- `hf/episodes/ep01/` — раскадровка (`storyboard.md`) и сцены (`scenes.js`); тайминги — от слов озвучки.
-- `hf/tools/sound.py` — музыка нотами и шумы по тем же меткам; `cues.cjs` выгружает метки со страницы.
-- Озвучка и липсинк: `pipeline/voice_v2.py` → `remotion/public/ep01/{voice.wav,timeline.json}`.
+Готовые серии — `out/*_chat.mp4`, тексты для выкладки — `publish/`.
+
+Ниже — история старых версий (v1–v3), для новых серий не использовать.
 
 ## Архив (v1–v2)
 

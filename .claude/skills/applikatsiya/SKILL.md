@@ -31,9 +31,9 @@ description: Актуальный стиль канала «Том и Никит
 
 ## Конвейер (одна серия ≈ 6 команд)
 Сначала скиллы: `tom-nikita-temy` (тема и факты) → `tom-nikita-scenarij` (сценарий и мат) → `tom-nikita-montazh` (кадр, звук, площадки).
-Python с numpy/scipy/pyloudnorm/faster-whisper: `$PY` = venv в scratchpad (путь в `hf/tools/make.sh`). Если его нет: `python3 -m venv … && pip install numpy scipy pyloudnorm faster-whisper`.
+Окружение: `bash tools/setup.sh` (`.venv` с numpy/scipy/pyloudnorm/faster-whisper, Rhubarb, npm). Python — `.venv/bin/python`, make.sh берёт его сам. Проверка озвучки: `.venv/bin/python -I pipeline/transcribe.py episodes/<папка>/vo/*.mp3`. Полная инструкция — `CLAUDE.md` в корне.
 1. `episodes/<эп>_<слово>/script.json` → `python pipeline/tts.py episodes/<папка>` (ElevenLabs `eleven_v4`). Проверить расшифровкой, что теги не прочитаны вслух.
-2. `$PY pipeline/voice_v2.py episodes/<папка>` → `out/voice.wav` + `out/timeline.json` (слова + виземы Rhubarb).
+2. `.venv/bin/python pipeline/voice_v2.py episodes/<папка>` → `out/voice.wav` + `out/timeline.json` (слова + виземы Rhubarb).
 3. `python3 pipeline/words.py episodes/<папка>` — индексы и время слов для меток `CUE`.
 4. `cp -r hf/episodes/_template hf/episodes/<эп>`: в `episode.json` указать timeline. В `set.js` — новая декорация и вставки. В `scenes.js` — только `CUE`, `SHAKES`, `EP`, позиции, `scene()`, `SHOTS`, `SH`. Общие вставки в `engine2/props.js`: `phoneCut(x,y,s,rot,{dead,screen})`, `moneyStack`, `card`, `cork`, `stampX`, `check`, `clockP`, `drop`, `personIcon`. Всё общее для сцен — в `engine2/common.js`: `Wd`/`LN`, `ex`, `ck`, `talk`, `shakeAt`, `slideIn`, `bg`, `label`, `slam`, субтитры, обложка, виньетка. Образцы — `hf/episodes/ep03` (кухня) и `ep04` (комната со столом, Никита сидит).
 5. `cd hf && tools/make.sh <эп> snap 0.5,3.5,…` → `build/<эп>/snaps/sheet.jpg`: один контакт-лист на все планы. Смотреть его, а не отдельные кадры.
