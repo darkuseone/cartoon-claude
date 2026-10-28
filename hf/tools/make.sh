@@ -2,6 +2,7 @@
 # Сборка серии «Аппликации» одной командой.
 #   tools/make.sh <эп> snap 0,3.5,12   — контрольные кадры → build/<эп>/snaps/sheet.jpg (секунды)
 #   tools/make.sh <эп> sound           — метки + звук (build/<эп>/audio.wav)
+#   tools/make.sh <эп> mux <имя>       — правка только звука: новый audio.wav + старое видео build/<эп>/video.mp4 (без рендера, 1–2 мин; build/ есть только в контейнере, где рендерили)
 #   tools/make.sh <эп> clean <имя>     — после all: версия с запиканным матом → ../out/<имя>_clean.mp4
 #   tools/make.sh <эп> all <имя>       — проверка JS, звук, рендер 24 к/с, сведение → ../out/<имя>_chat.mp4 (< 28 МиБ) + контакт-лист
 set -euo pipefail
@@ -13,8 +14,7 @@ if [ "$MODE" = clean ]; then BLEEP=1 $PY -I tools/sound_spec.py "$EP"; OUT=../ou
 node tools/cues.cjs "$B/film" > "$B/cues.json"
 $PY -I tools/sound_spec.py "$EP"
 [ "$MODE" = sound ] && exit 0
-node tools/dbg.cjs "$B/film" | tail -1
-npx hyperframes render "$B/film" -f 24 -q high -w 4 -o "$B/video.mp4" > "$B/render.log" 2>&1
+if [ "$MODE" != mux ]; then node tools/dbg.cjs "$B/film" | tail -1; npx hyperframes render "$B/film" -f 24 -q high -w 4 -o "$B/video.mp4" > "$B/render.log" 2>&1; fi
 NAME=${3:-$EP}; OUT=../out/${NAME}_chat.mp4
 DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$B/video.mp4"); VB=$(python3 -c "print(int(28*1024*1024*8/$DUR/1000 - 160))")
 ffmpeg -y -v error -i "$B/video.mp4" -i "$B/audio.wav" -map 0:v -map 1:a -c:v libx264 -preset slow -b:v ${VB}k -maxrate $((VB*2))k -bufsize $((VB*2))k -pix_fmt yuv420p -c:a aac -b:a 160k -shortest -movflags +faststart "$OUT"

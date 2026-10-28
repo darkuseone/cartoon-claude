@@ -5,12 +5,19 @@
 
 | Скилл | Когда |
 |---|---|
+| `tom-nikita-kanal` | **первым**: направление канала, аудитория, характеры и речь героев, формула серии; `scripts.md` — тексты всех серий |
+| `tom-nikita-seriya` | «сделай ролик про …» — маршрут под ключ, бюджет токенов, критерии готовности |
 | `tom-nikita-temy` | выбор темы, проверка фактов, стоп-темы; бэклог `backlog.md` |
 | `tom-nikita-scenarij` | сценарий: структура по секундам, роли, мат, омографы, `script.json` |
+| `tom-nikita-kod` | код сцен: геометрия, камера, рецепты, грабли; `api.md` — все функции |
 | `tom-nikita-montazh` | раскадровка, субтитры, звук, площадки, метрики; статистика `research.md` |
+| `tom-nikita-pravki` | правки готовой серии по замечаниям — минимальная цепочка пересборки |
+| `tom-nikita-vykladka` | тексты для YouTube/TikTok/Instagram, оформление канала |
 | `applikatsiya` | стиль v4 «Аппликация», движок `hf/engine2`, конвейер команд |
 
-`nochnoy-grafit` и всё в `remotion/`, `pipeline/render.mjs`, `hf/engine/` — **устаревшие версии (v1–v3)**, не использовать.
+Справочники `api.md` и `scripts.md` пересобирать после каждой серии: `python3 tools/gen_refs.py`.
+
+Всё в `remotion/`, `pipeline/render.mjs`, `hf/engine/` — **устаревшие версии (v1–v3)**, не использовать.
 
 ---
 
@@ -63,6 +70,7 @@ tools/make.sh ep09 snap 0.5,3,5,…                # контакт-лист bui
 tools/make.sh ep09 sound                         # sound.json → audio.wav, печатает LU музыки и шумов
 tools/make.sh ep09 all ep09_<слово>              # рендер ~15 мин (запускать в фоне) → ../out/ep09_<слово>_chat.mp4 + _sheet.jpg
 tools/make.sh ep09 clean ep09_<слово>            # по желанию: версия с запиканным матом
+tools/make.sh ep09 mux ep09_<слово>              # правка только звука без повторного рендера
 ```
 Длинный рендер — `run_in_background`, ждать уведомления, не опрашивать в цикле. Пока рендерится одна серия, можно рисовать следующую.
 
@@ -130,5 +138,5 @@ const SH = { cold(t, u) { cam(cx, cy, z, 0, shakeAt(t)); scene(…); pop(); }, �
 ## 8. Git
 - Рабочая ветка серий может быть любой; итог — в `master` (владелец просит пушить в основную ветку).
 - Коммитить: `episodes/<папка>/` (script, vo, out), `hf/episodes/<эп>/`, `out/<имя>_chat.mp4` и `_sheet.jpg`, `publish/<эп>.txt`. `hf/build/`, `.venv/`, `tools/bin/` — не коммитить.
-- Для каждой новой серии — дописать строку в таблицу §2 и в `tom-nikita-temy/SKILL.md`, создать `publish/<эп>.txt` по образцу.
+- Для каждой новой серии — дописать строку в таблицу §2 и в `tom-nikita-temy/SKILL.md`, создать `publish/<эп>.txt` по образцу, запустить `python3 tools/gen_refs.py`.
 - В коммитах, PR и файлах репозитория не указывать идентификатор модели.
