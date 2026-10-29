@@ -1,5 +1,7 @@
 """Озвучка эпизода для Remotion: темп по персонажу, сжатие длинных пауз внутри реплик,
 склейка, тайминги слов (faster-whisper) и виземы Rhubarb для липсинка.
+Громкость: каждая реплика приводится к LOUD[говорящий] LUFS (в script.json можно переопределить "loud": {"tom": …, "nikita": …});
+шёпот/тихая реплика — поле "gain": -4 (дБ к цели). Тайминги и виземы считаются по исходному звуку — от громкости не зависят.
 
 usage: python voice_v2.py <episode_dir> [out_dir = <episode_dir>/out]
 Ждёт <ep>/script.json и <ep>/vo/<key>.mp3. Пишет <public>/voice.wav и <public>/timeline.json.
@@ -11,6 +13,18 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 RHUBARB = ROOT / "tools/bin/rhubarb/rhubarb"
 SR = 44100
+LOUD = {"tom": -22.0, "nikita": -21.0}   # LUFS реплики; Никита на 1 дБ громче — на динамике телефона его голос тонул (эп. 7–9: −3…−4 дБ к Тому, хук до −8)
+
+
+def level(a, target):
+    """Привести реплику к target LUFS (усиление −8…+12 дБ) с мягким ограничителем пиков. → (звук, дБ)"""
+    import pyloudnorm as pyln
+    x = a if len(a) >= SR // 2 else np.tile(a, SR // 2 // max(len(a), 1) + 1)   # pyloudnorm нужно ≥ 0,4 с
+    L = pyln.Meter(SR).integrated_loudness(x)
+    g = float(np.clip(target - L, -8, 12)) if np.isfinite(L) else 0.0
+    y = a * 10 ** (g / 20); k = np.abs(y)
+    y = np.where(k > 0.8, np.sign(y) * (0.8 + 0.2 * np.tanh((k - 0.8) / 0.2)), y).astype(np.float32)
+    return y, g
 
 
 def decode(path, tempo):
@@ -79,7 +93,7 @@ def main(ep, pub):
     cfg = json.loads((ep / "script.json").read_text())
     from faster_whisper import WhisperModel
     model = WhisperModel("small", device="cpu", compute_type="int8")
-    t, chunks, lines = cfg["head"], [], []
+    t, chunks, lines, gains = cfg["head"], [], [], []
     tmp = Path(tempfile.mkdtemp())
     for ln in cfg["lines"]:
         a = squeeze(decode(ep / "vo" / f"{ln['key']}.mp3", cfg["tempo"][ln["speaker"]]))
@@ -87,7 +101,9 @@ def main(ep, pub):
         vis = [{"s": round(c["s"] + t, 3), "v": c["v"]} for c in visemes(tmp / "l.wav")]
         words = [{**w, "s": round(w["s"] + t, 3), "e": round(w["e"] + t, 3)} for w in words_of(a, model, ln["text"])]
         lines.append({**ln, "start": round(t, 3), "end": round(t + len(a) / SR, 3), "words": words, "visemes": vis})
-        chunks.append((t, a))
+        target = cfg.get("loud", {}).get(ln["speaker"], LOUD[ln["speaker"]]) + ln.get("gain", 0)
+        lv, g = level(a, target); gains.append(f"{ln['key']}{g:+.1f}")
+        chunks.append((t, lv))
         t += len(a) / SR + ln.get("after", cfg["gap"])
     total = t + cfg["tail"]
     mix = np.zeros(int(total * SR) + 1, dtype=np.float32)
@@ -99,6 +115,7 @@ def main(ep, pub):
     (pub / "timeline.json").write_text(json.dumps({"fps": cfg["fps"], "duration": round(total, 3), "lines": lines}, ensure_ascii=False))
     for l in lines:
         print(f"{l['key']} {l['start']:6.2f}-{l['end']:6.2f} {' '.join(w['w'] for w in l['words'])}")
+    print("громкость, дБ:", " ".join(gains))
     print("total", round(total, 2))
 
 
