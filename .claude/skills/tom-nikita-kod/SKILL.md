@@ -43,7 +43,7 @@ description: Код сцен «Тома и Никиты» (hf/engine2) — ге�
 - **Экран телефона:** `phoneCut(x, y, s, rot, { screen: () => { …координаты −96..96 × −190..190… } })`.
 
 ## Звук (`sound.json`)
-Копировать у серии-донора, менять метки. Типы музыки: `groove` / `pluck` / `tension` / `night` (`from`, `to`), `stop` и `endsting` (`at`). SFX: `slam pop click whoosh paper tear scratch buzzer bubbles chomp snip clink bell blip foil sniff purr chirp thud ticks hum riser gurgle gulp door meow`. Метка — `"имя"`, `"имя±сек"` или число. `bleep` — для запиканной версии.
+Копировать у серии-донора, менять метки. Типы музыки: `groove` / `pluck` / `tension` / `night` (`from`, `to`), `stop` и `endsting` (`at`). SFX: `drips` (капель в такт `DRIP` из ep09: `["drips", от, [до, громкость]]`) `slam pop click whoosh paper tear scratch buzzer bubbles chomp snip clink bell blip foil sniff purr chirp thud ticks hum riser gurgle gulp door meow`. Метка — `"имя"`, `"имя±сек"` или число. `bleep` — для запиканной версии.
 
 ## Грабли (уже наступали)
 | Симптом | Причина → решение |

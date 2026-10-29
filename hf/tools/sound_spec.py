@@ -13,7 +13,7 @@ sound.json:
   "sfx": [ ["slam", "nobody", 0.7], ["pop", "geo", 0.35], ["click", "lit", 0.9], ["foil", "remove", 0.8], ["ticks", 0, "lit"], ["hum", 0, "lit"] ],
   "levels": {"music": 0.22, "fx": 0.7} }
   "bleep": [["mat-0.03", "mat+1.55"]] }           # BLEEP=1 → мат запикан (запиканная версия) → audio_clean.wav
-Метка — имя из CUE, число или «имя±сек». Шумы: slam pop click whoosh paper tear scratch buzzer bubbles chomp snip clink bell blip foil gurgle gulp door meow sniff purr chirp ticks hum riser."""
+Метка — имя из CUE, число или «имя±сек». Шумы: drips (от, [до, громк.]) slam pop click whoosh paper tear scratch buzzer bubbles chomp snip clink bell blip foil gurgle gulp door meow sniff purr chirp ticks hum riser."""
 import json, os, re, subprocess, sys
 from pathlib import Path
 import numpy as np
@@ -34,6 +34,12 @@ KEYS = {'E': (['E2', 'B2', 'E3', 'G#3', 'B3'], ['A2', 'E3', 'A3', 'C#4', 'E4'], 
 def foil(d=0.6, g=1.0):
     t = T(d); r = np.random.default_rng(9); cr = np.convolve((r.random(len(t)) < 0.01).astype(float), np.hanning(40), 'same')
     return filt(noise(d), 'highpass', 3000) * (0.2 + cr) * np.sin(np.pi * t / d) * g
+
+
+def drip(g=0.5):                                                    # капля в ведро: «плинк» с подъёмом тона + шлепок
+    n = int(0.16 * SR); t = np.arange(n) / SR; f = 650 + 1500 * np.minimum(1, t / 0.035)
+    x = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.045) + 0.25 * noise(0.16)[:n] * np.exp(-t / 0.01)
+    return x / (np.abs(x).max() + 1e-9) * g
 
 
 def main(ep):
@@ -83,6 +89,10 @@ def main(ep):
     for item in S.get('sfx', []):
         name, t0, g = item[0], at(item[1]), item[2]
         if name == 'ticks': [FX.add(click(0.1), tt) for tt in np.arange(t0, at(g), 1.0)]; continue
+        if name == 'drips':                                         # ритм капли ep09: удар в 0.45 + k·1.1; ["drips", от, [до, громкость]]
+            t1, gg = at(g[0]), g[1]; k = int(np.ceil((t0 - 0.45) / 1.1))
+            while 0.45 + k * 1.1 < t1: FX.add(drip(gg), 0.45 + k * 1.1); k += 1
+            continue
         if name == 'hum': FX.add(hum(at(g) - t0, 0.12), t0); continue
         if name == 'riser': FX.add(riser(at(g) - t0, 0.35), t0); continue
         if name in FILES: x = FILES[name]; FX.add(x, t0, g) if x is not None else None; continue

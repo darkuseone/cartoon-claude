@@ -42,8 +42,9 @@
 | 6 | Кот тобой управляет? | `ep06_cat` | `ep06` | `ep06_cat_chat.mp4` | спальня, 5 утра |
 | 7 | Курицу моют? | `ep07_chicken` | `ep07` | `ep07_chicken_chat.mp4` | кухня вечером, раковина |
 | 8 | Лампочный заговор? | `ep08_bulb` | `ep08` | `ep08_bulb_chat.mp4` | подъезд, табуретка |
+| 9 | Почему мы терпим? | `ep09_terpet` | `ep09` | `ep09_terpet_chat.mp4` | ванная, протечка в ведро |
 
-Лучшие образцы кода: **ep03** (стоя, вставки), **ep04** (сидя за столом), **ep07** (эффект-оверлей микробов), **ep08** (свет вкл/выкл, предмет в руке).
+Лучшие образцы кода: **ep03** (стоя, вставки), **ep04** (сидя за столом), **ep07** (эффект-оверлей микробов), **ep08** (свет вкл/выкл, предмет в руке), **ep09** (зацикленная анимация капли + звук `drips` в такт).
 Тексты для выкладки — `publish/<эп>.txt`, оформление канала — `publish/channel.txt`.
 
 ## 3. Окружение (новый чат/контейнер)
@@ -59,18 +60,18 @@ bash tools/setup.sh          # .venv + Rhubarb + npm + проверка шриф
 
 ```bash
 # 0. Тема → факты (минимум 2 источника на факт) → сценарий: скиллы temy и scenarij
-mkdir episodes/ep09_<слово>                      # script.json по образцу episodes/ep08_bulb/script.json
-python3 pipeline/tts.py episodes/ep09_<слово>    # ElevenLabs eleven_v4 → vo/<ключ>.mp3 (готовые пропускает; перегенерация: + ключи реплик)
-.venv/bin/python -I pipeline/transcribe.py episodes/ep09_<слово>/vo/*.mp3   # теги не прочитаны вслух? слова на месте?
-.venv/bin/python pipeline/voice_v2.py episodes/ep09_<слово>   # → out/voice.wav + out/timeline.json (слова + виземы)
-python3 pipeline/words.py episodes/ep09_<слово>  # индексы слов для CUE; длительность ≤ 60 с
-cp -r hf/episodes/_template hf/episodes/ep09     # episode.json: timeline; set.js: НОВАЯ декорация + вставки; scenes.js
+mkdir episodes/ep10_<слово>                      # script.json по образцу episodes/ep08_bulb/script.json
+python3 pipeline/tts.py episodes/ep10_<слово>    # ElevenLabs eleven_v4 → vo/<ключ>.mp3 (готовые пропускает; перегенерация: + ключи реплик)
+.venv/bin/python -I pipeline/transcribe.py episodes/ep10_<слово>/vo/*.mp3   # теги не прочитаны вслух? слова на месте?
+.venv/bin/python pipeline/voice_v2.py episodes/ep10_<слово>   # → out/voice.wav + out/timeline.json (слова + виземы)
+python3 pipeline/words.py episodes/ep10_<слово>  # индексы слов для CUE; длительность ≤ 60 с
+cp -r hf/episodes/_template hf/episodes/ep10     # episode.json: timeline; set.js: НОВАЯ декорация + вставки; scenes.js
 cd hf
-tools/make.sh ep09 snap 0.5,3,5,…                # контакт-лист build/ep09/snaps/sheet.jpg — СМОТРЕТЬ (Read) и править
-tools/make.sh ep09 sound                         # sound.json → audio.wav, печатает LU музыки и шумов
-tools/make.sh ep09 all ep09_<слово>              # рендер ~15 мин (запускать в фоне) → ../out/ep09_<слово>_chat.mp4 + _sheet.jpg
-tools/make.sh ep09 clean ep09_<слово>            # по желанию: версия с запиканным матом
-tools/make.sh ep09 mux ep09_<слово>              # правка только звука без повторного рендера
+tools/make.sh ep10 snap 0.5,3,5,…                # контакт-лист build/ep10/snaps/sheet.jpg — СМОТРЕТЬ (Read) и править
+tools/make.sh ep10 sound                         # sound.json → audio.wav, печатает LU музыки и шумов
+tools/make.sh ep10 all ep10_<слово>              # рендер ~15 мин (запускать в фоне) → ../out/ep10_<слово>_chat.mp4 + _sheet.jpg
+tools/make.sh ep10 clean ep10_<слово>            # по желанию: версия с запиканным матом
+tools/make.sh ep10 mux ep10_<слово>              # правка только звука без повторного рендера
 ```
 Длинный рендер — `run_in_background`, ждать уведомления, не опрашивать в цикле. Пока рендерится одна серия, можно рисовать следующую.
 
