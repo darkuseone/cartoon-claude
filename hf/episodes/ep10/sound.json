@@ -1,0 +1,12 @@
+{"voice": "../episodes/ep10_cena99/out/voice.wav", "key": "G",
+ "music": [{"type": "groove", "from": 0.2, "to": "brainI-0.1", "g": 0.07}, {"type": "pluck", "from": "brainI", "to": "third+0.6"}, {"type": "tension", "from": "skid-0.6", "to": "none+0.4"},
+           {"type": "pluck", "from": "cars-0.4", "to": "mile+0.6"}, {"type": "groove", "from": "tip1-0.1", "to": "tag39+0.9", "g": 0.06},
+           {"type": "stop", "at": "tag39+1.0"}, {"type": "endsting", "at": "sub-0.1"}, {"type": "groove", "from": "sub+0.4", "to": "loop+0.6", "g": 0.06}],
+ "stings": ["brainI-0.05", "dressI-0.05", "skid-0.6", "cars-0.6", "tip1-0.05"],
+ "sfx": [["blip", 0.25, 0.4], ["blip", 0.7, 0.4], ["blip", 1.15, 0.4], ["blip", 1.6, 0.4], ["bell", "zero-0.1", 0.35], ["whoosh", "zero", 0.3], ["paper", "zero+0.2", 0.4],
+         ["slam", "caught", 0.4], ["pop", "left", 0.4], ["pop", "three-0.3", 0.4], ["slam", "two", 0.4], ["slam", "three", 0.4],
+         ["pop", "p34-0.2", 0.35], ["pop", "p39-0.2", 0.35], ["pop", "p39+0.3", 0.35], ["slam", "third", 0.6], ["sniff", "skid", 0.4], ["slam", "none", 0.7],
+         ["pop", "m22", 0.4], ["ticks", "km-0.2", "price"], ["click", "km+0.4", 0.4], ["click", "km+0.8", 0.4], ["click", "km+1.2", 0.4], ["buzzer", "price", 0.35],
+         ["pop", "tip1", 0.4], ["pop", "tip2", 0.4], ["blip", "tag39-0.1", 0.5], ["slam", "mat", 0.8], ["pop", "sub", 0.3], ["blip", "loop", 0.4]],
+ "bleep": [["mat-0.03", "mat+0.55"]],
+ "levels": {"music": 0.22, "fx": 0.33}}
