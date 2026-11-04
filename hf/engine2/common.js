@@ -11,7 +11,8 @@ function talk(who, t) { const m = mouthAt(who, t); return { m, bob: m.talking ? 
 function shakeAt(t) { let s = 0; for (const [t0, d, a] of (typeof SHAKES !== 'undefined' ? SHAKES : [])) if (t >= t0 && t < t0 + d) s = Math.max(s, a * (1 - (t - t0) / d)); return s; }
 function slideIn(u, fn) { const k = step(clamp(u / 0.25), 24); push((1 - eo(k)) * 1100, 0, 1, (1 - k) * 0.08); fn(); pop(); }   // вставка «въезжает» карточкой
 function bg(col, seed = 2999) { rectP(-100, -100, 1280, 2200, col, { seed, line: false, step: 80 }); }
-function label(x, y, s, w, col = '#f4e6a8', rot = 0.03, size = 46) { push(x, y, 1, rot); card(0, 0, Math.max(300, s.length * size * 0.62 + 80), 110, 0, hsh(s.length, x), col); txt(s, 0, 4, size, { font: 'Inter Black', col: '#1c1512' }); pop(); }
+function label(x, y, s, w, col = '#f4e6a8', rot = 0.03, size = 46) { push(x, y, 1, rot); ctx.save(); ctx.font = `800 ${size / S}px Inter Black`; const tw = ctx.measureText(s).width; ctx.restore();   // ширина — по реальному тексту
+  card(0, 0, Math.max(300, tw + 80), 110, 0, hsh(s.length, x), col); txt(s, 0, 4, size, { font: 'Inter Black', col: '#1c1512' }); pop(); }
 function slam(word, t, t0, seed, y = 330, size = 150, rot = -0.04) { if (t > t0) { push(540, y, 1, rot); ransom(word, 0, 0, size, seed, { reveal: pr(t, t0, t0 + 0.2), pop: true }); pop(); } }
 
 let _shot = 0;

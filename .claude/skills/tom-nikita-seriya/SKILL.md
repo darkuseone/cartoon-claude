@@ -41,7 +41,7 @@ python3 pipeline/tts.py episodes/epNN_x && .venv/bin/python -I pipeline/transcri
 ```bash
 cd hf && python3 tools/mkpage.py epNN >/dev/null && node tools/dbg.cjs build/epNN/film | tail -2 && tools/make.sh epNN snap 0.5,2.5,…
 ```
-Read `build/epNN/snaps/sheet.jpg` **один раз**, пройти чек-лист `CLAUDE.md` §6, исправить всё одной правкой, переснять **только** изменённые моменты (`rm -rf build/epNN/snaps` перед снимком).
+Строки «!! вылез текст» в выводе snap/dbg — исправить сразу (`maxW`). Read `build/epNN/snaps/sheet.jpg` **один раз**, пройти чек-лист `CLAUDE.md` §6, исправить всё одной правкой, переснять **только** изменённые моменты (`rm -rf build/epNN/snaps` перед снимком).
 
 **7. Звук** — `sound.json` по образцу серии-донора (метки = имена CUE), `tools/make.sh epNN sound`. Цель: музыка −14…−19 LU, шумы −11…−13 LU. Не попало — поправить `levels` один раз (больше шумов → `fx`↑ и наоборот).
 

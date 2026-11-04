@@ -109,11 +109,26 @@ function layer(fn, o = {}) {
   ctx.globalAlpha = o.a ?? 1; ctx.drawImage(c, 0, 0); ctx.restore();
 }
 
+// ------------------------------------------------------------------ контроль «текст в плашке»: card() и txt() пишут свои экранные рамки, fitCheck() ищет вылезший текст
+const FIT = { boxes: [], txts: [], n: 0 };
+function scrBox(x0, y0, x1, y1) { const m = ctx.getTransform(), P = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]].map(([x, y]) => [m.a * x + m.c * y + m.e, m.b * x + m.d * y + m.f]);
+  return [Math.min(...P.map(p => p[0])), Math.min(...P.map(p => p[1])), Math.max(...P.map(p => p[0])), Math.max(...P.map(p => p[1]))]; }
+function fitCheck(tol = 6) {                                       // → [{s, over}] — текст, центр которого в плашке, а край выходит за неё
+  const out = [];
+  for (const T of FIT.txts) { const cx = (T.b[0] + T.b[2]) / 2, cy = (T.b[1] + T.b[3]) / 2;
+    const inside = FIT.boxes.filter(B => B.i < T.i && cx > B[0] && cx < B[2] && cy > B[1] && cy < B[3]); if (!inside.length) continue;
+    const B = inside[inside.length - 1];                            // плашка, нарисованная последней под этим текстом
+    const over = Math.max(B[0] - T.b[0], T.b[2] - B[2], B[1] - T.b[1], T.b[3] - B[3]); if (over > tol) out.push({ s: T.s, over: Math.round(over) }); }
+  return out;
+}
 // ------------------------------------------------------------------ текст
 function txt(s, x, y, size, o = {}) {
   if ((o.a ?? 1) <= 0.005) return 0;
   ctx.save(); ctx.font = `${o.weight ?? 800} ${size / S}px ${o.font || 'Inter'}`; ctx.textAlign = o.align || 'center'; ctx.textBaseline = 'middle';
-  const w = ctx.measureText(s).width; ctx.translate(x, y); if (o.rot) ctx.rotate(o.rot);
+  let w = ctx.measureText(s).width;
+  if (o.maxW && w > o.maxW) { size *= o.maxW / w; ctx.font = `${o.weight ?? 800} ${size / S}px ${o.font || 'Inter'}`; w = ctx.measureText(s).width; }   // maxW — ужать шрифт, чтобы влез в плашку
+  ctx.translate(x, y); if (o.rot) ctx.rotate(o.rot);
+  { const x0 = o.align === 'left' ? 0 : o.align === 'right' ? -w : -w / 2; FIT.txts.push({ s, i: FIT.n++, b: scrBox(x0, -size * 0.38, x0 + w, size * 0.38) }); }
   if (o.reveal !== undefined && o.reveal < 1) { const x0 = o.align === 'left' ? 0 : -w / 2; ctx.beginPath(); ctx.rect(x0 - 10, -size, (w + 20) * clamp(o.reveal), size * 2); ctx.clip(); }
   ctx.globalAlpha = o.a ?? 1;
   if (o.stroke) { ctx.lineJoin = 'round'; ctx.lineWidth = o.stroke / S; ctx.strokeStyle = o.sc || '#120d0b'; ctx.strokeText(s, 0, 0); }

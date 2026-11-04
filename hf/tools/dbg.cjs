@@ -3,14 +3,14 @@
 const puppeteer = require('puppeteer-core'); const path = require('path');
 (async () => {
   const b = await puppeteer.launch({ executablePath: process.env.CHROME || '/opt/pw-browsers/chromium', args: ['--no-sandbox', '--allow-file-access-from-files'] });
-  const p = await b.newPage(); let errs = 0;
+  const p = await b.newPage(); let errs = 0, fits = 0; const seen = new Set();
   p.on('pageerror', e => { errs++; console.log('ERR', e.message); });
   await p.goto('file://' + path.resolve(process.argv[2]) + '/index.html'); await new Promise(r => setTimeout(r, 1500));
   let ts = process.argv.slice(3).map(Number);
   if (!ts.length) { const D = await p.evaluate(() => DUR); for (let t = 0; t < D; t += 0.5) ts.push(+t.toFixed(2)); }
   for (const t of ts) {
-    const r = await p.evaluate(t => { try { lastFr = -1; draw(t); return 'ok'; } catch (e) { return e.message + ' @ ' + (e.stack || '').split('\n').slice(1, 3).join(' | '); } }, t);
-    if (r !== 'ok') { errs++; console.log(t, r); }
+    const r = await p.evaluate(t => { try { lastFr = -1; draw(t); const f = window.__fit || []; return f.length ? 'FIT ' + f.map(x => `«${x.s}» вылез из плашки на ${x.over} px`).join('; ') : 'ok'; } catch (e) { return e.message + ' @ ' + (e.stack || '').split('\n').slice(1, 3).join(' | '); } }, t);
+    if (r.startsWith('FIT ')) { fits++; if (!seen.has(r)) { seen.add(r); console.log(t, r); } } else if (r !== 'ok') { errs++; console.log(t, r); }
   }
-  console.log(errs ? `ошибок: ${errs}` : `ok: ${ts.length} кадров без ошибок`); await b.close(); process.exit(errs ? 1 : 0);
+  console.log(errs ? `ошибок: ${errs}` : `ok: ${ts.length} кадров без ошибок`, fits ? `· !! текст вылезает из плашек в ${fits} кадрах (см. выше)` : '· текст в плашках ok'); await b.close(); process.exit(errs ? 1 : 0);
 })();

@@ -34,6 +34,8 @@
 - `stroke(pts, col, w, o = {})` — маркер/фломастер: линия с концами-закруглениями
 - `dot(x, y, r, col, a = 1)`
 - `layer(fn, o = {})`
+- `scrBox(x0, y0, x1, y1)`
+- `fitCheck(tol = 6)` — → [{s, over}] — текст, центр которого в плашке, а край выходит за неё
 - `txt(s, x, y, size, o = {})`
 - `ransom(s, x, y, size, seed, o = {})`
 - `tape(x, y, w, rot, seed)`
@@ -80,7 +82,7 @@
 - `shakeAt(t)`
 - `slideIn(u, fn)` — вставка «въезжает» карточкой
 - `bg(col, seed = 2999)`
-- `label(x, y, s, w, col = '#f4e6a8', rot = 0.03, size = 46)`
+- `label(x, y, s, w, col = '#f4e6a8', rot = 0.03, size = 46)` — ширина — по реальному тексту
 - `slam(word, t, t0, seed, y = 330, size = 150, rot = -0.04)`
 - `shotAt(t)`
 - `frame(t)`

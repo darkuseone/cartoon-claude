@@ -5,14 +5,14 @@ const puppeteer = require('puppeteer-core'); const path = require('path'); const
 (async () => {
   const [film, out, ...ts] = process.argv.slice(2); fs.mkdirSync(out, { recursive: true });
   const b = await puppeteer.launch({ executablePath: process.env.CHROME || '/opt/pw-browsers/chromium', args: ['--no-sandbox', '--allow-file-access-from-files'] });
-  const p = await b.newPage(); await p.setViewport({ width: 1080, height: 1920 }); let errs = 0;
+  const p = await b.newPage(); await p.setViewport({ width: 1080, height: 1920 }); let errs = 0, fitN = 0;
   p.on('pageerror', e => { errs++; console.log('ERR(load)', e.message); });
   await p.goto('file://' + path.resolve(film) + '/index.html'); await p.evaluate(() => document.fonts.ready); await new Promise(r => setTimeout(r, 800));
   const files = [];
   for (const t of ts.map(Number)) {
-    const r = await p.evaluate(t => { try { lastFr = -1; const t0 = performance.now(); draw(t); const ms = performance.now() - t0; return { ms, ok: document.getElementById('c').toDataURL('image/png') }; } catch (e) { return { err: e.message + ' @ ' + (e.stack || '').split('\n').slice(1, 4).join(' | ') }; } }, t);
+    const r = await p.evaluate(t => { try { lastFr = -1; const t0 = performance.now(); draw(t); const ms = performance.now() - t0; return { ms, fit: window.__fit || [], ok: document.getElementById('c').toDataURL('image/png') }; } catch (e) { return { err: e.message + ' @ ' + (e.stack || '').split('\n').slice(1, 4).join(' | ') }; } }, t);
     if (r.err) { errs++; console.log(t, 'ERR', r.err); continue; }
-    console.log(`t=${t.toFixed(2)}  ${Math.round(r.ms)} мс/кадр`); const f = path.join(out, `t${t.toFixed(2)}.png`); fs.writeFileSync(f, Buffer.from(r.ok.split(',')[1], 'base64')); files.push(f);
+    console.log(`t=${t.toFixed(2)}  ${Math.round(r.ms)} мс/кадр`); if (r.fit.length) { fitN++; console.log('  !! ВЫЛЕЗ ТЕКСТ:', r.fit.map(x => `«${x.s}» на ${x.over} px`).join('; ')); } const f = path.join(out, `t${t.toFixed(2)}.png`); fs.writeFileSync(f, Buffer.from(r.ok.split(',')[1], 'base64')); files.push(f);
   }
   await b.close();
   if (files.length) {
@@ -23,5 +23,5 @@ const puppeteer = require('puppeteer-core'); const path = require('path'); const
     const fin = rows > 1 ? `${Array.from({ length: rows }, (_, r) => `[r${r}]`).join('')}vstack=${rows}[o]` : `[r0]null[o]`;
     try { execFileSync('ffmpeg', ['-v', 'error', '-y', ...inp, '-filter_complex', [...fl, ...rowsF, fin].join(';'), '-map', '[o]', '-frames:v', '1', path.join(out, 'sheet.jpg')]); } catch (e) { console.log('sheet: ошибка ffmpeg', e.message.slice(0, 200)); }
   }
-  console.log(errs ? `ошибок: ${errs}` : `ok: ${files.length} кадров`, '→', out); process.exit(errs ? 1 : 0);
+  console.log(errs ? `ошибок: ${errs}` : `ok: ${files.length} кадров`, fitN ? `· !! текст вылезает из плашек в ${fitN} кадрах` : '· текст в плашках ok', '→', out); process.exit(errs ? 1 : 0);
 })();

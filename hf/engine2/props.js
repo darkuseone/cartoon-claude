@@ -70,7 +70,7 @@ function litterFront(o = {}) {
 function cork() {                                                    // пробковая доска
   rectP(-200, -200, 1480, 2320, '#b5895a', { seed: 540, line: false, step: 60, shade: () => { const r = rng(541); for (let i = 0; i < 2600; i++) dot(-200 + r() * 1480, -200 + r() * 2320, 1 + r() * 2.2, r() < 0.5 ? '#8f6438' : '#d1a774', 0.7); } });
 }
-function card(x, y, w, h, rot, seed, col = '#f6f1e4') { push(x, y, 1, rot); piece([[-w / 2, -h / 2], [w / 2, -h / 2], [w / 2, h / 2], [-w / 2, h / 2]], col, { seed, step: 30, lw: 2 }); pop(); }
+function card(x, y, w, h, rot, seed, col = '#f6f1e4') { push(x, y, 1, rot); { const B = scrBox(-w / 2, -h / 2, w / 2, h / 2); B.i = FIT.n++; FIT.boxes.push(B); } piece([[-w / 2, -h / 2], [w / 2, -h / 2], [w / 2, h / 2], [-w / 2, h / 2]], col, { seed, step: 30, lw: 2 }); pop(); }
 function kittenCut(x, y, s, t) {                                    // котёнок-вырезка (большая голова, маленькое тело)
   push(x, y, s);
   blobP([[0, 40], [70, 70], [90, 150], [60, 200], [0, 210], [-60, 200], [-90, 150], [-70, 70]], TC.fur, { seed: 550 });
