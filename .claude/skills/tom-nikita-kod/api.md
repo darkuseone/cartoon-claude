@@ -240,7 +240,8 @@
 - `bowlP(x, y, s, full)` — миска на полу (полная — Том не ест)
 - `foodPack(x, y, s, rot, o = {})` — пакет корма: «С ЛОСОСЕМ» крупно, «со вкусом» мелко
 - `windowRoom(t, o = {})`
-- `morningLight(fn)`
+- `morningLight(t, fn)`
+- `tableBg(seed)` — фон вставок: деревянный стол, рассыпанный корм, обрывки бумаги
 - `bar(x, y, w, h, k, col, seed)`
 - `threeIns(t, c)` — «с лососем» = минимум 3 %
 - `dinnerIns(t, c)` — «ужин», «блюдо», «формула» = 25 %
