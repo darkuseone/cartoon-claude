@@ -12,7 +12,7 @@ const SHAKES = [[CUE.three, 0.25, 8], [CUE.min3, 0.25, 8], [CUE.noMin, 0.25, 8],
 const EP = { title: ['«С ЛОСОСЕМ» —', 'РАЗВОД?'], cens: { 'Сука.': 'С*КА.' },
   hot: /^(сорок|долларов|лососем|лосося|три|процента|кукуруза|надежда|рыба|США|минимум|ужин|блюдо|формула|двадцать|пять|четверть|вкусом|минимума|завода|маркетинг|девяносто|убыванию|первое|хищник|хомяк|честно|кожаный)/i,
   hideMat: [['t07', 'Сука', CUE.mat]] };
-const TOMP = { x: 860, y: 761, s: 0.62 }, NIKP = { x: 330, y: 1077, s: 0.95 };
+const TOMP = { x: 860, y: 761, s: 0.62 }, NIKP = { x: 380, y: 1077, s: 0.95 };
 const TOMD = { lid: 0.55, lk: [-0.8, 0.1], smirk: 0.2 };
 const HOLD = { l: [-150, 300, 'open'], r: [190, 110, 'fist'] };            // правая — пачка корма у груди
 const READ = { l: [-150, 300, 'open'], r: [175, 30, 'fist'] };            // пачка у лица: читает мелкий шрифт
@@ -24,7 +24,7 @@ function scene(t, tomO, nikO, o = {}) {
   if (tomO) layer(() => { const tk = talk('tom', t); tom({ ...TOMP, t, m: tk.m, bob: tk.bob, ...tomO }); }, { sx: 7, sy: 8, sb: 12 });
   if (nikO) layer(() => { const tk = talk('nikita', t), n = { legs: 'stand', arms: HOLD, ...nikO }; nikita({ ...NIKP, t, m: tk.m, bob: tk.bob, ...n });
     if (n.pack !== false) { const [hx, hy] = handW(n.arms.r); foodPack(hx + 6, hy - 40, n.packS ?? 0.78, n.packR ?? -0.08, { small: n.small }); } }, { sx: 7, sy: 8, sb: 12 });
-  morningLight();
+  morningLight(t);
 }
 const NCL = (z = 2.0, sh = 0) => cam(NIKP.x + 20, NIKP.y + 40, z, 0, sh);
 const TCL = (z = 2.2, sh = 0) => cam(TOMP.x - 20, TOMP.y + 80, z, 0, sh);
@@ -37,7 +37,7 @@ const SHOTS = [[0, 'cold'], [LN.t01.start - 0.03, 'tomA'], [LN.n02.start - 0.05,
   [CUE.hunter - 0.05, 'tomE'], [LN.n07.start - 0.05, 'nikF'], [LN.n07.end + 0.06, 'stare'], [CUE.mat - 0.3, 'mat'], [CUE.more - 0.05, 'wideM'], [LN.t08.start - 0.08, 'final']];
 
 const SH = {
-  cold(t) { const [cx, cy, z] = ck(t, [[0, 640, 1080, 1.3], [CUE.voro, 650, 1060, 1.36]]); cam(cx, cy, z);
+  cold(t) { const [cx, cy, z] = ck(t, [[0, 600, 1080, 1.28], [CUE.voro, 610, 1060, 1.34]]); cam(cx, cy, z);
     scene(t, TCOLD, ex(t, [[0, COLD], [CUE.voro - 0.3, { mood: 'angry', brow: 1, lk: [0.9, -0.5] }]])); pop(); },
   tomA(t) { TCL(t > CUE.three ? 2.5 : 2.25, shakeAt(t)); scene(t, ex(t, [[0, { ...TCOLD, lk: [-0.6, 0] }], [CUE.three, { lid: 0.5, lk: [-0.9, 0], smirk: 0.5, brow: -0.3 }]]), { mood: 'shock' }); pop(); },
   nikA(t) { NCL(); scene(t, TOMD, { mood: 'angry', brow: 0.5, lk: [0.9, -0.2], arms: HOLD, packS: 0.95, packR: 0.05 }); pop(); },
@@ -61,7 +61,7 @@ const SH = {
     if (t > CUE.mat) { push(540, 330, 1, -0.04); ransom('С*КА', 0, 0, 170, 11960, { reveal: pr(t, CUE.mat, CUE.mat + 0.2), pop: true }); pop(); } },
   wideM(t) { cam(640, 1040, 1.3, 0, shakeAt(t)); scene(t, { lid: 0.7, lk: [-0.8, 0.1], brow: -0.6, mood: t > CUE.fishW ? 'strain' : undefined }, { mood: 'dumb', smile: 0.9, brow: 0.8, lk: [0.8, -0.2], arms: UP }); pop();
     if (t > CUE.fishW) { push(540, 330, 1, 0.03); ransom('МНЕ НУЖНА РЫБА', 0, 0, 110, 11965, { reveal: pr(t, CUE.fishW, CUE.fishW + 0.25), pop: true }); pop(); } },
-  final(t) { const [cx, cy, z] = ck(t, [[0, 640, 1040, 1.3], [CUE.loop - 0.2, 640, 1040, 1.3], [DUR, 600, 1080, 1.3]]); cam(cx, cy, z);
+  final(t) { const [cx, cy, z] = ck(t, [[0, 610, 1040, 1.3], [CUE.loop - 0.2, 610, 1040, 1.3], [DUR, 600, 1080, 1.28]]); cam(cx, cy, z);
     scene(t, ex(t, [[0, { ...TOMD, lid: 0.5, smirk: 0.8 }], [CUE.sub, { lid: 0.45, lk: [0, 0.2], paw: 1, pawX: 175, pawY: 110, smirk: 0.8 }], [CUE.loop - 0.3, TCOLD]]),
       ex(t, [[0, { mood: 'dread', smile: 0, brow: 0.8, lk: [0.8, -0.2], arms: UP }], [CUE.loop, { ...COLD, arms: HOLD }]])); pop();
     if (t > CUE.sub && t < CUE.loop) { push(540, 300, 1, -0.03); ransom('ПЕРЕШЛИ ТОМУ,', 0, 0, 92, 11970, { reveal: pr(t, CUE.sub, CUE.sub + 0.3) }); pop();
