@@ -149,11 +149,14 @@ function bloodIns(t, c) {                                             // ско�
 
 function parrotP(x, y, t, o = {}) {                                   // клетка с попугаем: качает головой, кашляет в дыму, перья дыбом
   push(x, y); rectP(-90, -14, 180, 14, '#8a6a4a', { seed: 13300, lw: 2 });
-  const cough = o.cough ? (Math.sin(t * 16) > 0.3 ? 1 : 0) : 0, bob = Math.sin(step(t) * 4) * 6;
-  push(0, -90 + bob * 0.3, 1, Math.sin(step(t) * 2) * 0.08 - cough * 0.25);
+  const cough = o.cough ? (Math.sin(t * 16) > 0.3 ? 1 : 0) : 0, bob = Math.sin(step(t) * 4) * 6, hy = o.hypno ?? 0, sh = o.shake ?? 0;
+  const sway = hy * Math.sin(t * 3.5) * 0.35 + sh * Math.sin(t * 60) * 0.25;                      // под гипнозом качается в такт; вырвался — трясёт головой
+  push(0, -90 + bob * 0.3 * (1 - hy), 1, Math.sin(step(t) * 2) * 0.08 * (1 - hy) - cough * 0.25 + sway);
+  if (sh > 0) for (let i = 0; i < 4; i++) { const a = i * 1.6 + t * 4; piece([[Math.cos(a) * 60, -10 + Math.sin(a) * 40], [Math.cos(a) * 60 + 14, -2 + Math.sin(a) * 40], [Math.cos(a) * 60 + 4, 10 + Math.sin(a) * 40]], '#46b86a', { raw: true, lw: 1.2, a: sh }); }   // перья летят
   stroke([[-30, 50], [30, 50]], '#6a4a2a', 5);
   blobP([[-24, 44], [-30, 0], [-14, -40], [16, -40], [28, 0], [22, 44]], cough ? '#7aa65a' : '#46b86a', { seed: 13301, lw: 2.2, shade: () => { blobP([[-10, 10], [14, 4], [18, 40], [-6, 44]], '#2f8a4a', { seed: 13302, line: false }); } });
-  piece([[18, -26], [40, -18], [20, -8]], '#f2a03a', { seed: 13303, lw: 1.6 }); dot(4, -26, 6, '#1c1512'); dot(2, -28, 2, '#ffffff');
+  piece([[18, -26], [40, -18], [20, -8]], '#f2a03a', { seed: 13303, lw: 1.6 }) ; if (hy > 0.2) { ellP(4, -26, 11, 11, '#fbfaf6', { raw: true, lw: 1.4, tex: false }); hypnoSpiral(4, -26, 9, -t * 7, hy, '#1c1512'); } else { dot(4, -26, 6, '#1c1512'); dot(2, -28, 2, '#ffffff'); }
+  if (sh > 0.3) { piece([[22, -14], [44, -6], [24, 2]], '#f2a03a', { raw: true, lw: 1.4 }); }   // клюв открыт — орёт
   piece([[-6, 44], [6, 44], [0, 96]], '#d8342c', { seed: 13304, lw: 1.6 });
   if (cough) for (let i = 0; i < 3; i++) dot(40 + i * 12, -14 - i * 8, 4 + i * 2, '#cfcac8', 0.8);
   pop();

@@ -22,8 +22,8 @@ const ET = {                                                           // Том
   deadpan:  { lid: 0.62, lk: [-0.8, 0.1], smirk: 0 },
   smug:     { lid: 0.42, smirk: 1, brow: -0.2, lk: [-0.7, 0] },
   lecture:  { lid: 0.5, paw: 1, pawX: 175, pawY: 110, smirk: 0.3, brow: 0.2, lk: [-0.8, 0] },
-  alarm:    { mood: 'shock', eyeS: 1.06, jaw: 0.25, fur: 0.5, ears: 0.3 },
-  fear:     { mood: 'shock', eyeS: 1.08, fur: 0.8, ears: 0.7, jaw: 0.2, sweat: 1 },
+  alarm:    { lid: 0.25, pup: 0.03, brow: 0.6, jaw: 0.2, fur: 0.5, ears: 0.4 },                  // настороже: щёлки, уши назад (без круглых «милых» глаз)
+  fear:     { lid: 0.2, pup: 0.02, brow: 0.8, fur: 0.9, ears: 0.8, jaw: 0.2, sweat: 1 },
   disgust:  { lid: 0.68, brow: -0.6, smirk: 0, ears: 0.4, lk: [0.2, 0.5] },
   grave:    { lid: 0.58, brow: 0.7, smirk: 0, lk: [-0.3, 0.3], ears: 0.3 },
   furious:  { lid: 0.8, brow: -0.9, ears: 0.6, smirk: 0 },
@@ -32,11 +32,12 @@ const ET = {                                                           // Том
   sneaky:   { lid: 0.55, smirk: 0.8, lk: [0.9, 0.2], brow: -0.3 },
   shame:    { lid: 0.5, blush: 0.35, lk: [0.7, 0.6], ears: 0.6, smirk: 0 },
   stare:    { lid: 0.7, lk: [-0.3, 0.1], smirk: 0, brow: -0.2 },
-  hunt:     { lid: 0.15, pup: 0.9, ears: 0, smirk: 0, brow: -0.3 }            // охотится: зрачки во весь глаз
+  hunt:     { lid: 0.48, pup: 0.02, ears: 0.2, smirk: 0.5, brow: -0.8 },          // охотится: хищный прищур, зрачки-щёлки, злодейская полуулыбка
+  hypno:    { lid: 0.3, hypno: 1, ears: 0, smirk: 0.7, brow: -0.6 }               // гипнотизирует: спирали в глазах
 };
 /* у каждого набора — полный «нейтральный» базис, чтобы при смене эмоции (ex()) не залипали чужие параметры (например, mood:'shock') */
 const EN0 = { mood: '', eyeS: 1, pupS: 1, sparkle: 0, jaw: 0, grin: 0, browIn: undefined, browA: 0, brow: 0, blush: 0, pale: 0, tears: 0, vein: 0, sweat: 0, smile: undefined, smirkN: 0, lid: undefined };
-const ET0 = { mood: '', eyeS: 1, pup: 0.12, jaw: 0, fur: 0, ears: 0, sweat: 0, vein: 0, blush: 0, paw: 0, brow: 0, smirk: undefined, lid: undefined, tongue: 0 };
+const ET0 = { mood: '', eyeS: 1, pup: 0.08, hypno: 0, jaw: 0, fur: 0, ears: 0, sweat: 0, vein: 0, blush: 0, paw: 0, brow: 0, smirk: undefined, lid: undefined, tongue: 0 };
 for (const k in EN) EN[k] = { ...EN0, ...EN[k] }; for (const k in ET) ET[k] = { ...ET0, ...ET[k] };
 const EMO = (base, ...more) => Object.assign({}, base, ...more);
 

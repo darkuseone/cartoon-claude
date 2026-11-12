@@ -32,19 +32,22 @@ const lerpArm = (a, b, k) => [lerp(a[0], b[0], k), lerp(a[1], b[1], k), b[2]];
 const armsK = (A, B, k) => ({ l: lerpArm(A.l, B.l, k), r: lerpArm(A.r, B.r, k) });
 
 /* Кошачья жизнь Тома на кухне — пока Никита отвлекает */
-let PAN = [650, 1300];                                                  // где сейчас сковородка (для охоты на котлету)
+let PAN = [650, 1300];
+const HYP = { free: LN.n03.start + 0.15 };                                 // попугай под гипнозом n02…t02, вырывается в конце t02
+CUE.free = HYP.free;                                                  // где сейчас сковородка (для охоты на котлету)
 function tomLife(t) {
   const L = {};
   if (t < LN.t01.end) {                                                 // охотится на котлету в сковородке: развернулся, тянет лапу
     const dx = (TOMP.x - PAN[0]) / TOMP.s, sw = (t % 1.2) < 0.4, k = sw ? sm((t % 1.2) / 0.2) : 0.35;
     Object.assign(L, ET.hunt, { flip: true, lk: [0.9, 0.35], paw: 1, pawX: lerp(170, clamp(dx, 160, 300), k), pawY: lerp(110, 200, k) });
-    if (t > CUE.cutlet - 0.3) Object.assign(L, { tongue: 1, lid: 0.4, pup: 0.5 });
-  } else if (t >= LN.n02.start && t < LN.t03.start) {                   // гипнотизирует попугая: зрачки во весь глаз, присел, хвост бьёт
-    Object.assign(L, ET.hunt, { lk: [-1, 0.1], ears: 0.3, q: 1 - 0.06 - 0.025 * Math.sin(t * 20), tailK: Math.sin(t * 9) * 1.4 });
+    if (t > CUE.cutlet - 0.3) Object.assign(L, { tongue: 1, lid: 0.45 });
+  } else if (t >= LN.n02.start && t < LN.t03.start + 0.6) {                   // гипнотизирует попугая: спирали в глазах, хвост медленно ходит; попугай вырвался — Том разочарован
+    if (t < HYP.free) Object.assign(L, ET.hypno, { hypno: sm(pr(t, LN.n02.start, LN.n02.start + 0.5)), tilt: -0.06, tailK: Math.sin(t * 2) * 1.2 });
+    else Object.assign(L, ET.deadpan, { lk: [-1, 0.1], lid: 0.7 });
   } else if (t >= LN.n04.start && t < LN.t04.start) {                   // умывается
     Object.assign(L, { paw: 1, pawX: 70, pawY: 70, tongue: Math.sin(t * 9) > 0 ? 1 : 0.4, tilt: -0.08, lid: 0.6 });
   } else if (t >= LN.t04.start && t < LN.n05.start) {                   // крадётся к клетке, пока говорит
-    Object.assign(L, ET.hunt, { lk: [-1, 0.1], dx: -50 * sm(pr(t, LN.t04.start, LN.t04.start + 1.5)), q: 0.94 });
+    Object.assign(L, ET.hunt, { lk: [-1, 0.1], dx: -50 * sm(pr(t, LN.t04.start, LN.t04.start + 1.5)), tilt: -0.08 });
   }
   if (t >= CUE.toss && t < CUE.catch + 0.3) Object.assign(L, ET.alarm, { paw: 1, pawX: 120, pawY: -120, lk: [-0.6, -0.8] });   // ловит котлету
   if (t >= CUE.catch + 0.3 && t < CUE.eat1) {                          // ест котлету: голова вниз, жуёт; поднимает — говорит с набитым ртом
@@ -64,7 +67,8 @@ function scene(t, tomO, nikO, o = {}) {
   plane(0, 2.4, () => kitSky(t, { bell: 1 }));
   plane(1, 1.35, () => kitWall(t, { alarm: heat > 0.5 ? 1 : 0 }));
   plane(2, 1.0, () => {
-    kitMid(t, { cough: heat > 0.5 && t < LN.n08.start + 1 });
+    const hy = t >= LN.n02.start && t < HYP.free ? sm(pr(t, LN.n02.start + 0.3, LN.n02.start + 1.2)) : 0, sh = t >= HYP.free && t < HYP.free + 0.8 ? 1 - pr(t, HYP.free + 0.4, HYP.free + 0.8) : 0;
+    kitMid(t, { cough: heat > 0.5 && t < LN.n08.start + 1, hypno: hy, shake: sh });
     if (tomO) { const br = breathe(t, 1), life = { ...LF }, q = (tomO.q ?? 1) * (life.q ?? 1), dx = life.dx ?? 0; delete life.q; delete life.dx;
       layer(() => { const tk = talk('tom', t), m = life.chew ? { open: Math.abs(Math.sin(t * 14)) * 0.35, round: 0.2 } : tk.m;
         tom({ ...TOMP, x: TOMP.x + dx, t, m, tailK: Math.sin(t * 2.6) * 0.6, ...tomO, ...life, bob: tk.bob + br.bob + (life.bob ?? 0), tilt: br.tilt + (life.tilt ?? 0), squash: q }); }, { sx: 9, sy: 11, sb: 16 });
@@ -98,10 +102,11 @@ const SH = {
     scene(t, {}, { ...ex(t, [[0, EN.eww], [CUE.teeth - 0.2, EN.horror]]), arms: BIN, squash: take(t, CUE.teeth - 0.2) }); },
   tomA(t) { T(lerp(2.0, 2.35, sm(pr(t, CUE.put - 0.4, CUE.cutlet))), { Z: 0.08 * pr(t, CUE.calves, CUE.cutlet) });
     scene(t, {}, { ...EN.doubt, arms: armsK(BIN, HOLD, sm(pr(t, CUE.put, CUE.put + 0.5))) }); },
-  nikA(t) { N(2.0); scene(t, {}, { ...EN.dismiss, arms: SHOW, pS: 0.7, squash: take(t, LN.n02.start, 0.1) }); },
+  nikA(t) { cam25(700, 940, lerp(1.75, 2.0, pr(t, LN.n02.start, LN.n02.end)), { dof: 5 });   // Никита машет сковородкой, а Том гипнотизирует попугая — оба в кадре
+    scene(t, {}, { ...EN.dismiss, arms: SHOW, pS: 0.7, squash: take(t, LN.n02.start, 0.1) }); },
   tomB(t) { T(2.3); scene(t, { ...ET.lecture, q: take(t, LN.t02.start, 0.08) }, { ...EN.doubt }); },
   c8: ins(c8Ins),
-  nikB(t) { N(2.05); scene(t, {}, { ...EN.awe, arms: HOLD }); },
+  nikB(t) { cam25(620, 980, 1.6, { dof: 5, shake: t > HYP.free && t < HYP.free + 0.5 ? 6 : 0 }); scene(t, {}, { ...EN.awe, arms: HOLD }); },   // попугай вырывается из гипноза и орёт
   cowW(t) { const cx = 560 + ((t * 9) % 500); windowLook(t, cx + 20, 890, lerp(2.4, 2.9, pr(t, LN.t03.start, CUE.cows))); },   // взгляд в окно на корову с колокольчиком
   cow: ins(cowIns, { tl: 1 }),
   wash(t) { cam25(600, 1050, 1.36, { dof: 5 }); scene(t, ET.deadpan, { ...EN.outrage, arms: SHOW, pS: 0.7, squash: take(t, LN.n04.start, 0.1) }); },

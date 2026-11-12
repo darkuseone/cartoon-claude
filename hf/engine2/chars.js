@@ -104,7 +104,8 @@ function tomHead(o) {
     const ep = ellPts(ex, ey, rx, ry, 0, 36), path = piece(ep, TC.eye, { seed: 32 + sd, lw: 3.2, shade: () => {
       ellP(ex, ey + 14, rx * 0.9, ry * 0.72, mix(TC.eye, TC.eyeD, 0.35), { line: false, seed: 34 + sd, tex: false });
       const pw = lerp(7, 34, o.pup ?? 0.12) * (mood === 'shock' ? 0.45 : 1), ph = mood === 'shock' ? 26 : 44;
-      ctx.fillStyle = '#0a0806'; ctx.beginPath(); ctx.ellipse(ex + lk[0] * 18, ey + 4 + lk[1] * 10, pw, ph, 0, 0, 6.3); ctx.fill();
+      if (o.hypno) hypnoSpiral(ex, ey + 4, rx * 0.85, (o.t ?? 0) * 7 * sd, o.hypno, '#0a0806');   // гипноз: спираль крутится в глазах
+      else { ctx.fillStyle = '#0a0806'; ctx.beginPath(); ctx.ellipse(ex + lk[0] * 18, ey + 4 + lk[1] * 10, pw, ph, 0, 0, 6.3); ctx.fill(); }
       dot(ex - 16 + lk[0] * 6, ey - 22, 9, '#ffffff', 0.95); dot(ex + 18, ey + 18, 4, '#ffffff', 0.8);
       if (lid > 0.02) {                                             // веко цветом шерсти, срез наклонён бровью
         const br = o.brow ?? 0, tilt = (mood === 'angry' ? 0.35 : 0) - br * 0.32, ly = ey - ry + lid * ry * 2, dIn = sd * tilt * rx;
@@ -306,3 +307,10 @@ function gasMask(k, m) {
 /* кисть Никиты в мировых координатах с учётом ограничения длины руки (для предмета в руке) */
 function nikHand(P, a) { let [hx, hy] = a; const sd = hx >= 0 ? 1 : -1, sh = [sd * 80, 112], dx = hx - sh[0], dy = hy - sh[1], L = Math.hypot(dx, dy);
   if (L > 205) { hx = sh[0] + dx * 205 / L; hy = sh[1] + dy * 205 / L; } return [P.x + hx * P.s, P.y + hy * P.s]; }
+
+/* спираль гипноза (глаза Тома и попугая): r — радиус, a — поворот, k 0..1 — насыщенность */
+function hypnoSpiral(cx, cy, r, a, k, col) {
+  ctx.save(); ctx.globalAlpha *= clamp(k); ctx.strokeStyle = col; ctx.lineCap = 'round'; ctx.lineWidth = Math.max(2, r * 0.13) / S; ctx.beginPath();
+  for (let i = 0; i <= 90; i++) { const u = i / 90, ang = a + u * Math.PI * 6, rr = r * u; const x = cx + Math.cos(ang) * rr, y = cy + Math.sin(ang) * rr; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+  ctx.stroke(); ctx.restore();
+}
