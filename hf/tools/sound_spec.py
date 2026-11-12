@@ -42,6 +42,16 @@ def drip(g=0.5):                                                    # капля
     return x / (np.abs(x).max() + 1e-9) * g
 
 
+def geiger(d=1.5, rate=14, g=0.6, seed=7):                          # счётчик Гейгера: случайные сухие щелчки (пуассон)
+    r = np.random.default_rng(seed); n = int(d * SR); x = np.zeros(n); t = 0.0
+    while True:
+        t += r.exponential(1 / rate)
+        if t >= d: break
+        i = int(t * SR); k = np.arange(int(0.004 * SR)); c = r.uniform(0.5, 1) * np.exp(-k / (0.0006 * SR)) * np.sign(r.standard_normal(len(k)))
+        x[i:i + len(k)] += c[: n - i]
+    return x * g
+
+
 def main(ep):
     S = json.load(open(HF / 'episodes' / ep / 'sound.json')); C = json.load(open(HF / 'build' / ep / 'cues.json')); c = C['CUE']; DUR = C['DUR']
     def at(v):
@@ -86,6 +96,7 @@ def main(ep):
            'bubbles': lambda g: bubbles(1.0, 30, g, 3), 'chomp': lambda g: chomp(g), 'snip': lambda g: snip(g), 'clink': lambda g: clink(g),
            'bell': lambda g: bell(note(m(prog[0][4]) + 24), 0.8, g), 'blip': lambda g: blip(1400, 0.08, g), 'foil': lambda g: foil(0.8, g),
            'sniff': lambda g: sniff(g), 'purr': lambda g: purr(1.4, g), 'chirp': lambda g: chirp(g), 'thud': lambda g: thud(g, 80, 0.3)}
+    CC0 = {}
     for item in S.get('sfx', []):
         name, t0, g = item[0], at(item[1]), item[2]
         if name == 'ticks': [FX.add(click(0.1), tt) for tt in np.arange(t0, at(g), 1.0)]; continue
@@ -93,9 +104,19 @@ def main(ep):
             t1, gg = at(g[0]), g[1]; k = int(np.ceil((t0 - 0.45) / 1.1))
             while 0.45 + k * 1.1 < t1: FX.add(drip(gg), 0.45 + k * 1.1); k += 1
             continue
+        if name == 'geiger': o = item[3] if len(item) > 3 else {}; FX.add(geiger(at(o.get('to', t0 + 1.5)) - t0 if 'to' in o else o.get('d', 1.5), o.get('rate', 14), g), t0); continue
         if name == 'hum': FX.add(hum(at(g) - t0, 0.12), t0); continue
         if name == 'riser': FX.add(riser(at(g) - t0, 0.35), t0); continue
         if name in FILES: x = FILES[name]; FX.add(x, t0, g) if x is not None else None; continue
+        if name.startswith('cc0:'):                                  # сэмпл CC0 из hf/assets/sfx/cc0: ["cc0:имя", t0, громкость, {"from": с, "dur": с, "to": метка (повтор до)}]
+            o = item[3] if len(item) > 3 else {}; x = CC0.get(name[4:])
+            if x is None: x = CC0[name[4:]] = load(HF / 'assets' / 'sfx' / 'cc0' / f'{name[4:]}.mp3'); x = x / (np.abs(x).max() + 1e-9)
+            a0 = int(o.get('from', 0) * SR); x = x[a0: a0 + int(o['dur'] * SR) if 'dur' in o else None]
+            if 'to' in o:
+                end = at(o['to']); tt = t0
+                while tt < end: seg = x[: int(min(len(x), (end - tt) * SR))].copy(); f = min(len(seg), int(0.05 * SR)); seg[-f:] *= np.linspace(1, 0, f); FX.add(seg, tt, g); tt += len(x) / SR
+            else: FX.add(x, t0, g)
+            continue
         FX.add(LIB[name](g), t0)
     n = int(DUR * SR); v = np.zeros(n); v[:min(n, len(V))] = V[:n]; vk = os.environ.get('BLEEP') == '1'
     if vk:

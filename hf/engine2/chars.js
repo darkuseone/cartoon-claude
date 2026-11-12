@@ -9,12 +9,17 @@ function mouthAt(who, t) {
   const ln = LINES.find(l => l.speaker === who && t >= l.start - 0.02 && t <= l.end + 0.05);
   if (!ln) return { open: 0, round: 0, talking: false };
   const tq = step(t, 12), cues = ln.visemes; let i = cues.length - 1; while (i > 0 && cues[i].s > tq) i--;   // рты меняются на двойках, как вырезанные замены
-  const v = VIS[cues[i]?.v ?? 'X']; return { open: v[0], round: v[1], talking: true };
+  const v = VIS[cues[i]?.v ?? 'X'];
+  if (ln.env) {                                                     // открытие рта — по громкости звука (точно в синхрон для любого языка), форма — по визему
+    const k = Math.round((tq - ln.start) * 24), e = Math.max(ln.env[k] ?? 0, ln.env[k + 1] ?? 0), op = e < 0.12 ? 0 : 0.18 + 0.82 * e;
+    return { open: Math.round(op * 4) / 4, round: op > 0 ? v[1] : 0, talking: true };
+  }
+  return { open: v[0], round: v[1], talking: true };
 }
 function blinkAt(t, seed) { const per = 3.3 + (seed % 5) * 0.47, ph = (step(t) + seed * 1.37) % per; return ph < 0.17 ? 1 : 0; }
 
 const TC = { fur: '#8f8475', furD: '#6d6357', stripe: '#3e352e', light: '#efe8dc', pink: '#e98fa0', eye: '#b6e64a', eyeD: '#5f9a1e', line: '#1c1512' };
-const NC = { skin: '#f6d6c2', skinD: '#e9b9a0', hair: '#4b2d20', hairL: '#6e4330', hood: '#d9a12b', hoodD: '#b47f17', jeans: '#3d5c8f', shoe: '#f1efe9', line: '#1c1512' };
+const NC = { skin: '#f0dcc8', skinD: '#d9bba3', hair: '#4b2d20', hairL: '#6e4330', hood: '#d9a12b', hoodD: '#b47f17', jeans: '#3d5c8f', shoe: '#f1efe9', line: '#1c1512' };
 
 /* рот-замена: линия / открытый тёмный рот с зубами и языком */
 function mouth(x, y, w, m, o = {}) {
@@ -37,7 +42,7 @@ function mouth(x, y, w, m, o = {}) {
 function tom(o) {
   const t = o.t ?? 0, s = o.s ?? 1, mood = o.mood || '';
   const shake = mood === 'strain' || mood === 'pain' ? (rng(hsh(FRAME, 3))() - 0.5) * 6 * (o.shakeK ?? 1) : 0;
-  push(o.x + shake, o.y, s, o.rot || 0, o.flip ? -1 : 1);
+  const q = o.squash ?? 1; push(o.x + shake, o.y + 385 * s * (1 - q), s, o.rot || 0, (o.flip ? -1 : 1) / Math.sqrt(q), q);
   if (o.body !== false) { const j = jig(11); push(j[0], j[1], 1, j[2]); tomBody(o); pop(); }
   const j = jig(12), bob = o.bob ?? 0; push(j[0], j[1] + bob, 1, j[2] + (o.tilt || 0)); tomHead(o); pop();
   if (o.body !== false && (o.paw ?? 0) > 0.02) tomPaw(o);
@@ -94,7 +99,7 @@ function tomHead(o) {
   const lk = o.lk || [0, 0], bl = Math.max(blinkAt(t, 5), o.blink ?? 0);
   let lid = mood === 'bliss' || bl ? 1 : (o.lid ?? 0.45); if (mood === 'shock') lid = 0; if (mood === 'strain') lid = Math.max(lid, 0.62);
   [-1, 1].forEach(sd => {
-    const ex = sd * 55, ey = -22, rx = 52, ry = 58;
+    const ex = sd * 55, ey = -22, rx = 52 * (o.eyeS ?? 1), ry = 58 * (o.eyeS ?? 1);
     if (lid > 0.95) { stroke(mood === 'bliss' ? [[ex - 38, ey + 12], [ex, ey - 12], [ex + 38, ey + 12]] : [[ex - 40, ey + 6], [ex, ey + 14], [ex + 40, ey + 6]], TC.line, 6); return; }
     const ep = ellPts(ex, ey, rx, ry, 0, 36), path = piece(ep, TC.eye, { seed: 32 + sd, lw: 3.2, shade: () => {
       ellP(ex, ey + 14, rx * 0.9, ry * 0.72, mix(TC.eye, TC.eyeD, 0.35), { line: false, seed: 34 + sd, tex: false });
@@ -111,7 +116,9 @@ function tomHead(o) {
   // морда: белая «буква W», нос, рот
   [-1, 1].forEach(sd => ellP(sd * 33, 62, 46, 34, TC.light, { seed: 36 + sd, lw: 2.4 }));
   ellP(0, 92, 30, 18, TC.light, { seed: 38, line: false });
-  const m = o.m || { open: 0, round: 0 };
+  let m = o.m || { open: 0, round: 0 }; if ((o.jaw ?? 0) > m.open) m = { open: o.jaw, round: o.jawR ?? 0.3 };
+  if (o.vein) { push(110, -100, o.vein); [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => stroke([[a * 16, b * 16], [a * 5, b * 5]], '#c8241c', 6)); pop(); }
+  if (o.blush) [-1, 1].forEach(sd => ellP(sd * 120, 40, 26, 14, '#f08a9a', { line: false, a: 0.5 * o.blush, tex: false }));
   if (mood === 'strain' || mood === 'pain') mouth(0, 92, 64, m, { clench: m.open < 0.15, smile: -0.3 });
   else mouth(0, 88, 54, m, { smile: mood === 'bliss' ? 0.8 : 0.1, smirk: o.smirk ?? 0.4 });
   piece([[-18, 30], [18, 30], [0, 50]], TC.pink, { seed: 39, step: 8, lw: 2.4 });
@@ -133,7 +140,7 @@ function nikita(o) {
   push(o.x, o.y, s, o.rot || 0, o.flip ? -1 : 1);
   push(0, 0, 1, o.lean || 0);
   const jb = jig(51); push(jb[0], jb[1], 1, jb[2]); nikLegs(o); nikBody(o); pop();
-  const dt = -0.14 * sm(((o.drink ?? 0) - 0.28) / 0.45); const jh = jig(52); push(jh[0], jh[1] + (o.bob ?? 0), 1, jh[2] + (o.tilt || 0) + dt); nikHead({ ...o, lid: (o.drink ?? 0) > 0.3 ? 1 : o.lid }); pop();
+  const dt = -0.14 * sm(((o.drink ?? 0) - 0.28) / 0.45); const jh = jig(52), q = o.squash ?? 1; push(jh[0], jh[1] + (o.bob ?? 0) + 110 * (1 - q), 1, jh[2] + (o.tilt || 0) + dt, 1 / Math.sqrt(q), q); nikHead({ ...o, lid: (o.drink ?? 0) > 0.3 ? 1 : o.lid }); pop();
   nikArms(o);
   pop(); pop();
 }
@@ -202,6 +209,7 @@ function nikArms(o) {
     }
     const el = [lerp(sh[0], hx, 0.5) + sd * 30, lerp(sh[1], hy, 0.5) + 22];
     const tb = tube([sh, el, [hx, hy]], 50, 42); piece(tb.pts, NC.hood, { raw: true, seed: 80 + sd, lw: 2.6 });
+    ellP(sh[0] - sd * 4, sh[1] + 4, 30, 30, NC.hood, { seed: 88 + sd, line: false });                       // плечо: рукав врастает в худи без шва
     if (gl) glassAt(gl[0], gl[1], gl[2], o.glass ?? 0.7, { licked: o.licked });
     const c0 = tb.axis[tb.axis.length - 3], ang = Math.atan2(hy - c0[1], hx - c0[0]);
     push(hx, hy, 1, ang - Math.PI / 2);
@@ -227,30 +235,33 @@ function nikHead(o) {
   blobP(head, NC.skin, { seed: 101, shade: () => {
     const r = rng(102); ctx.fillStyle = '#8a6a58'; for (let i = 0; i < 90; i++) { const a = 0.2 + r() * 2.7, rr = 0.6 + r() * 0.4, x = Math.cos(a) * 84 * rr, y = 44 + Math.sin(a) * 72 * rr; if (y < 60) continue; ctx.globalAlpha = 0.55; ctx.fillRect(x, y, 2.4, 2.4); }   // щетина
     ctx.globalAlpha = 1; [[-54, 28], [-44, 36], [-62, 40], [52, 30], [42, 38], [62, 42], [-50, 46], [50, 48]].forEach(([x, y]) => dot(x, y, 3, '#d58a5e', 0.85));     // веснушки
-    ellP(-60, 40, 18, 10, '#f2a99a', { line: false, a: 0.3, tex: false }); ellP(60, 40, 18, 10, '#f2a99a', { line: false, a: 0.3, tex: false });
+    const bl0 = 0.12 + 0.55 * (o.blush ?? 0); ellP(-60, 40, 20, 11, '#f08a7a', { line: false, a: bl0, tex: false }); ellP(60, 40, 20, 11, '#f08a7a', { line: false, a: bl0, tex: false });
+    if (o.pale) ellP(0, 0, 100, 112, '#9ccf9a', { line: false, a: 0.35 * o.pale, tex: false });
   } });
   // глаза-овалы (как в «ЮП»), мешки, веки
   const bl = Math.max(blinkAt(t, 3), o.blink ?? 0); let lid = bl ? 1 : (o.lid ?? 0.12);
   if (mood === 'sleepy') lid = Math.max(lid, 0.5); if (mood === 'shock' || mood === 'dread') lid = bl ? 1 : 0; if (mood === 'eww' || mood === 'sick') lid = Math.max(lid, 0.45);
-  const big = mood === 'shock' ? 1.15 : 1;
+  const big = (mood === 'shock' ? 1.15 : 1) * (o.eyeS ?? 1);
   [-1, 1].forEach(sd => {
     const ex = sd * 28, ey = -10, rx = 28 * big, ry = 34 * big;
     if (lid > 0.95) { stroke([[ex - 24, ey + 4], [ex, ey + 10], [ex + 24, ey + 4]], NC.line, 5); return; }
     piece(ellPts(ex, ey, rx, ry, 0, 32), '#fbfaf6', { seed: 110 + sd, lw: 2.8, tex: false, shade: () => {
-      const pr2 = mood === 'shock' || mood === 'dread' ? 5 : 7.5; dot(ex + lk[0] * 13 - sd * 3, ey + 4 + lk[1] * 12, pr2, '#140f0c');
+      const pr2 = (mood === 'shock' || mood === 'dread' ? 5 : 7.5) * (o.pupS ?? 1); dot(ex + lk[0] * 13 - sd * 3, ey + 4 + lk[1] * 12, pr2, '#140f0c');
+      if (o.sparkle) { const sx = ex + lk[0] * 13 - sd * 3 + 9, sy = ey + 4 + lk[1] * 12 - 9, r = 8 * o.sparkle; dot(sx - 9, sy + 9, 11, '#140f0c'); piece([[sx, sy - r], [sx + r * 0.3, sy - r * 0.3], [sx + r, sy], [sx + r * 0.3, sy + r * 0.3], [sx, sy + r], [sx - r * 0.3, sy + r * 0.3], [sx - r, sy], [sx - r * 0.3, sy - r * 0.3]], '#ffffff', { raw: true, lw: 1.6, tex: false }); }
       if (lid > 0.02) { const ly = ey - ry + lid * ry * 2; piece([[ex - rx - 3, ey - ry - 4], [ex + rx + 3, ey - ry - 4], [ex + rx + 3, ly], [ex - rx - 3, ly]], NC.skin, { raw: true, line: false }); stroke([[ex - rx, ly], [ex + rx, ly]], NC.line, 4); }
     } });
     stroke([[ex - 18, ey + ry + 8], [ex, ey + ry + 13], [ex + 18, ey + ry + 7]], '#b98974', 2.6, { a: 0.9 });              // мешки
   });
   // брови
   const br = o.brow ?? 0, ba = o.browA ?? 0;
-  [-1, 1].forEach(sd => { const lift = br * 10 + sd * ba * 10, inner = mood === 'angry' || mood === 'eww' ? 12 : (mood === 'shock' || mood === 'dread' || mood === 'dumb' ? -9 : 0);
+  [-1, 1].forEach(sd => { const lift = br * 10 + sd * ba * 10, inner = o.browIn ?? (mood === 'angry' || mood === 'eww' ? 12 : (mood === 'shock' || mood === 'dread' || mood === 'dumb' ? -9 : 0));
     piece([[sd * 10, -60 - lift + inner], [sd * 58, -66 - lift], [sd * 58, -56 - lift], [sd * 10, -50 - lift + inner]], NC.hair, { raw: true, lw: 2 }); });
   // нос — короткий штрих
   stroke([[4, 14], [12, 32], [0, 36]], '#b98974', 3.4);
   // рот
-  const m = o.m || { open: 0, round: 0 };
-  if (mood === 'eww' && m.open < 0.06) { mouth(0, 64, 54, { open: 0.35, round: 0 }, { noTeeth: true }); piece(spline([[-8, 76], [10, 76], [8, 100], [-6, 100]], true, 5), '#e07a8a', { raw: true, lw: 2.2 }); }
+  let m = o.m || { open: 0, round: 0 }; if ((o.jaw ?? 0) > m.open) m = { open: o.jaw, round: o.jawR ?? 0.3 };
+  if (o.grin && m.open < 0.06) mouth(0, 60, 74, { open: 0.42 * o.grin, round: 0 }, { smile: 1 });
+  else if (mood === 'eww' && m.open < 0.06) { mouth(0, 64, 54, { open: 0.35, round: 0 }, { noTeeth: true }); piece(spline([[-8, 76], [10, 76], [8, 100], [-6, 100]], true, 5), '#e07a8a', { raw: true, lw: 2.2 }); }
   else if (mood === 'dread' && m.open < 0.06) mouth(0, 64, 46, { open: 0.0 }, { smile: -0.9 });
   else mouth(0, 62, 58, m, { smile: o.smile ?? (mood === 'dumb' ? 0.8 : 0), smirk: o.smirkN ?? 0 });
   if (o.milkMoustache) piece(spline([[-36, 52], [0, 44], [36, 52], [30, 62], [0, 56], [-30, 62]], true, 5), '#fbfcf8', { raw: true, lw: 2 });
@@ -259,6 +270,8 @@ function nikHead(o) {
   [[[90, -96], [122, -100], [104, -74]], [[-88, -92], [-118, -94], [-100, -68]], [[-20, -146], [-6, -160], [10, -146]]].forEach((tp, q) => piece(tp, NC.hair, { seed: 124 + q, step: 8 }));
   piece(hair, NC.hair, { seed: 120, step: 12, edge: 1.2, shade: () => { piece([[-70, -120], [-10, -140], [40, -134], [10, -112], [-40, -104]], NC.hairL, { seed: 122, line: false, a: 0.8 }); [[-80, -110, -40, -80], [-20, -130, 10, -96], [40, -128, 60, -90], [90, -100, 100, -70]].forEach(v => stroke([[v[0], v[1]], [v[2], v[3]]], NC.hairL, 5)); } });
   if ((o.foil ?? 0) > 0) foilHat(o.foilLift ?? 0, t);
+  if (o.tears) [-1, 1].forEach(sd => { const ph = (step(t) * 1.2) % 1; stroke([[sd * 34, 24], [sd * 38, 24 + 70 * o.tears]], '#7cc8f2', 7, { a: 0.85 }); piece(spline([[sd * 38, 30 + ph * 60], [sd * 46, 44 + ph * 60], [sd * 38, 54 + ph * 60], [sd * 30, 44 + ph * 60]], true, 5), '#9fd8ff', { raw: true, lw: 1.6 }); });
+  if (o.vein) { push(62, -84, o.vein); stroke([[-14, -14], [-4, -4]], '#c8241c', 5); stroke([[14, -14], [4, -4]], '#c8241c', 5); stroke([[-14, 14], [-4, 4]], '#c8241c', 5); stroke([[14, 14], [4, 4]], '#c8241c', 5); pop(); }
   if (o.sweat) { const ph = (step(t) * 0.8) % 1; piece(spline([[118, -40 + ph * 50], [128, -20 + ph * 50], [118, -8 + ph * 50], [108, -20 + ph * 50]], true, 5), '#9fd8ff', { raw: true, lw: 2 }); }
 }
 

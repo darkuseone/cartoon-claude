@@ -100,7 +100,9 @@ def main(ep, pub):
         write_wav(tmp / "l.wav", a)
         vis = [{"s": round(c["s"] + t, 3), "v": c["v"]} for c in visemes(tmp / "l.wav")]
         words = [{**w, "s": round(w["s"] + t, 3), "e": round(w["e"] + t, 3)} for w in words_of(a, model, ln["text"])]
-        lines.append({**ln, "start": round(t, 3), "end": round(t + len(a) / SR, 3), "words": words, "visemes": vis})
+        hop = SR // 24; nfr = len(a) // hop; rms = np.sqrt(np.array([np.mean(a[i * hop:(i + 1) * hop] ** 2) for i in range(nfr)]) + 1e-12)
+        db = 20 * np.log10(rms / (rms.max() + 1e-12)); env = np.clip((db + 30) / 24, 0, 1)            # огибающая для липсинка: −30 дБ → закрыт, −6 дБ → открыт
+        lines.append({**ln, "start": round(t, 3), "end": round(t + len(a) / SR, 3), "words": words, "visemes": vis, "env": [round(float(v), 2) for v in env]})
         target = cfg.get("loud", {}).get(ln["speaker"], LOUD[ln["speaker"]]) + ln.get("gain", 0)
         lv, g = level(a, target); gains.append(f"{ln['key']}{g:+.1f}")
         chunks.append((t, lv))
