@@ -16,3 +16,7 @@
 - `drawer.mp3` — Wooden drawer, opening — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/wooden-drawer-opening-s1499.html — CC0
 - `radio.mp3` — Crackling Radio #2 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/crackling-radio-2-s0313.html — CC0
 - `chime.mp3` — Cluster Chimes #1 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/cluster-chimes-1-s2687.html — CC0
+- `chew.mp3` — Eat a Rusk — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/eat-a-rusk-s0407.html — CC0
+- `maskbreath.mp3` — Breathless Man — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/breathless-man-s1103.html — CC0
+- `lick.mp3` — Licking #2 — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/licking-2-s0239.html — CC0
+- `smash.mp3` — Broken Glass of Champagne — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/broken-glass-of-champagne-s1591.html — CC0

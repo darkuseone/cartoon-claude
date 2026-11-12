@@ -3,39 +3,40 @@
    Правила: эмоция держится в кадре ≥ 0,8 с; смена эмоции — с «рывком» take() (сжатие-растяжение головы/тела); реакцию показывать крупным планом.
    Новые параметры лица — chars.js: eyeS (размер глаз), pupS (зрачок), sparkle (искры), jaw (отвисшая челюсть), grin (улыбка до ушей), browIn (внутренний край брови: + злой, − жалобный),
    blush (румянец), pale (бледно-зелёный), tears (слёзы), vein (вена-«крестик»), squash (сжатие/растяжение, 1 — норма). */
-const EN = {                                                           // Никита
-  proud:    { mood: '', smile: 0.9, grin: 0.8, brow: 0.6, lid: 0.25, lk: [0.4, -0.4], blush: 0.25 },
-  naive:    { mood: 'dumb', grin: 1, brow: 1, eyeS: 1.1, sparkle: 0.8, blush: 0.3 },
-  awe:      { mood: 'shock', eyeS: 1.25, sparkle: 1, jaw: 0.45, brow: 1 },
-  doubt:    { mood: '', lid: 0.45, browA: 0.9, smile: -0.4, lk: [0.8, -0.1] },
-  dismiss:  { mood: '', lid: 0.55, brow: 0.5, smirkN: 0.9, lk: [-0.6, -0.5] },
-  shock:    { mood: 'shock', eyeS: 1.35, pupS: 0.6, jaw: 0.85, brow: 1.2, pale: 0.25 },
-  horror:   { mood: 'dread', eyeS: 1.3, pupS: 0.5, jaw: 0.6, brow: 1, pale: 0.7, sweat: 1 },
-  outrage:  { mood: 'angry', brow: -0.3, browIn: 18, jaw: 0.55, vein: 1, blush: 0.7 },
-  panic:    { mood: 'dread', eyeS: 1.3, pupS: 0.55, jaw: 0.5, sweat: 1, pale: 0.45, brow: 1 },
-  sad:      { mood: '', browIn: -16, brow: 0.6, lid: 0.35, smile: -0.8, tears: 0.6 },
-  eureka:   { mood: 'dumb', grin: 1, brow: 1.2, eyeS: 1.2, sparkle: 1, blush: 0.25 },
-  worried:  { mood: 'dread', browIn: -12, brow: 0.8, smile: -0.6, sweat: 0.6 },
-  eww:      { mood: 'eww', browIn: 12, lid: 0.5, pale: 0.4 }
+const EN = {                                                           // Никита — взрослые «ситкомовые» лица (ЮП/Рик и Морти), без детских искр, слёз и огромных глаз
+  proud:    { mood: '', smirkN: 0.7, lid: 0.3, brow: 0.4, lk: [0.4, -0.3] },
+  naive:    { mood: 'dumb', smile: 0.8, brow: 0.8 },
+  awe:      { mood: '', eyeS: 1.06, jaw: 0.3, brow: 1, lid: 0 },
+  doubt:    { mood: '', lid: 0.45, browA: 0.9, smile: -0.3, lk: [0.8, -0.1] },
+  dismiss:  { mood: '', lid: 0.55, brow: 0.3, smirkN: 0.7, lk: [-0.6, -0.5] },
+  shock:    { mood: 'shock', eyeS: 1.08, pupS: 0.75, jaw: 0.5, brow: 1 },
+  horror:   { mood: 'dread', jaw: 0.35, pale: 0.3, sweat: 1, brow: 1 },
+  outrage:  { mood: 'angry', browIn: 16, jaw: 0.3, lid: 0.2 },
+  panic:    { mood: 'dread', jaw: 0.4, sweat: 1, pale: 0.25, brow: 1 },
+  sad:      { mood: '', browIn: -14, lid: 0.4, smile: -0.6, lk: [0.2, 0.5] },
+  eureka:   { mood: 'dumb', smile: 1, grin: 0.55, brow: 1 },
+  worried:  { mood: 'dread', browIn: -10, smile: -0.5, sweat: 0.5 },
+  eww:      { mood: 'eww', browIn: 12, lid: 0.5 }
 };
-const ET = {                                                           // Том
+const ET = {                                                           // Том — сухой усталый профессор: веки, брови, взгляд, полуулыбка
   deadpan:  { lid: 0.62, lk: [-0.8, 0.1], smirk: 0 },
   smug:     { lid: 0.42, smirk: 1, brow: -0.2, lk: [-0.7, 0] },
   lecture:  { lid: 0.5, paw: 1, pawX: 175, pawY: 110, smirk: 0.3, brow: 0.2, lk: [-0.8, 0] },
-  alarm:    { mood: 'shock', eyeS: 1.2, jaw: 0.5, fur: 0.7, ears: 0.3 },
-  fear:     { mood: 'shock', eyeS: 1.25, fur: 1, ears: 0.8, jaw: 0.35, sweat: 1 },
+  alarm:    { mood: 'shock', eyeS: 1.06, jaw: 0.25, fur: 0.5, ears: 0.3 },
+  fear:     { mood: 'shock', eyeS: 1.08, fur: 0.8, ears: 0.7, jaw: 0.2, sweat: 1 },
   disgust:  { lid: 0.68, brow: -0.6, smirk: 0, ears: 0.4, lk: [0.2, 0.5] },
-  grave:    { lid: 0.6, brow: 0.5, smirk: 0, lk: [-0.3, 0.3], ears: 0.25 },
-  furious:  { lid: 0.82, brow: -0.9, vein: 1, ears: 0.6, smirk: 0 },
-  eyeroll:  { lid: 0.5, lk: [0.2, -1], smirk: 0.2, pup: 0.05 },
-  bliss:    { mood: 'bliss', smirk: 0.8, blush: 0.6 },
+  grave:    { lid: 0.58, brow: 0.7, smirk: 0, lk: [-0.3, 0.3], ears: 0.3 },
+  furious:  { lid: 0.8, brow: -0.9, ears: 0.6, smirk: 0 },
+  eyeroll:  { lid: 0.35, lk: [0.2, -1], smirk: 0.2, pup: 0.05 },
+  bliss:    { mood: 'bliss', smirk: 0.8 },
   sneaky:   { lid: 0.55, smirk: 0.8, lk: [0.9, 0.2], brow: -0.3 },
-  shame:    { lid: 0.5, blush: 1, lk: [0.7, 0.6], ears: 0.6, smirk: 0 },
-  stare:    { lid: 0.7, lk: [-0.3, 0.1], smirk: 0, brow: -0.2 }
+  shame:    { lid: 0.5, blush: 0.35, lk: [0.7, 0.6], ears: 0.6, smirk: 0 },
+  stare:    { lid: 0.7, lk: [-0.3, 0.1], smirk: 0, brow: -0.2 },
+  hunt:     { lid: 0.15, pup: 0.9, ears: 0, smirk: 0, brow: -0.3 }            // охотится: зрачки во весь глаз
 };
 /* у каждого набора — полный «нейтральный» базис, чтобы при смене эмоции (ex()) не залипали чужие параметры (например, mood:'shock') */
 const EN0 = { mood: '', eyeS: 1, pupS: 1, sparkle: 0, jaw: 0, grin: 0, browIn: undefined, browA: 0, brow: 0, blush: 0, pale: 0, tears: 0, vein: 0, sweat: 0, smile: undefined, smirkN: 0, lid: undefined };
-const ET0 = { mood: '', eyeS: 1, pup: 0.12, jaw: 0, fur: 0, ears: 0, sweat: 0, vein: 0, blush: 0, paw: 0, brow: 0, smirk: undefined, lid: undefined };
+const ET0 = { mood: '', eyeS: 1, pup: 0.12, jaw: 0, fur: 0, ears: 0, sweat: 0, vein: 0, blush: 0, paw: 0, brow: 0, smirk: undefined, lid: undefined, tongue: 0 };
 for (const k in EN) EN[k] = { ...EN0, ...EN[k] }; for (const k in ET) ET[k] = { ...ET0, ...ET[k] };
 const EMO = (base, ...more) => Object.assign({}, base, ...more);
 

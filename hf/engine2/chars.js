@@ -107,7 +107,7 @@ function tomHead(o) {
       ctx.fillStyle = '#0a0806'; ctx.beginPath(); ctx.ellipse(ex + lk[0] * 18, ey + 4 + lk[1] * 10, pw, ph, 0, 0, 6.3); ctx.fill();
       dot(ex - 16 + lk[0] * 6, ey - 22, 9, '#ffffff', 0.95); dot(ex + 18, ey + 18, 4, '#ffffff', 0.8);
       if (lid > 0.02) {                                             // веко цветом шерсти, срез наклонён бровью
-        const br = o.brow ?? 0, tilt = (mood === 'angry' ? 0.35 : 0) - br * 0.15, ly = ey - ry + lid * ry * 2, dIn = sd * tilt * rx;
+        const br = o.brow ?? 0, tilt = (mood === 'angry' ? 0.35 : 0) - br * 0.32, ly = ey - ry + lid * ry * 2, dIn = sd * tilt * rx;
         const lp = [[ex - rx - 4, ey - ry - 6], [ex + rx + 4, ey - ry - 6], [ex + rx + 4, ly - dIn], [ex - rx - 4, ly + dIn]];
         piece(lp, TC.fur, { raw: true, line: false }); stroke([[ex - rx, ly + dIn], [ex + rx, ly - dIn]], TC.line, 5);
       }
@@ -121,6 +121,7 @@ function tomHead(o) {
   if (o.blush) [-1, 1].forEach(sd => ellP(sd * 120, 40, 26, 14, '#f08a9a', { line: false, a: 0.5 * o.blush, tex: false }));
   if (mood === 'strain' || mood === 'pain') mouth(0, 92, 64, m, { clench: m.open < 0.15, smile: -0.3 });
   else mouth(0, 88, 54, m, { smile: mood === 'bliss' ? 0.8 : 0.1, smirk: o.smirk ?? 0.4 });
+  if (o.tongue) { const k = o.tongue; piece(spline([[-14, 92], [14, 92], [16, 92 + 30 * k], [0, 100 + 36 * k], [-16, 92 + 30 * k]], true, 5), '#e8788a', { raw: true, lw: 2.2 }); stroke([[0, 96], [0, 92 + 26 * k]], '#c85a6c', 2); }
   piece([[-18, 30], [18, 30], [0, 50]], TC.pink, { seed: 39, step: 8, lw: 2.4 });
   stroke([[0, 50], [0, m.open > 0.06 ? 84 : 86]], TC.line, 3);
   [-1, 1].forEach(sd => { for (let k = 0; k < 3; k++) { const yy = 58 + k * 13, wv = Math.sin(step(t) * 2 + k) * 3; stroke([[sd * 70, yy], [sd * 150, yy - 18 + k * 18 + wv], [sd * 215, yy - 34 + k * 34 + wv]], TC.line, 2.2, { a: 0.85 }); }
@@ -129,6 +130,7 @@ function tomHead(o) {
   if ((o.sweat ?? (mood === 'strain' || mood === 'pain' ? 1 : 0)) > 0) { const ph = (step(t) * 0.9) % 1;
     [[150, -60], [-140, -30]].forEach(([x, y], i) => { const yy = y + ((ph + i * 0.5) % 1) * 60; piece(spline([[x, yy - 18], [x + 11, yy + 4], [x, yy + 16], [x - 11, yy + 4]], true, 5), '#9fd8ff', { raw: true, lw: 2 }); });
     stroke([[78, -110], [92, -96], [80, -88], [94, -76]], '#7a2b2b', 4, { smooth: false }); }
+  if ((o.mask ?? 0) > 0) gasMask(o.mask, o.m);
 }
 
 // =========================================================================================== НИКИТА
@@ -195,6 +197,7 @@ function nikArms(o) {
   const A = o.arms || {}, dr = o.drink ?? 0;
   [['l', -1], ['r', 1]].forEach(([k, sd]) => {
     let a = A[k] || [sd * 112, 300, 'open']; let [hx, hy, pose] = a; const sh = [sd * 80, 112];
+    { const dx = hx - sh[0], dy = hy - sh[1], L = Math.hypot(dx, dy), MAX = 205; if (L > MAX) { hx = sh[0] + dx * MAX / L; hy = sh[1] + dy * MAX / L; } }   // рука не длиннее естественной
     let gl = null;
     if (pose === 'glass') {
       if (k === 'r' && dr > 0) {                                     // питьё: стакан к губам, наклон, голова запрокинута
@@ -207,7 +210,7 @@ function nikArms(o) {
         hx = grip[0]; hy = grip[1] + 22;
       } else gl = [hx + sd * 6, hy - 46, 0];
     }
-    const el = [lerp(sh[0], hx, 0.5) + sd * 30, lerp(sh[1], hy, 0.5) + 22];
+    const bend = 205 - Math.hypot(hx - sh[0], hy - sh[1]); const el = [lerp(sh[0], hx, 0.5) + sd * (14 + bend * 0.45), lerp(sh[1], hy, 0.5) + 10 + bend * 0.2];
     const tb = tube([sh, el, [hx, hy]], 50, 42); piece(tb.pts, NC.hood, { raw: true, seed: 80 + sd, lw: 2.6 });
     ellP(sh[0] - sd * 4, sh[1] + 4, 30, 30, NC.hood, { seed: 88 + sd, line: false });                       // плечо: рукав врастает в худи без шва
     if (gl) glassAt(gl[0], gl[1], gl[2], o.glass ?? 0.7, { licked: o.licked });
@@ -286,3 +289,19 @@ function foilHat(lift, t) {                                          // мята
   dot(30, -200, 6, '#ffffff', 0.9); dot(-50, -150, 4, '#ffffff', 0.8);
   pop();
 }
+
+/* противогаз на Томе: k 0..1 — надевается сверху вниз; говорит «в маску» (клапан дёргается со звуком) */
+function gasMask(k, m) {
+  push(0, -(1 - sm(k)) * 260); const op = (m && m.open) || 0;
+  [-1, 1].forEach(sd => stroke([[sd * 150, -20], [sd * 175, -110], [sd * 120, -150]], '#2a2a26', 16));             // ремни
+  piece(spline([[-150, -80], [0, -112], [150, -80], [170, 20], [120, 110], [0, 138], [-120, 110], [-170, 20]], true, 6), '#5e6b52', { raw: true, lw: 3.2, shade: () => {
+    piece(spline([[-120, -60], [0, -86], [120, -60], [110, -30], [-110, -30]], true, 5), '#6f7d61', { raw: true, line: false }); } });
+  [-1, 1].forEach(sd => { ellP(sd * 58, -22, 50, 50, '#2a2a26', { seed: 60 + sd, lw: 3 }); ellP(sd * 58, -22, 40, 40, 'rgba(170,220,200,0.55)', { raw: true, lw: 2, tex: false });
+    dot(sd * 58, -18, 14, '#0a0806', 0.85); dot(sd * 58 - 16, -40, 8, '#ffffff', 0.9); });
+  push(0, 92 + op * 6); rectP(-38, -20, 76, 44, '#3a3f36', { seed: 62, lw: 2.6 }); ellP(0, 60, 52, 52, '#4a5244', { seed: 63, lw: 3, shade: () => { for (let i = -2; i <= 2; i++) stroke([[i * 16, 30], [i * 16, 90]], '#2e332a', 4); } });
+  ellP(0, 2, 20, 12 + op * 8, '#1c1512', { seed: 64, lw: 2 }); pop();
+  pop();
+}
+/* кисть Никиты в мировых координатах с учётом ограничения длины руки (для предмета в руке) */
+function nikHand(P, a) { let [hx, hy] = a; const sd = hx >= 0 ? 1 : -1, sh = [sd * 80, 112], dx = hx - sh[0], dy = hy - sh[1], L = Math.hypot(dx, dy);
+  if (L > 205) { hx = sh[0] + dx * 205 / L; hy = sh[1] + dy * 205 / L; } return [P.x + hx * P.s, P.y + hy * P.s]; }

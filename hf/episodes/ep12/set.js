@@ -11,10 +11,20 @@ function watchP(x, y, s, rot, o = {}) {                              // стар
   rectP(58, -8, 12, 16, '#d6a84a', { seed: 12004, lw: 1.4 });
   pop();
 }
-function moth(x, y, t) { const a = t * 4, mx = x + Math.cos(a) * 60, my = y + Math.sin(a * 1.3) * 30, w = Math.abs(Math.sin(t * 30)) * 14 + 4;   // мотылёк у лампы
+function mothPos(t) { return [990 + Math.cos(t * 2.3) * 110 + Math.sin(t * 5.1) * 25, 690 + Math.sin(t * 3.1) * 60 + Math.cos(t * 7.3) * 14]; }   // мотылёк кружит у лампы и у головы Тома
+function moth(t) { const [mx, my] = mothPos(t), w = Math.abs(Math.sin(t * 30)) * 14 + 4;
   piece([[mx, my], [mx - 16, my - w], [mx - 20, my + 4]], '#e8dcc0', { seed: 12010, lw: 1.2 }); piece([[mx, my], [mx + 16, my - w], [mx + 20, my + 4]], '#e8dcc0', { seed: 12011, lw: 1.2 }); dot(mx, my, 3, '#6b5a3a'); }
+function mugP(k, t) {                                                // кружка на краю комода: k 0..0.5 — Том толкает к краю, 0.5..1 — падает и бьётся
+  let x = 940 + 50 * sm(k / 0.5), y = 984, r = 0;                    // стоит справа от Тома, падает с переднего края комода
+  if (k > 0.5) { const f = clamp((k - 0.5) / 0.35); x += 30 * f; y = 984 + 556 * f * f; r = 2.4 * f; }
+  if (k >= 0.86) { [[-50, -8, -0.6], [-10, -20, 0.3], [34, -6, 1.1], [60, -2, -0.2]].forEach(([dx, dy, rr], i) => { push(x + dx, 1530 + dy, 1, rr); piece([[-16, -10], [18, -14], [12, 10], [-14, 8]], i % 2 ? '#e2533a' : '#fbfaf6', { seed: 12030 + i, lw: 1.8 }); pop(); }); return; }
+  push(x, y, 1, r); rectP(-30, -64, 60, 64, '#e2533a', { seed: 12031, lw: 2.2, shade: () => { txt('№1', 0, -30, 20, { font: 'Inter Black', col: '#fbfaf6' }); } }); ellP(38, -32, 14, 18, 'rgba(0,0,0,0)', { raw: true, lc: '#1c1512', lw: 6, tex: false }); pop();
+}
+function plateP(x, y) {                                              // тарелка с рыбкой перед Томом (ест)
+  push(x, y); ellP(0, 0, 120, 26, '#fbfaf6', { seed: 12040, lw: 2.4, shade: () => { ellP(0, -4, 90, 16, '#e9e4d8', { seed: 12041, line: false }); } });
+  piece([[-60, -14], [-20, -30], [40, -24], [64, -14], [40, -6], [-20, -4]], '#f08a7a', { seed: 12042, lw: 1.8 }); piece([[-60, -14], [-86, -30], [-82, 0]], '#e0705e', { seed: 12043, lw: 1.6 }); pop();
+}
 
-/* 2.5D: декорация разложена на планы — небо за окном (d 2.4), стена (1.35), комната с героями (1.0), передний план (0.6, размыт) */
 function nightSky(t) {                                               // за окном: шире самого окна — при параллаксе видно разное
   rectP(-260, 100, 1100, 1000, '#1e2450', { seed: 12110, line: false, shade: () => {
     [['#262c60', 100, 280], ['#2e3470', 380, 160], ['#3a3c7a', 540, 170], ['#4a4486', 710, 400]].forEach(([c, y, h], i) => rectP(-260, y, 1100, h, c, { seed: 12111 + i, line: false }));
@@ -56,7 +66,7 @@ function nightMid(t, o = {}) {                                     // комна
   rectP(660, 1300, 30, 230, '#5a3420', { seed: 12189, lw: 1.8 }); rectP(1090, 1300, 30, 230, '#5a3420', { seed: 12190, lw: 1.8 });
   push(1040, 984); rectP(-14, -120, 28, 120, '#c8b48a', { seed: 12191, lw: 1.6 }); ellP(0, -4, 40, 10, '#6a3e22', { seed: 12192, lw: 1.6 });
   piece([[-60, -120], [60, -120], [40, -200], [-40, -200]], '#e8c870', { seed: 12193, lw: 2.2, shade: () => { stroke([[-54, -132], [54, -132]], '#c8a050', 5); } }); pop();
-  moth(1040, 760, t);
+  moth(t);
   push(690, 984); rectP(-70, -90, 140, 90, '#9a6a3a', { seed: 12194, lw: 2.2, shade: () => { ellP(-30, -46, 26, 26, '#c8b48a', { seed: 12195, lw: 1.4 }); for (let i = 0; i < 4; i++) stroke([[-52, -66 + i * 12], [-8, -66 + i * 12]], '#7a5a3a', 3); rectP(14, -70, 44, 20, '#f2e2b0', { seed: 12196, lw: 1.2 }); dot(36, -30, 7, '#5a3a2a'); } }); pop();
   // на полу: коробка с барахолки, миска Тома, коврик, доски
   push(o.boxX ?? 190, 1660, 0.8, -0.04); piece([[-150, -170], [150, -170], [140, 40], [-140, 40]], '#c8a06a', { seed: 12210, lw: 2.4, shade: () => {
@@ -65,6 +75,7 @@ function nightMid(t, o = {}) {                                     // комна
   rectP(-110, -300, 16, 150, '#8a6a4a', { seed: 12213, lw: 1.6 }); ellP(-102, -330, 40, 54, 'rgba(0,0,0,0)', { raw: true, lc: '#3a5a8a', lw: 8, tex: false });   // ракетка
   push(70, -200, 1, 0.2); piece([[-40, 0], [40, 0], [26, -70], [-26, -70]], '#3a8a7a', { seed: 12214, lw: 1.8 }); pop(); pop();   // абажур
   if (o.bowl !== false) { push(1220, 1600, 0.85); piece([[-100, -36], [100, -36], [78, 18], [-78, 18]], '#d8342c', { seed: 12220, lw: 2.4, shade: () => { stroke([[-88, -22], [88, -22]], '#f06a5a', 6); } }); txt('ТОМ', 0, -2, 26, { font: 'Inter Black', col: '#fbfaf6' }); pop(); }
+  if (o.mug !== undefined) mugP(o.mug, t);
   if (o.claw) { ctx.save(); ctx.globalAlpha = 0.8 * o.claw; [0, 1, 2].forEach(k => stroke([[700 + k * 18, 600], [706 + k * 18, 600 + 380 * o.claw]], '#2a1a12', 5)); ctx.restore(); }   // следы когтей после неудачного прыжка
 }
 function nightFg(t) {                                                // передний план у самого объектива (размыт): угол стопки книг снизу слева, спинка кресла у правого края
@@ -90,7 +101,7 @@ function benchBg(seed) {                                              // фон 
 }
 function girlIcon(x, y, s, col, seed) { push(x, y, s); personIcon(0, 0, 1, col, seed); piece([[-38, -88], [38, -88], [44, -40], [-44, -40]], '#3a2a1a', { seed: seed + 5, lw: 2 }); pop(); }   // работница: силуэт с каре
 function paintIns(t, c) {                                             // 1917, Нью-Джерси: лизнуть, макнуть, покрасить
-  if (!c.fg) { benchBg(12300); }  if (c.bg) return;  timeline12(0, t);
+  if (!c.fg) { benchBg(12300); }  if (c.bg) return;
   push(540, 520, 1); card(0, 0, 760, 330, -0.02, 12301, '#fbfaf6'); txt('1917 · НЬЮ-ДЖЕРСИ', 0, -110, 46, { font: 'Inter Black', col: '#1c1512', maxW: 700 });
   for (let i = 0; i < 5; i++) girlIcon(-240 + i * 120, 70, 0.75, ['#c8603a', '#3d7fc4', '#7aa66a', '#e2b04a', '#8a6a9c'][i], 12310 + i * 7); pop(); tape(540, 360, 150, -0.02, 12302);
   label(540, 740, 'краска с радием для циферблатов', 0, '#d9f0d2', 0.02, 34);
@@ -100,7 +111,7 @@ function paintIns(t, c) {                                             // 1917, �
   if (t > c.lips) { push(540, 1250, 1, -0.03); ransom('КИСТОЧКУ — ГУБАМИ', 0, 0, 70, 12330, { reveal: pr(t, c.lips, c.lips + 0.3), pop: true }); pop(); }
 }
 function chemIns(t, c) {                                              // химики — щипцы и свинец; девушкам — «безвредно»
-  if (!c.fg) { cork(); }  if (c.bg) return;  timeline12(0, t);
+  if (!c.fg) { cork(); }  if (c.bg) return;
   push(300, 640, 1, -0.03); card(0, 0, 440, 640, 0, 12400, '#e6eef4'); txt('ХИМИКИ', 0, -260, 52, { font: 'Inter Black', col: '#1c1512', maxW: 380 });
   rectP(-150, -180, 300, 220, '#7a8494', { seed: 12401, lw: 2.4, shade: () => { txt('СВИНЕЦ', 0, 120 - 230, 34, { font: 'Inter Black', col: '#e6eef4' }); } });
   stroke([[-120, 120], [60, 200]], '#5a5a5a', 10); stroke([[-120, 150], [60, 210]], '#5a5a5a', 10); dot(80, 210, 14, GLOW); glowAdd(80, 210, 60, 'rgba(160,255,120,1)', 0.5);
@@ -112,7 +123,7 @@ function chemIns(t, c) {                                              // хим�
   if (t > c.useful) { push(560, 1330, 1, 0.03); ransom('ДАЖЕ ПОЛЕЗНО', 0, 0, 70, 12421, { reveal: pr(t, c.useful, c.useful + 0.3), pop: true }); pop(); }
 }
 function adsIns(t, c) {                                               // 1920-е: радий в пасте, креме, воде
-  if (!c.fg) { bg('#e8d8b0', 12500); for (let y = 0; y < 1920; y += 64) stroke([[-100, y], [1180, y]], '#dccb9e', 3); }  if (c.bg) return;  timeline12(1, t);
+  if (!c.fg) { bg('#e8d8b0', 12500); for (let y = 0; y < 1920; y += 64) stroke([[-100, y], [1180, y]], '#dccb9e', 3); }  if (c.bg) return;
   txt('РЕКЛАМА 1920-х', 540, 260, 64, { font: 'Inter Black', col: '#5a3a2a', maxW: 900 });
   const A = [[c.paste, 260, 'ЗУБНАЯ ПАСТА', 'с радием', () => { piece([[-110, -30], [90, -40], [110, 0], [90, 40], [-110, 30]], '#f2f2ea', { seed: 12510, lw: 2.2 }); rectP(-150, -30, 40, 60, '#d8342c', { seed: 12511, lw: 1.8 }); txt('RADIUM', -10, 4, 28, { font: 'Inter Black', col: '#3a7a3a' }); }],
     [c.cream, 540, 'КРЕМ', 'для сияния', () => { ellP(0, 20, 90, 30, '#f2e2c0', { seed: 12512, lw: 2 }); rectP(-90, -40, 180, 60, '#f6c8d8', { seed: 12513, lw: 2.2 }); ellP(0, -40, 90, 24, '#f8d8e4', { seed: 12514, lw: 2 }); }],
@@ -123,7 +134,7 @@ function adsIns(t, c) {                                               // 1920-е
   if (t > c.healthW) { push(540, 1260, 1, -0.03); ransom('РАДИЙ = ЗДОРОВЬЕ?', 0, 0, 76, 12530, { reveal: pr(t, c.healthW, c.healthW + 0.3), pop: true }); pop(); }
 }
 function mollyIns(t, c) {                                             // Молли Маджиа, 24 года; «сифилис»
-  if (!c.fg) { bg('#2a2e3a', 12600); }  if (c.bg) return;  timeline12(2, t);
+  if (!c.fg) { bg('#2a2e3a', 12600); }  if (c.bg) return;
   push(540, 700, 1, -0.02); card(0, 0, 640, 760, 0, 12601, '#efe6d2');
   rectP(-200, -320, 400, 380, '#b8ae98', { seed: 12602, lw: 2.2, shade: () => { girlIcon(0, -90, 2.0, '#6a5a4a', 12603); } });
   txt('МОЛЛИ МАДЖИА', 0, 130, 54, { font: 'Inter Black', col: '#1c1512', maxW: 580 }); txt('1898 – 1922 · 24 года', 0, 200, 36, { font: 'Inter', weight: 800, col: '#4a4038', maxW: 580 }); pop(); tape(540, 330, 180, -0.02, 12604);
@@ -132,7 +143,7 @@ function mollyIns(t, c) {                                             // Мол�
   if (t > c.diag + 0.6) { push(860, 1110, 1, 0.1); ransom('?!', 0, 0, 120, 12611, { reveal: 1, pop: true }); pop(); }
 }
 function reportIns(t, c) {                                            // Гарвард: виноват радий vs отчёт для штата: «все здоровы»
-  if (!c.fg) { cork(); }  if (c.bg) return;  timeline12(3, t);
+  if (!c.fg) { cork(); }  if (c.bg) return;
   const k1 = popK(t, c.prof - 0.15, 0.3);
   if (k1 > 0) { push(300, 640, k1, -0.04); card(0, 0, 450, 600, 0, 12700, '#fbfaf6'); txt('ГАРВАРД, 1924', 0, -230, 40, { font: 'Inter Black', col: '#8a1c1c', maxW: 400 });
     for (let i = 0; i < 6; i++) stroke([[-170, -150 + i * 44], [150 - (i % 3) * 40, -150 + i * 44]], '#b8b0a0', 6);
@@ -145,7 +156,7 @@ function reportIns(t, c) {                                            // Гар�
   label(540, 1080, 'компания отправила штату другой отчёт', 0, '#f4e6a8', -0.02, 32);
 }
 function courtIns(t, c) {                                             // 5 работниц, суд, по $10 000
-  if (!c.fg) { benchBg(12800); }  if (c.bg) return;  timeline12(4, t);
+  if (!c.fg) { benchBg(12800); }  if (c.bg) return;
   push(540, 560, 1, 0.02); card(0, 0, 860, 420, 0, 12801, '#fbfaf6'); txt('СУД · 1927–1928', 0, -150, 50, { font: 'Inter Black', col: '#1c1512', maxW: 800 });
   for (let i = 0; i < 5; i++) { const k = popK(t, c.five + i * 0.08, 0.25); if (k > 0) { push(-300 + i * 150, 60, k); girlIcon(0, 0, 0.9, ['#c8603a', '#3d7fc4', '#7aa66a', '#e2b04a', '#8a6a9c'][i], 12810 + i * 7); pop(); } } pop(); tape(540, 350, 160, 0.02, 12802);
   if (t > c.rights) label(540, 860, 'их дело → право судиться за профболезни', 0, '#d9f0d2', -0.02, 34); else if (t > c.months) label(540, 860, 'жить им оставались месяцы', 0, '#f4c6b8', -0.02, 40);
@@ -175,7 +186,7 @@ function safetyIns(t, c) {                                            // что 
 
 /* лента времени истории (информативная инфографика): где мы сейчас в 1917–1928 */
 function timeline12(k, t) {
-  const Y = [['1917', 'краска'], ['1920-е', 'реклама'], ['1922', 'Молли'], ['1924', 'отчёт'], ['1928', 'суд']], x0 = 120, x1 = 960, y = 150;
+  const Y = [['1917', 'краска'], ['1920-е', 'реклама'], ['1922', 'Молли'], ['1924', 'отчёт'], ['1928', 'суд']], x0 = 140, x1 = 940, y = 300;   // ниже «чёлки» и интерфейса площадок
   push(0, 0); rectP(x0 - 60, y - 70, x1 - x0 + 120, 150, 'rgba(20,14,10,0.55)', { seed: 12990, line: false, tex: false });
   stroke([[x0, y], [x1, y]], '#f6f1e4', 8); if (k > 0) stroke([[x0, y], [lerp(x0, x1, k / 4), y]], '#b8ff8a', 10);
   Y.forEach(([yr, w], i) => { const x = lerp(x0, x1, i / 4), on = i === k, past = i < k;

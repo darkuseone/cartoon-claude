@@ -108,9 +108,9 @@ def main(ep):
         if name == 'hum': FX.add(hum(at(g) - t0, 0.12), t0); continue
         if name == 'riser': FX.add(riser(at(g) - t0, 0.35), t0); continue
         if name in FILES: x = FILES[name]; FX.add(x, t0, g) if x is not None else None; continue
-        if name.startswith('cc0:'):                                  # сэмпл CC0 из hf/assets/sfx/cc0: ["cc0:имя", t0, громкость, {"from": с, "dur": с, "to": метка (повтор до)}]
-            o = item[3] if len(item) > 3 else {}; x = CC0.get(name[4:])
-            if x is None: x = CC0[name[4:]] = load(HF / 'assets' / 'sfx' / 'cc0' / f'{name[4:]}.mp3'); x = x / (np.abs(x).max() + 1e-9)
+        if name.startswith('cc0:') or name.startswith('ccby:'):                                  # сэмпл CC0 из hf/assets/sfx/cc0: ["cc0:имя", t0, громкость, {"from": с, "dur": с, "to": метка (повтор до)}]
+            o = item[3] if len(item) > 3 else {}; fold, nm = name.split(':', 1); x = CC0.get(name)
+            if x is None: x = CC0[name] = load(HF / 'assets' / 'sfx' / fold / f'{nm}.mp3'); x = x / (np.abs(x).max() + 1e-9)
             a0 = int(o.get('from', 0) * SR); x = x[a0: a0 + int(o['dur'] * SR) if 'dur' in o else None]
             if 'to' in o:
                 end = at(o['to']); tt = t0
