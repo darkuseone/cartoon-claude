@@ -20,3 +20,12 @@
 - `maskbreath.mp3` — Breathless Man — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/breathless-man-s1103.html — CC0
 - `lick.mp3` — Licking #2 — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/licking-2-s0239.html — CC0
 - `smash.mp3` — Broken Glass of Champagne — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/broken-glass-of-champagne-s1591.html — CC0
+- `parrot.mp3` — Cockatiel parakeet #11 — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/cockatiel-parakeet-11-s2779.html — CC0
+- `smokealarm.mp3` — Smoke Detector Alarm #3 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/smoke-detector-alarm-3-s1153.html — CC0
+- `sizzle.mp3` — Frying pan #2 — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/frying-pan-2-s0144.html — CC0
+- `cowbell.mp3` — Flock of Sheep and Cows — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/flock-sheep-and-cows-s3220.html — CC0
+- `moo.mp3` — Cow Moos #1 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/cow-moos-s0546.html — CC0
+- `cough.mp3` — Man cough #5 — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/man-cough-5-s2183.html — CC0
+- `pour.mp3` — Hot Water in Mug #2 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/hot-water-in-mug-2-s3312.html — CC0
+- `binlid.mp3` — Garbage bag in container — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/garbage-bag-in-container-s1523.html — CC0
+- `splash.mp3` — Splash, Big #3 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/splash-big-3-s1521.html — CC0

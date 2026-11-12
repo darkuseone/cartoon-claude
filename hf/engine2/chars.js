@@ -249,7 +249,8 @@ function nikHead(o) {
     const ex = sd * 28, ey = -10, rx = 28 * big, ry = 34 * big;
     if (lid > 0.95) { stroke([[ex - 24, ey + 4], [ex, ey + 10], [ex + 24, ey + 4]], NC.line, 5); return; }
     piece(ellPts(ex, ey, rx, ry, 0, 32), '#fbfaf6', { seed: 110 + sd, lw: 2.8, tex: false, shade: () => {
-      const pr2 = (mood === 'shock' || mood === 'dread' ? 5 : 7.5) * (o.pupS ?? 1); dot(ex + lk[0] * 13 - sd * 3, ey + 4 + lk[1] * 12, pr2, '#140f0c');
+      const pr2 = (mood === 'shock' || mood === 'dread' ? 5 : 7.5) * (o.pupS ?? 1), lidY = ey - ry + lid * ry * 2;
+      dot(ex + lk[0] * 13 - sd * 3, Math.max(ey + 4 + lk[1] * 12, lid > 0.02 ? lidY + pr2 + 3 : -1e9), pr2, '#140f0c');   // зрачок всегда виден под веком (без «белых глаз»)
       if (o.sparkle) { const sx = ex + lk[0] * 13 - sd * 3 + 9, sy = ey + 4 + lk[1] * 12 - 9, r = 8 * o.sparkle; dot(sx - 9, sy + 9, 11, '#140f0c'); piece([[sx, sy - r], [sx + r * 0.3, sy - r * 0.3], [sx + r, sy], [sx + r * 0.3, sy + r * 0.3], [sx, sy + r], [sx - r * 0.3, sy + r * 0.3], [sx - r, sy], [sx - r * 0.3, sy - r * 0.3]], '#ffffff', { raw: true, lw: 1.6, tex: false }); }
       if (lid > 0.02) { const ly = ey - ry + lid * ry * 2; piece([[ex - rx - 3, ey - ry - 4], [ex + rx + 3, ey - ry - 4], [ex + rx + 3, ly], [ex - rx - 3, ly]], NC.skin, { raw: true, line: false }); stroke([[ex - rx, ly], [ex + rx, ly]], NC.line, 4); }
     } });
