@@ -41,4 +41,5 @@ function hudFrame(t) {
     txt(w, x + wd[i] / 2, 0, size, { font: 'Inter', weight: 900, col: on ? col : 'rgba(255,255,255,0.5)', stroke: 15, sc: '#120d0b' }); x += wd[i] + sp; });
   pop();
 }
-function post(t, o) { const v = o.createRadialGradient(W / 2, H * 0.45, H * 0.35, W / 2, H * 0.5, H * 0.8); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.35)'); o.save(); o.fillStyle = v; o.fillRect(0, 0, W, H); o.restore(); }
+function post(t, o) { if (typeof GRADE !== 'undefined') { o.save(); o.globalCompositeOperation = 'copy'; o.filter = `saturate(${GRADE.sat ?? 1.3}) contrast(${GRADE.con ?? 1.06}) brightness(${GRADE.bri ?? 1.02})`; o.drawImage(o.canvas, 0, 0); o.restore(); }   // сочность: серия объявляет const GRADE
+  const v = o.createRadialGradient(W / 2, H * 0.45, H * 0.35, W / 2, H * 0.5, H * 0.8); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.35)'); o.save(); o.fillStyle = v; o.fillRect(0, 0, W, H); o.restore(); }

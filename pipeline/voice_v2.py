@@ -96,7 +96,7 @@ def main(ep, pub):
     t, chunks, lines, gains = cfg["head"], [], [], []
     tmp = Path(tempfile.mkdtemp())
     for ln in cfg["lines"]:
-        a = squeeze(decode(ep / "vo" / f"{ln['key']}.mp3", cfg["tempo"][ln["speaker"]]))
+        a = squeeze(decode(ep / "vo" / f"{ln['key']}.mp3", ln.get("tempo", cfg["tempo"][ln["speaker"]])))   # темп реплики: своё "tempo" или общий по герою
         write_wav(tmp / "l.wav", a)
         vis = [{"s": round(c["s"] + t, 3), "v": c["v"]} for c in visemes(tmp / "l.wav")]
         words = [{**w, "s": round(w["s"] + t, 3), "e": round(w["e"] + t, 3)} for w in words_of(a, model, ln["text"])]
