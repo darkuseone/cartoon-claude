@@ -124,7 +124,7 @@ function chemIns(t, c) {                                              // хим�
 }
 function adsIns(t, c) {                                               // 1920-е: радий в пасте, креме, воде
   if (!c.fg) { bg('#e8d8b0', 12500); for (let y = 0; y < 1920; y += 64) stroke([[-100, y], [1180, y]], '#dccb9e', 3); }  if (c.bg) return;
-  txt('РЕКЛАМА 1920-х', 540, 260, 64, { font: 'Inter Black', col: '#5a3a2a', maxW: 900 });
+  txt('РЕКЛАМА 1920-х', 540, 450, 64, { font: 'Inter Black', col: '#5a3a2a', maxW: 900 });
   const A = [[c.paste, 260, 'ЗУБНАЯ ПАСТА', 'с радием', () => { piece([[-110, -30], [90, -40], [110, 0], [90, 40], [-110, 30]], '#f2f2ea', { seed: 12510, lw: 2.2 }); rectP(-150, -30, 40, 60, '#d8342c', { seed: 12511, lw: 1.8 }); txt('RADIUM', -10, 4, 28, { font: 'Inter Black', col: '#3a7a3a' }); }],
     [c.cream, 540, 'КРЕМ', 'для сияния', () => { ellP(0, 20, 90, 30, '#f2e2c0', { seed: 12512, lw: 2 }); rectP(-90, -40, 180, 60, '#f6c8d8', { seed: 12513, lw: 2.2 }); ellP(0, -40, 90, 24, '#f8d8e4', { seed: 12514, lw: 2 }); }],
     [c.water, 820, 'ВОДА', 'для бодрости', () => { rectP(-40, -110, 80, 190, '#9ad0e0', { seed: 12515, lw: 2.2 }); rectP(-18, -140, 36, 32, '#5a3a2a', { seed: 12516, lw: 1.6 }); rectP(-40, -40, 80, 60, '#f2e2b0', { seed: 12517, lw: 1.4 }); txt('Ra', 0, -6, 30, { font: 'Inter Black', col: '#c8241c' }); }]];
