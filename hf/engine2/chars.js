@@ -69,7 +69,10 @@ function tomPaw(o) {                                                // подн�
   const k = sm(o.paw), hx = lerp(30, o.pawX ?? 175, k), hy = lerp(362, o.pawY ?? 150, k);
   const lg = tube([[120, 200], [lerp(100, 160, k), lerp(300, 260, k)], [hx, hy + 30]], 66, 56); piece(lg.pts, TC.fur, { raw: true, seed: 46, lw: 2.6 });
   for (let q = 1; q < 3; q++) { const a = lg.axis[Math.floor(lg.axis.length * q / 3)]; stroke([[a[0] - 24, a[1]], [a[0] + 24, a[1] + 4]], TC.stripe, 8); }
-  push(hx, hy, 1, -0.15); ellP(0, 0, 44, 46, TC.light, { seed: 47, lw: 2.6 });
+  if (o.pawBack) {                                                  // тыльной стороной (фейспалм): шерсть с полосками, без подушечек
+    push(hx, hy, o.pawS ?? 1, -0.25); ellP(0, 0, 50, 54, TC.fur, { seed: 47, lw: 2.6, shade: () => { [-18, 0, 18].forEach(dx => stroke([[dx, -40], [dx + 4, 30]], TC.stripe, 7)); } });
+    [-24, -8, 8, 24].forEach(dx => stroke([[dx, 44], [dx, 54]], TC.line, 2.4)); pop(); return; }
+  push(hx, hy, o.pawS ?? 1, -0.15); ellP(0, 0, 44, 46, TC.light, { seed: 47, lw: 2.6 });
   blobP([[-20, 8], [20, 8], [24, 30], [0, 38], [-24, 30]], TC.pink, { seed: 51, lw: 2 });
   [[-28, -14], [-10, -28], [10, -28], [28, -14]].forEach(([x, y], q) => ellP(x, y, 9, 11, TC.pink, { seed: 52 + q, lw: 1.8 }));
   pop();
@@ -132,6 +135,10 @@ function tomHead(o) {
     [[150, -60], [-140, -30]].forEach(([x, y], i) => { const yy = y + ((ph + i * 0.5) % 1) * 60; piece(spline([[x, yy - 18], [x + 11, yy + 4], [x, yy + 16], [x - 11, yy + 4]], true, 5), '#9fd8ff', { raw: true, lw: 2 }); });
     stroke([[78, -110], [92, -96], [80, -88], [94, -76]], '#7a2b2b', 4, { smooth: false }); }
   if ((o.mask ?? 0) > 0) gasMask(o.mask, o.m);
+  if ((o.loupe ?? 0) > 0) { push(-55, -22, 1); const k = sm(o.loupe);                     // ювелирная лупа в глазу (вставлена в глазницу)
+    ellP(0, 0, 60, 60, '#1c1a18', { seed: 66, lw: 3, a: k }); ellP(0, 0, 48, 48, TC.eye, { raw: true, lw: 2, tex: false }); ctx.fillStyle = '#0a0806'; ctx.beginPath(); ctx.ellipse(4, 2, 9, 40, 0, 0, 6.3); ctx.fill(); ellP(0, 0, 48, 48, 'rgba(190,220,235,0.3)', { raw: true, line: false, tex: false });   // увеличенный глаз в лупе
+    piece([[-44, -30], [-30, -98], [30, -98], [44, -30]], '#2a2622', { seed: 67, lw: 2.6 }); ellP(0, -98, 30, 10, '#3a3632', { seed: 68, lw: 2 });
+    stroke([[-24, -18], [-8, -34]], '#ffffff', 6, { a: 0.8 }); pop(); }
 }
 
 // =========================================================================================== НИКИТА
@@ -148,6 +155,16 @@ function nikita(o) {
   pop(); pop();
 }
 function nikLegs(o) {
+  if (o.legs === 'kneel') {                                          // на одном колене (как при предложении): правое колено вперёд, левая голень лежит на полу; пол — y 455
+    const J = NC.jeans, Jd = mix(NC.jeans, '#000000', 0.2);
+    piece([[-58, 318], [-8, 318], [-22, 440], [-66, 436]], J, { seed: 170, step: 16 });                                  // левое бедро вниз к колену на полу
+    piece([[-64, 418], [-24, 422], [-150, 452], [-160, 430]], Jd, { seed: 171, step: 14 });                             // левая голень лежит назад
+    blobP([[-178, 404], [-150, 410], [-146, 456], [-184, 456]], NC.shoe, { seed: 172 }); stroke([[-182, 452], [-146, 452]], '#c9c4b8', 4);   // носок упёрт в пол
+    piece([[6, 316], [62, 312], [150, 330], [146, 372], [40, 362]], J, { seed: 173, step: 14, shade: () => { stroke([[60, 340], [140, 350]], Jd, 4); } });   // правое бедро вперёд
+    piece([[108, 340], [152, 344], [146, 438], [108, 438]], J, { seed: 174, step: 12 });                                // правая голень вниз
+    blobP([[100, 430], [160, 428], [186, 452], [96, 458]], NC.shoe, { seed: 175 }); stroke([[96, 452], [184, 450]], '#c9c4b8', 4);
+    return;
+  }
   if (o.legs === 'sit') {                                            // сидит анфас: бёдра в ракурсе, колени, голени вниз
     [-1, 1].forEach(sd => {
       piece([[sd * 6, 300], [sd * 104, 300], [sd * 110, 372], [sd * 4, 372]], NC.jeans, { seed: 160 + sd, step: 18, shade: () => { piece([[sd * 6, 350], [sd * 110, 350], [sd * 110, 372], [sd * 4, 372]], mix(NC.jeans, '#000000', 0.15), { seed: 162 + sd, line: false }); } });

@@ -29,3 +29,9 @@
 - `pour.mp3` — Hot Water in Mug #2 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/hot-water-in-mug-2-s3312.html — CC0
 - `binlid.mp3` — Garbage bag in container — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/garbage-bag-in-container-s1523.html — CC0
 - `splash.mp3` — Splash, Big #3 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/splash-big-3-s1521.html — CC0
+- `rain.mp3` — Rain and Thunder #2 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/rain-and-storm-2-s0740.html — CC0
+- `thunder.mp3` — Rain and Thunder #2 (вырезан удар грома) — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/rain-and-storm-2-s0740.html — CC0
+- `steps.mp3` — Fast Steps on Concrete — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/fast-steps-on-concrete-s1318.html — CC0
+- `boxsnap.mp3` — Metal box lid — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/metal-box-lid-s0053.html — CC0
+- `yawn.mp3` — Yawn #1 — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/yawn-1-s1406.html — CC0
+- `neon.mp3` — Neon or transformer #1 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/neon-or-transformer-1-s2118.html — CC0

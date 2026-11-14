@@ -39,7 +39,7 @@ function insert25(t, bgFn, cardsFn, o = {}) {
 // ------------------------------------------------------------------ склейки с переходами
 let TT25 = 0;
 const TRANS = {                                                       // длительность перехода, с
-  clock: 0.45, glow: 0.4, whip: 0.28, fly: 0.35, flash: 0.3, iris: 0.4, smoke: 0.55
+  clock: 0.45, glow: 0.4, whip: 0.28, fly: 0.35, flash: 0.3, iris: 0.4, smoke: 0.55, glint: 0.4
 };
 function shotIdx25(t) { let i = 0; while (i < SHOTS.length - 1 && t >= SHOTS[i + 1][0]) i++; return i; }
 function drawShot25(i, t) { TT25 = t; RIG.shake = 0; RIG.roll = 0; RIG.Z = 0; SH[SHOTS[i][1]](t, t - SHOTS[i][0]); }
@@ -63,6 +63,11 @@ function frame25(t) {
     g.drawImage(p < 0.5 ? XA : XB, 0, 0); const k = Math.sin(Math.PI * p); g.globalCompositeOperation = 'lighter';
     const gr = g.createRadialGradient(540, 960, 50, 540, 960, 1300); gr.addColorStop(0, `rgba(190,255,140,${0.95 * k})`); gr.addColorStop(1, `rgba(60,160,60,${0.5 * k})`); g.fillStyle = gr; g.fillRect(0, 0, W, H); }
   else if (tr === 'flash') { g.drawImage(p < 0.25 ? XA : XB, 0, 0); g.fillStyle = `rgba(255,255,250,${p < 0.25 ? p / 0.25 : Math.pow(1 - (p - 0.25) / 0.75, 2)})`; g.fillRect(0, 0, W, H); }
+  else if (tr === 'glint') {                                           // блеск бриллианта: звезда-искра вспыхивает и раскрывает новый план
+    g.drawImage(p < 0.45 ? XA : XB, 0, 0); const k = Math.sin(Math.PI * p), L = 1600 * k;
+    g.globalCompositeOperation = 'lighter'; const gr = g.createRadialGradient(540, 960, 0, 540, 960, 700 * k + 1); gr.addColorStop(0, `rgba(255,255,255,${0.95 * k})`); gr.addColorStop(1, 'rgba(180,220,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    g.fillStyle = `rgba(255,255,255,${k})`; [[1, 0], [0, 1]].forEach(([a, b]) => { g.beginPath(); g.moveTo(540 - L * a, 960 - L * b); g.lineTo(540 + 18 * b, 960 + 18 * a); g.lineTo(540 + L * a, 960 + L * b); g.lineTo(540 - 18 * b, 960 - 18 * a); g.fill(); });
+    g.globalCompositeOperation = 'source-over'; }
   else if (tr === 'smoke') {                                           // клубы дыма закрывают кадр и расходятся (сковородка, пожар, завод)
     g.drawImage(p < 0.5 ? XA : XB, 0, 0); const k = Math.sin(Math.PI * p), r = rng(77);
     for (let i = 0; i < 14; i++) { const x = r() * W, y = r() * H, rr = (220 + r() * 260) * (0.4 + k); const gr = g.createRadialGradient(x, y, 0, x, y, rr);

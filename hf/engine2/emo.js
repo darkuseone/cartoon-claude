@@ -33,11 +33,14 @@ const ET = {                                                           // Том
   shame:    { lid: 0.5, blush: 0.35, lk: [0.7, 0.6], ears: 0.6, smirk: 0 },
   stare:    { lid: 0.7, lk: [-0.3, 0.1], smirk: 0, brow: -0.2 },
   hunt:     { lid: 0.48, pup: 0.02, ears: 0.2, smirk: 0.5, brow: -0.8 },          // охотится: хищный прищур, зрачки-щёлки, злодейская полуулыбка
-  hypno:    { lid: 0.3, hypno: 1, ears: 0, smirk: 0.7, brow: -0.6 }               // гипнотизирует: спирали в глазах
+  hypno:    { lid: 0.3, hypno: 1, ears: 0, smirk: 0.7, brow: -0.6 },              // гипнотизирует: спирали в глазах
+  facepalm: { lid: 1, paw: 1, pawX: 20, pawY: -20, pawS: 1.45, pawBack: 1, smirk: 0, brow: 0.6, ears: 0.4, tilt: 0.12 },   // фейспалм — фирменный жест канала
+  yawn:     { lid: 1, jaw: 1, jawR: 0.2, ears: 0.4, smirk: 0 },                 // демонстративно зевает
+  appraise: { lid: 0.55, loupe: 1, smirk: 0.3, brow: -0.5, lk: [-0.6, 0.3] }      // оценщик с лупой
 };
 /* у каждого набора — полный «нейтральный» базис, чтобы при смене эмоции (ex()) не залипали чужие параметры (например, mood:'shock') */
 const EN0 = { mood: '', eyeS: 1, pupS: 1, sparkle: 0, jaw: 0, grin: 0, browIn: undefined, browA: 0, brow: 0, blush: 0, pale: 0, tears: 0, vein: 0, sweat: 0, smile: undefined, smirkN: 0, lid: undefined };
-const ET0 = { mood: '', eyeS: 1, pup: 0.08, hypno: 0, jaw: 0, fur: 0, ears: 0, sweat: 0, vein: 0, blush: 0, paw: 0, brow: 0, smirk: undefined, lid: undefined, tongue: 0 };
+const ET0 = { mood: '', eyeS: 1, pup: 0.08, hypno: 0, pawBack: 0, pawS: 1, loupe: 0, tilt: undefined, jaw: 0, fur: 0, ears: 0, sweat: 0, vein: 0, blush: 0, paw: 0, brow: 0, smirk: undefined, lid: undefined, tongue: 0 };
 for (const k in EN) EN[k] = { ...EN0, ...EN[k] }; for (const k in ET) ET[k] = { ...ET0, ...ET[k] };
 const EMO = (base, ...more) => Object.assign({}, base, ...more);
 
