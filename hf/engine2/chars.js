@@ -135,6 +135,9 @@ function tomHead(o) {
     [[150, -60], [-140, -30]].forEach(([x, y], i) => { const yy = y + ((ph + i * 0.5) % 1) * 60; piece(spline([[x, yy - 18], [x + 11, yy + 4], [x, yy + 16], [x - 11, yy + 4]], true, 5), '#9fd8ff', { raw: true, lw: 2 }); });
     stroke([[78, -110], [92, -96], [80, -88], [94, -76]], '#7a2b2b', 4, { smooth: false }); }
   if ((o.mask ?? 0) > 0) gasMask(o.mask, o.m);
+  if ((o.glasses ?? 0) > 0) { ctx.save(); ctx.globalAlpha *= sm(o.glasses);                // круглые профессорские очки
+    [-1, 1].forEach(sd => { ellP(sd * 55, -22, 58, 58, 'rgba(200,225,240,0.22)', { raw: true, lc: '#1c1512', lw: 7, tex: false }); stroke([[sd * 30, -50], [sd * 50, -64]], '#ffffff', 5, { a: 0.6 }); });
+    stroke([[-8, -30], [0, -38], [8, -30]], '#1c1512', 7); [-1, 1].forEach(sd => stroke([[sd * 112, -28], [sd * 170, -40]], '#1c1512', 6)); ctx.restore(); }
   if ((o.loupe ?? 0) > 0) { push(-55, -22, 1); const k = sm(o.loupe);                     // ювелирная лупа в глазу (вставлена в глазницу)
     ellP(0, 0, 60, 60, '#1c1a18', { seed: 66, lw: 3, a: k }); ellP(0, 0, 48, 48, TC.eye, { raw: true, lw: 2, tex: false }); ctx.fillStyle = '#0a0806'; ctx.beginPath(); ctx.ellipse(4, 2, 9, 40, 0, 0, 6.3); ctx.fill(); ellP(0, 0, 48, 48, 'rgba(190,220,235,0.3)', { raw: true, line: false, tex: false });   // увеличенный глаз в лупе
     piece([[-44, -30], [-30, -98], [30, -98], [44, -30]], '#2a2622', { seed: 67, lw: 2.6 }); ellP(0, -98, 30, 10, '#3a3632', { seed: 68, lw: 2 });

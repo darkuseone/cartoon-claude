@@ -35,3 +35,7 @@
 - `boxsnap.mp3` — Metal box lid — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/metal-box-lid-s0053.html — CC0
 - `yawn.mp3` — Yawn #1 — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/yawn-1-s1406.html — CC0
 - `neon.mp3` — Neon or transformer #1 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/neon-or-transformer-1-s2118.html — CC0
+- `fridgedoor.mp3` — Fridge door — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/fridge-door-s1158.html — CC0
+- `spoon.mp3` — Spoon into a Mug of Coffee — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/spoon-into-a-mug-of-coffee-s0410.html — CC0
+- `fridge.mp3` — Fridge — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/fridge-s1157.html — CC0
+- `engine.mp3` — Car, Starting and Departure — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/car-starting-and-departure-s0189.html — CC0

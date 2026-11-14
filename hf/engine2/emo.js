@@ -40,7 +40,7 @@ const ET = {                                                           // Том
 };
 /* у каждого набора — полный «нейтральный» базис, чтобы при смене эмоции (ex()) не залипали чужие параметры (например, mood:'shock') */
 const EN0 = { mood: '', eyeS: 1, pupS: 1, sparkle: 0, jaw: 0, grin: 0, browIn: undefined, browA: 0, brow: 0, blush: 0, pale: 0, tears: 0, vein: 0, sweat: 0, smile: undefined, smirkN: 0, lid: undefined };
-const ET0 = { mood: '', eyeS: 1, pup: 0.08, hypno: 0, pawBack: 0, pawS: 1, loupe: 0, tilt: undefined, jaw: 0, fur: 0, ears: 0, sweat: 0, vein: 0, blush: 0, paw: 0, brow: 0, smirk: undefined, lid: undefined, tongue: 0 };
+const ET0 = { mood: '', eyeS: 1, pup: 0.08, hypno: 0, pawBack: 0, pawS: 1, loupe: 0, glasses: 0, tilt: undefined, jaw: 0, fur: 0, ears: 0, sweat: 0, vein: 0, blush: 0, paw: 0, brow: 0, smirk: undefined, lid: undefined, tongue: 0 };
 for (const k in EN) EN[k] = { ...EN0, ...EN[k] }; for (const k in ET) ET[k] = { ...ET0, ...ET[k] };
 const EMO = (base, ...more) => Object.assign({}, base, ...more);
 
