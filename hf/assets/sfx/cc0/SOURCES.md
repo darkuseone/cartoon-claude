@@ -39,3 +39,7 @@
 - `spoon.mp3` — Spoon into a Mug of Coffee — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/spoon-into-a-mug-of-coffee-s0410.html — CC0
 - `fridge.mp3` — Fridge — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/fridge-s1157.html — CC0
 - `engine.mp3` — Car, Starting and Departure — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/car-starting-and-departure-s0189.html — CC0
+- `pigeon.mp3` — Flight of a Pigeon — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/flight-of-a-pigeon-s0840.html — CC0
+- `bus.mp3` — Bus horn — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/bus-horn-s3594.html — CC0
+- `bag.mp3` — Garbage bag in container — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/garbage-bag-in-container-s1523.html — CC0
+- `dog.mp3` — Barking Dog #2 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/barking-dog-2-s2954.html — CC0
