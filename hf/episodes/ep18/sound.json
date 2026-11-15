@@ -13,4 +13,4 @@
    ["cc0:whoosh", "Lt01-0.08", 0.3], ["cc0:whoosh", "Ln02-0.08", 0.3], ["cc0:whoosh", "Lt02-0.08", 0.3], ["cc0:whoosh", "risk-0.55", 0.3], ["cc0:whoosh", "better-0.35", 0.3], ["cc0:whoosh", "Ln03-0.08", 0.3],
    ["cc0:whoosh", "Lt03-0.08", 0.3], ["cc0:whoosh", "Ln04-0.08", 0.3], ["cc0:whoosh", "confusion-0.35", 0.3], ["cc0:whoosh", "Ln05-0.08", 0.3], ["cc0:whoosh", "Lt05-0.08", 0.3], ["cc0:whoosh", "Ln07-0.08", 0.3],
    ["cc0:whoosh", "r3-0.35", 0.3], ["cc0:whoosh", "Ln08-0.08", 0.3], ["cc0:whoosh", "chick2-0.2", 0.3], ["cc0:whoosh", "Lt09-0.1", 0.3]],
- "bleep": [["bla-0.03", "bla+0.35"], ["mat-0.03", "mat+0.6"]], "levels": {"music": 0.22, "fx": 0.4}}
+ "bleep": [["bla-0.03", "bla+0.35"], ["mat-0.03", "mat+0.6"]], "levels": {"music": 0.19, "fx": 0.47}}
