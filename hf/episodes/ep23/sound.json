@@ -11,4 +11,4 @@
    ["thud", "bath+0.3", 0.35], ["slam", "mat", 0.7], ["slam", "mine", 0.4], ["pop", "sub", 0.3], ["cc0:lick", "Lt09+0.4", 0.3], ["cc0:lick", "Lt09+1.2", 0.3], ["cc0:lick", "Lt09+2.0", 0.3], ["meow", "loop", 0.25],
    ["cc0:whoosh", "Lt01-0.08", 0.3], ["cc0:whoosh", "Ln02-0.08", 0.3], ["cc0:whoosh", "Lt02-0.08", 0.3], ["cc0:whoosh", "Ln03-0.08", 0.3], ["cc0:whoosh", "Ln04-0.08", 0.3], ["cc0:whoosh", "Lt04-0.08", 0.3],
    ["cc0:whoosh", "Ln05-0.08", 0.3], ["cc0:whoosh", "Lt05-0.08", 0.3], ["cc0:whoosh", "Ln07-0.08", 0.3], ["cc0:whoosh", "Lt07-0.08", 0.3], ["cc0:whoosh", "Ln08-0.08", 0.3], ["cc0:whoosh", "Lt09-0.1", 0.3]],
- "bleep": [["mat-0.03", "mat+0.6"]], "levels": {"music": 0.24, "fx": 0.45}}
+ "bleep": [["mat-0.03", "mat+0.6"]], "levels": {"music": 0.22, "fx": 0.62}}
