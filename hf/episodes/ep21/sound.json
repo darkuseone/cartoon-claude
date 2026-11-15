@@ -12,4 +12,4 @@
    ["cc0:whoosh", "Lt01-0.08", 0.3], ["cc0:whoosh", "Ln02-0.08", 0.3], ["cc0:whoosh", "Lt02-0.08", 0.3], ["cc0:whoosh", "Ln03-0.08", 0.3], ["cc0:whoosh", "plug-0.35", 0.3], ["cc0:whoosh", "Ln04-0.08", 0.3],
    ["cc0:whoosh", "Lt04-0.08", 0.3], ["cc0:whoosh", "Ln05-0.08", 0.3], ["cc0:whoosh", "Lt05-0.08", 0.3], ["cc0:whoosh", "tonut-0.25", 0.3], ["cc0:whoosh", "Ln07-0.08", 0.3], ["cc0:whoosh", "Lt07-0.08", 0.3],
    ["cc0:whoosh", "Ln08-0.08", 0.3], ["cc0:whoosh", "Lt09-0.1", 0.3]],
- "bleep": [["bla-0.03", "bla+0.35"], ["pizd-0.03", "pizd+0.7"], ["mat-0.03", "mat+0.6"]], "levels": {"music": 0.2, "fx": 0.42}}
+ "bleep": [["bla-0.03", "bla+0.35"], ["pizd-0.03", "pizd+0.7"], ["mat-0.03", "mat+0.6"]], "levels": {"music": 0.26, "fx": 0.42}}
