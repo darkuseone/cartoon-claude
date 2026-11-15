@@ -89,7 +89,7 @@ function rutgersIns(t, c) {                                           // Рат�
   if (t > c.longer - 0.2) { const k = sm(pr(t, c.longer - 0.2, c.longer + 0.8)); stroke([[-340, 220], [340, 220]], '#4a4038', 4); stroke([[-340, 220], [-340, 60]], '#4a4038', 4);
     ctx.save(); ctx.lineWidth = 8 / S; ctx.strokeStyle = '#2a6ac8'; ctx.beginPath(); for (let i = 0; i <= 30 * k; i++) { const x = -340 + i * 22, y = 220 - 140 * (1 - Math.exp(-i / 10)); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); ctx.restore();
     txt('время →', 260, 260, 26, { font: 'Inter', weight: 800, col: '#6b5a48' }); txt('бактерии', -260, 50, 26, { font: 'Inter', weight: 800, col: '#6b5a48' }); }
-  if (t > c.wet - 0.1) { push(0, 320, popK(t, c.wet - 0.1, 0.3)); piece([[0, -40], [24, 0], [14, 26], [-14, 26], [-24, 0]], '#5ab8e8', { seed: 25733, lw: 2 }); txt('главное — ВЛАЖНОСТЬ', 260, 14, 34, { font: 'Inter Black', col: '#2a5a8a', maxW: 460 }); pop(); } pop();
+  if (t > c.wet - 0.1) { push(0, 320, popK(t, c.wet - 0.1, 0.3)); piece([[0, -40], [24, 0], [14, 26], [-14, 26], [-24, 0]], '#5ab8e8', { seed: 25733, lw: 2 }); txt('главное — ВЛАЖНОСТЬ', 200, 14, 34, { font: 'Inter Black', col: '#2a5a8a', maxW: 380 }); pop(); } pop();
 }
 function foodsIns(t, c) {                                             // арбуз собирает больше всех, мармелад — меньше всех
   if (!c.fg) confettiBg(25740, t); if (c.bg) return;
