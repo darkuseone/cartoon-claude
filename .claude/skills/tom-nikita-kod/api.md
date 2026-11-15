@@ -532,3 +532,20 @@
 - `surfaceIns(t, c)` — ковёр отдаёт меньше, чем плитка и металл
 - `ruleIns(t, c)` — как понять
 
+## hf/episodes/ep26/set.js — Эп. 26 «Зачем дырка в колпачке?» — декорация: ночное купе поезда, 3 часа ночи. Никита и Том едут на дачу (эп. 23):
+- `penP(x, y, s, rot, o = {})`
+- `capP(x, y, s, rot)`
+- `teaGlass(x, y, s, t, o = {})`
+- `coins(x, y, n, seed)`
+- `nightRail(t)`
+- `compartment(t)`
+- `compMid(t, o = {})`
+- `compFg(t)` — дверь купе у края
+- `compLight(t, fn)`
+- `newsBg(seed, t)`
+- `arrows(x0, y0, x1, y1, k, col)`
+- `capIns(t, c)` — дырка в колпачке: воздух проходит, BIC с 1991
+- `barrelIns(t, c)` — дырочка в корпусе: давление внутри = снаружи
+- `pocketIns(t, c)` — часовой карман: Levi's, конец 1870-х
+- `adviceIns(t, c)` — что делать
+
