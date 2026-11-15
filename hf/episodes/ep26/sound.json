@@ -1,0 +1,13 @@
+{"voice": "../episodes/ep26_kolpachok/out/voice.wav", "key": "E",
+ "music": [{"type": "night", "from": 0.2, "to": "air-0.4", "g": 0.07}, {"type": "pluck", "from": "air-0.4", "to": "Ln05"}, {"type": "night", "from": "Ln05", "to": "Lt05", "g": 0.06},
+   {"type": "pluck", "from": "Lt05", "to": "Ln06"}, {"type": "pluck", "from": "Lt07", "to": "Ln08"}, {"type": "night", "from": "Ln08", "to": "snorkel+0.4", "g": 0.06}, {"type": "stop", "at": "snorkel+0.6"},
+   {"type": "endsting", "at": "sub-0.1"}, {"type": "night", "from": "sub+0.4", "to": "loop+0.6", "g": 0.06}],
+ "stings": ["air-0.4", "Lt04-0.05", "Lt05-0.05", "Lt07-0.05"],
+ "sfx": [["cc0:train", 0.0, 0.12, {"to": "loop"}], ["cc0:cough", "inhale-0.1", 0.55, {"dur": 1.2}], ["pop", "hole", 0.3], ["slam", "life", 0.35],
+   ["cc0:spoon", "Ln02+0.1", 0.3, {"dur": 0.6}], ["cc0:spoon", "Ln02+0.8", 0.3, {"dur": 0.6}], ["cc0:spoon", "Ln02+1.4", 0.25, {"dur": 0.5}], ["cc0:whoosh", "air-0.45", 0.3], ["pop", "y91", 0.3], ["slam", "risk", 0.4],
+   ["cc0:lick", "Ln03+0.2", 0.3], ["slam", "chews", 0.3], ["pop", "pressure", 0.3], ["pop", "outside", 0.3], ["cc0:clock", "nuB", 0.2, {"dur": 2.0}],
+   ["cc0:chime", "watches-0.1", 0.3, {"dur": 1.0}], ["pop", "levis", 0.3], ["slam", "name", 0.35], ["cc0:coins", "coins-0.3", 0.45, {"dur": 1.2}], ["cc0:yawn", "Ln07+0.1", 0.35, {"dur": 1.4}],
+   ["pop", "nochew", 0.3], ["pop", "call", 0.35], ["pop", "kids", 0.3], ["slam", "mat", 0.7], ["slam", "last", 0.35], ["cc0:splash", "spit+0.7", 0.4, {"dur": 0.6}], ["pop", "sub", 0.3], ["meow", "loop", 0.25],
+   ["cc0:whoosh", "Lt01-0.08", 0.3], ["cc0:whoosh", "Ln02-0.08", 0.3], ["cc0:whoosh", "Lt02-0.08", 0.3], ["cc0:whoosh", "Ln03-0.08", 0.3], ["cc0:whoosh", "man-0.25", 0.3], ["cc0:whoosh", "Ln04-0.08", 0.3],
+   ["cc0:whoosh", "Ln05-0.08", 0.3], ["cc0:whoosh", "Ln07-0.08", 0.3], ["cc0:whoosh", "Ln08-0.08", 0.3], ["cc0:whoosh", "last-0.25", 0.3], ["cc0:whoosh", "Lt09-0.1", 0.3]],
+ "bleep": [["mat-0.03", "mat+0.6"]], "levels": {"music": 0.17, "fx": 0.6}}
