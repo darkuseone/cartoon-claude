@@ -43,3 +43,5 @@
 - `bus.mp3` — Bus horn — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/bus-horn-s3594.html — CC0
 - `bag.mp3` — Garbage bag in container — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/garbage-bag-in-container-s1523.html — CC0
 - `dog.mp3` — Barking Dog #2 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/barking-dog-2-s2954.html — CC0
+- `gulls.mp3` — Sea Waves with Tern Calls — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/sea-waves-and-seagulls-s0267.html — CC0
+- `waves.mp3` — Sea Waves with Tern Calls — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/sea-waves-and-seagulls-s0267.html — CC0
