@@ -1,0 +1,13 @@
+{"voice": "../episodes/ep24_mysh/out/voice.wav", "key": "D",
+ "music": [{"type": "groove", "from": 0.2, "to": "y76-0.2", "g": 0.07}, {"type": "pluck", "from": "y76-0.2", "to": "Ln05"}, {"type": "tension", "from": "Ln05", "to": "Ln07"},
+   {"type": "pluck", "from": "meat-0.3", "to": "Ln08"}, {"type": "night", "from": "Ln08", "to": "eat+0.4", "g": 0.06}, {"type": "stop", "at": "eat+0.6"}, {"type": "endsting", "at": "sub-0.1"}, {"type": "groove", "from": "sub+0.4", "to": "loop+0.6", "g": 0.06}],
+ "stings": ["y76-0.2", "Lt03-0.05", "Lt04-0.05", "meat-0.3"],
+ "sfx": [["cc0:clock", 0.0, 0.03, {"to": "loop"}], ["cc0:steps", 0.2, 0.25, {"dur": 0.6}], ["thud", "mouse-0.1", 0.35], ["slam", "mouse", 0.3], ["pop", "gift", 0.25],
+   ["cc0:paper", "report-0.4", 0.35, {"dur": 0.8}], ["slam", "report+0.3", 0.35], ["pop", "bowl", 0.3], ["pop", "rat", 0.3], ["cc0:whoosh", "catch-0.1", 0.3], ["slam", "back", 0.4],
+   ["cc0:lick", "Ln03+0.2", 0.3], ["cc0:lick", "Ln03+1.0", 0.25], ["ticks", "birds-0.6", 0.3], ["ticks", "twelve-0.4", 0.3], ["slam", "beasts", 0.4], ["cc0:clock", "nuB", 0.2, {"dur": 2.2}],
+   ["pop", "later", 0.3], ["slam", "notbelieve", 0.45], ["thud", "wait", 0.3], ["cc0:bag", "pocket+0.6", 0.35, {"dur": 0.8}], ["thud", "soft", 0.4],
+   ["cc0:whoosh", "Ln07+0.3", 0.3], ["cc0:whoosh", "Ln07+1.0", 0.25], ["cc0:whoosh", "brit", 0.25], ["pop", "meat", 0.3], ["pop", "play", 0.3], ["slam", "plus", 0.4],
+   ["slam", "mat", 0.7], ["pop", "sub", 0.3], ["thud", "second+0.5", 0.4], ["meow", "loop", 0.25],
+   ["cc0:whoosh", "Lt01-0.08", 0.3], ["cc0:whoosh", "Ln02-0.08", 0.3], ["cc0:whoosh", "Lt02-0.08", 0.3], ["cc0:whoosh", "Ln03-0.08", 0.3], ["cc0:whoosh", "twelve-0.35", 0.3], ["cc0:whoosh", "Ln04-0.08", 0.3],
+   ["cc0:whoosh", "you-0.55", 0.3], ["cc0:whoosh", "Lt05-0.08", 0.3], ["cc0:whoosh", "Ln08-0.08", 0.3], ["cc0:whoosh", "Lt09-0.1", 0.3]],
+ "bleep": [["mat-0.03", "mat+0.6"]], "levels": {"music": 0.22, "fx": 0.4}}
