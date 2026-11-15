@@ -45,3 +45,5 @@
 - `dog.mp3` — Barking Dog #2 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/barking-dog-2-s2954.html — CC0
 - `gulls.mp3` — Sea Waves with Tern Calls — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/sea-waves-and-seagulls-s0267.html — CC0
 - `waves.mp3` — Sea Waves with Tern Calls — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/sea-waves-and-seagulls-s0267.html — CC0
+- `fart.mp3` — Flatulence #3 — Free Download WAV & MP3 | BigSoundBank — https://bigsoundbank.com/flatulence-3-s0241.html — CC0
+- `elevator.mp3` — Elevator, 3 floors — Free Sound Effect Download | BigSoundBank — https://bigsoundbank.com/elevator-3-floors-s1711.html — CC0
